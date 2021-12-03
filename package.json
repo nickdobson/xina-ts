@@ -1,13 +1,13 @@
 {
-  "name": "typescript-boilerplate-2021",
-  "version": "0.4.2",
+  "name": "xina-ts",
+  "version": "0.0.1",
   "description": "Boilerplate for TypeScript projects (Node.js and browser modules)",
-  "author": "Chris Hager <chris@linuxuser.at>",
-  "repository": "https://github.com/metachris/typescript-boilerplate",
-  "license": "MIT",
+  "author": "Nick Dobson",
+  "repository": "https://github.com/nickdobson/xina-ts",
   "keywords": [
+    "javascript",
     "typescript",
-    "boilerplate",
+    "xina",
     "esbuild"
   ],
   "main": "./dist/tsc/main.js",
@@ -33,16 +33,26 @@
     "esbuild-node:watch": "esbuild src/cli.ts --bundle --platform=node --watch --sourcemap=external --outfile=dist/esbuild/cli.js"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.21",
-    "@types/node": "^15.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.19.0",
-    "@typescript-eslint/parser": "^4.19.0",
-    "esbuild": "^0.11.11",
-    "eslint": "^7.22.0",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.4",
-    "ts-node": "^9.1.1",
-    "typedoc": "^0.20.35",
-    "typescript": "^4.2.3"
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.11",
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/parser": "^5.5.0",
+    "esbuild": "^0.14.1",
+    "eslint": "^8.3.0",
+    "jest": "^27.4.3",
+    "ts-jest": "^27.0.7",
+    "ts-node": "^10.4.0",
+    "typedoc": "^0.22.10",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "sugar": "^2.0.6",
+    "zod": "^3.11.6"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 120,
+    "trailingComma": "none",
+    "semi": false
   }
 }
