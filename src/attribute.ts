@@ -336,7 +336,7 @@ export const XRecordAttributeManager = new XAttributeManager<XRecordAttribute<un
 
 export type XBlobAttributeName = 'version' | 'size' | 'md5' | 'type' | 'update' | 'object_id'
 
-export interface XBlobInterface extends Partial<Record<XBlobAttributeName, unknown>> {
+export interface XRecordBlobInterface extends Partial<Record<XBlobAttributeName, unknown>> {
   version?: number
   size?: number
   md5?: string

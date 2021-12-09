@@ -1,4 +1,5 @@
-import { XDatabase, XGroup, XTeam } from '../element'
+
+import { XGroup, XDatabase, XTeam, isGroup, isDatabase } from '../element'
 import { isRecord, XRecord } from '../record'
 import { toSpecifier } from './api'
 
@@ -7,8 +8,8 @@ export abstract class XWall {
 
   static of(v: XDatabase | XRecord | XGroup | XTeam) {
     if (isRecord(v)) return new XRecordWall(v.$database, v)
-    if (v instanceof XDatabase) return new XDatabaseWall(v)
-    if (v instanceof XGroup) return new XGroupWall(v)
+    if (isDatabase(v)) return new XDatabaseWall(v)
+    if (isGroup(v)) return new XGroupWall(v)
     return new XTeamWall(v)
   }
 }

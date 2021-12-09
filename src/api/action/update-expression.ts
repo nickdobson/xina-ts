@@ -1,31 +1,12 @@
-import { XDatabase, XField } from '../../element'
-import { XRecordsSpecifier, buildRecordsSpecifier } from '../../record'
-import { toSpecifier } from '../api'
+import { XField } from '../../element'
 import { toExpression, XExpression, XExpressionable } from '../expression'
-import { XAction } from './action'
+import { XRecordsActionBase } from './action'
 
-export default class XUpdateAction extends XAction {
-  database?: XDatabase | string | number
-  records: XRecordsSpecifier = []
+export default class XUpdateExpressionAction extends XRecordsActionBase {
   values: Record<string, XExpression> = {}
 
   getAction(): string {
-    return 'update'
-  }
-
-  setDatabase(database: XDatabase) {
-    this.database = database
-    return this
-  }
-
-  setRecords(...records: XRecordsSpecifier) {
-    this.records = []
-    return this.addRecords(...records)
-  }
-
-  addRecords(...records: XRecordsSpecifier) {
-    this.records.push(...records)
-    return this
+    return 'update_expression'
   }
 
   setField(field: XField, value: XExpressionable) {
@@ -33,17 +14,13 @@ export default class XUpdateAction extends XAction {
     return this
   }
 
-  buildRest(pretty: boolean): Record<string, unknown> {
+  buildRestRest(pretty: boolean): Record<string, unknown> {
     const built: Record<string, unknown> = {}
 
     for (const [key, val] of Object.entries(this.values)) {
       built[key] = val.build(pretty)
     }
 
-    return {
-      database: toSpecifier(this.database, pretty),
-      records: buildRecordsSpecifier(this.records),
-      set: this.values
-    }
+    return { set: this.values }
   }
 }

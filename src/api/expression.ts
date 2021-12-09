@@ -1,6 +1,7 @@
 import Sugar from 'sugar'
+import { isDatabase } from '..'
 import { XAttribute } from '../attribute'
-import { XField, XDatabase } from '../element'
+import { XField, XDatabase, isField } from '../element'
 import { XParameter } from '../parameter'
 import { XSystemTable, XDatabaseTable, XDatabaseTableName, XSystemTableName } from '../table'
 import {
@@ -84,7 +85,7 @@ export function toOptionalExpression(v?: XExpressionable, _meta?: string | Recor
 
   if (v instanceof XSelect) return new XSelectExpression().setSelect(v)
 
-  if (v instanceof XField) return XColumnExpression.of(v, XDatabaseTable.RECORD, v.database)
+  if (isField(v)) return XColumnExpression.of(v, XDatabaseTable.RECORD, v.database)
 
   if (v instanceof XParameter) return XAliasExpression.of(v.name)
 
@@ -1034,7 +1035,7 @@ export class XColumnExpression extends XExpression {
     const db = this.database
 
     if (db !== undefined) {
-      s = '`' + (db instanceof XDatabase ? db.getLabelPath() : db) + '`.' + s
+      s = '`' + (isDatabase(db) ? db.getLabelPath() : db) + '`.' + s
     }
 
     return s

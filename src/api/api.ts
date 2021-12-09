@@ -23,8 +23,15 @@ export function toIdentifier(value?: { name: string } | string) {
   throw Error(`invalid identifier: ${value}`)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function toSpecifier(value?: XElement<any> | XRecord | string | number, pretty = false): string | number {
+export function toOptionalSpecifier(
+  value?: XElement | XRecord | string | number,
+  pretty = false
+): string | number | undefined {
+  if (value == null) return undefined
+  return toSpecifier(value, pretty)
+}
+
+export function toSpecifier(value?: XElement | XRecord | string | number, pretty = false): string | number {
   if (value == null) throw Error('value cannot be null or undefined')
 
   if (isNumber(value)) return value

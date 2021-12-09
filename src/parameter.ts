@@ -2162,9 +2162,9 @@ export type XUserParameterName =
 export interface XUserInterface extends Partial<Record<XUserParameterName, unknown>> {
   user_id: number
   username: string
-  super?: boolean
-  read_all?: boolean
-  write_all?: boolean
+  super: boolean
+  read_all: boolean
+  write_all: boolean
   email?: string
   email2?: string
   first?: string

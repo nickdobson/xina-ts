@@ -1,55 +1,63 @@
 import Sugar from 'sugar'
 
-import { isNumber, isString, splitRest, trustIs } from './util'
+import { isNumber, isString, splitRest } from './util'
 import {
-  XParameterManager,
   XDatabaseInterface,
-  XDatabaseParameterManager,
   XFieldInterface,
   XGroupInterface,
   XTeamInterface,
-  XTeamParameterManager,
   XBlobInterface,
-  XGroupParameterManager,
-  XFieldParameterManager,
-  XBlobParameterManager,
-  XGroupParameter,
-  XParameter,
-  XDatabaseParameter,
-  XBlobParameter,
-  XFieldParameter,
-  XTeamParameter
+  XUserInterface,
+  XPrivGroupInterface,
+  XPrivDatabaseInterface
 } from './parameter'
 
 import { XRecord } from './record'
-import { XTypes } from './type'
+import { XType, XTypes } from './type'
+import { XDatabasePrivilege, XGroupPrivilege } from './privilege'
+
+const GROUP_SYMBOL = Symbol('group')
+const DATABASE_SYMBOL = Symbol('database')
+const FIELD_SYMBOL = Symbol('field')
+const BLOB_SYMBOL = Symbol('blob')
+const TEAM_SYMBOL = Symbol('team')
+const USER_SYMBOL = Symbol('user')
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export abstract class XElement<P extends XParameter<any, any>> implements Record<string, unknown> {
-  [x: string]: unknown
+export const isGroup = (v: unknown): v is XGroup => v && (v as any)[GROUP_SYMBOL]
 
-  abstract getParameterManager(): XParameterManager<P>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isDatabase = (v: unknown): v is XDatabase => v && (v as any)[DATABASE_SYMBOL]
 
-  abstract getId(): number
-  abstract getName(): string
-  abstract getLabel(): string
-  abstract getSpecifier(): string
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isField = (v: unknown): v is XField => v && (v as any)[FIELD_SYMBOL]
 
-  toString() {
-    return this.getLabel()
-  }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isBlob = (v: unknown): v is XBlob => v && (v as any)[BLOB_SYMBOL]
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isTeam = (v: unknown): v is XTeam => v && (v as any)[TEAM_SYMBOL]
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isUser = (v: unknown): v is XUser => v && (v as any)[USER_SYMBOL]
+
+export interface XElement {
+  getId(): number
+  getName(): string
+  getLabel(): string
+  getSpecifier(): string
+  toString(): string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class XElementSet<T extends XElement<any>> {
+export class XElementSet<T extends XElement> {
   readonly values: T[]
 
   private readonly idMap: Record<number, T> = {}
   private readonly nameMap: Record<string, T> = {}
   private readonly labelMap: Record<string, T> = {}
 
-  constructor(Class: new (obj: Record<string, unknown>) => T, elements: (Record<string, unknown> | T)[] = []) {
-    this.values = elements.map((e) => (e instanceof Class ? e : new Class(e)))
+  constructor(values: T[]) {
+    this.values = [...values]
 
     this.values.forEach((e) => {
       this.idMap[e.getId()] = e
@@ -100,286 +108,212 @@ export class XElementSet<T extends XElement<any>> {
 }
 
 interface XGroupInterfaceExt extends XGroupInterface {
-  groups: Record<string, unknown>[]
-  databases: Record<string, unknown>[]
-}
-
-export class XGroup extends XElement<XGroupParameter<unknown>> implements XGroupInterface {
-  parent_id?: number
-  group_id: number
-  name: string
-  label: string
-  desc?: string
-  priority: number
-  face: boolean
-  wall: boolean
-  alias_id?: number
-
-  parent?: XGroup
-  groups: XElementSet<XGroup>
-  databases: XElementSet<XDatabase>
-
-  constructor(obj: Record<string, unknown>) {
-    super()
-
-    if (!trustIs<XGroupInterfaceExt>(obj)) throw Error(`invalid group: ${obj}`)
-
-    this.parent_id = obj.parent_id
-    this.group_id = obj.group_id
-    this.name = obj.name
-    this.label = obj.label
-    this.priority = obj.priority
-    this.face = obj.face
-    this.wall = obj.wall
-    this.alias_id = obj.alias_id
-
-    this.groups = new XElementSet<XGroup>(XGroup, obj.groups)
-    this.groups.values.forEach((g) => (g.parent = this))
-
-    this.databases = new XElementSet<XDatabase>(XDatabase, obj.databases)
-    this.databases.values.forEach((d) => (d.parent = this))
-  }
-
-  getId(): number {
-    return this.group_id
-  }
-
-  getName(): string {
-    return this.name
-  }
-
-  getLabel(): string {
-    return this.label
-  }
-
-  getParameterManager() {
-    return XGroupParameterManager
-  }
-
-  getSpecifier() {
-    return this.getNamePath()
-  }
-
-  getPath(): XGroup[] {
-    const path: XGroup[] = []
-    if (this.parent) path.push(...this.parent.getPath())
-    path.push(this)
-
-    return path
-  }
-
-  getNamePath(depth = 32): string {
-    if (this.parent && depth > 0) return `${this.parent.getNamePath(depth - 1)}.${this.name}`
-    return this.name
-  }
-
-  getLabelPath(depth = 32): string {
-    if (this.parent && depth > 0) return this.parent.getLabelPath(depth - 1) + ' ' + this.label
-    return this.label
-  }
-
-  getGroup(s: string): XGroup {
-    if (s.includes('.')) {
-      const parts = splitRest(s, '.', 2)
-      const base = parts[0]
-      const rest = parts[1]
-      return this.groups.get(base).getGroup(rest)
-    } else {
-      return this.groups.get(s)
-    }
-  }
-
-  getDatabase(s: string): XDatabase | undefined {
-    if (s.includes('.')) {
-      const parts = splitRest(s, '.', 2)
-
-      const base = parts[0]
-      const rest = parts[1]
-
-      const group = this.groups.get(base)
-      if (group) return group.getDatabase(rest)
-
-      const database = this.databases.get(base)
-      if (database) return database.getDatabase(rest)
-
-      return undefined
-    } else {
-      return this.databases.get(s)
-    }
-  }
-
-  getRoot(): XGroup | undefined {
-    if (this.parent) return this.parent.getRoot()
-    return this
-  }
-}
-
-interface XDatabaseInterfaceExt extends XDatabaseInterface {
-  databases: Record<string, unknown>[]
-
-  fields: Record<string, unknown>[]
-  blobs: Record<string, unknown>[]
-
+  groups: XGroupInterfaceExt[]
+  databases: XDatabaseInterfaceExt[]
   objects: Record<string, unknown>
   files: Record<string, unknown>
 }
 
-export class XDatabase extends XElement<XDatabaseParameter<unknown>> implements XDatabaseInterface {
-  parent_group_id?: number
-  parent_database_id?: number
-  database_id: number
-  name: string
-  label: string
-  version: number
-  locked: boolean
-  format?: string
-  file_format?: string
-  singular?: string
-  plural?: string
-  order?: unknown[]
-  indexes?: unknown[]
-  partition?: Record<string, unknown>
-  priority: number
-  backup: boolean
-  dynamic: boolean
-  event: boolean
-  face: boolean
-  file: boolean
-  keyless: boolean
-  link: boolean
-  lock: boolean
-  log: boolean
-  notify: boolean
-  sign: boolean
-  subscribe: boolean
-  tag: boolean
-  track: boolean
-  trash: boolean
-  wall: boolean
-  clone_to?: number
-  desc?: string
-
-  parent?: XGroup | XDatabase
-
+export interface XGroup extends XGroupInterface, XElement {
+  [GROUP_SYMBOL]: true
+  parent?: XGroup
+  groups: XElementSet<XGroup>
   databases: XElementSet<XDatabase>
+  objects: Record<string, unknown>
+  files: Record<string, unknown>
+  getPath(): XGroup[]
+  getNamePath(depth?: number): string
+  getLabelPath(depth?: number): string
+  getGroup(s: string): XGroup
+  getDatabase(s: string): XDatabase | undefined
+  getRoot(): XGroup | undefined
+}
 
+export const toGroups = (objs: XGroupInterfaceExt[]): XGroup[] => objs.map((g) => toGroup(g))
+
+export const toGroup = (obj: XGroupInterfaceExt): XGroup => {
+  const groups = new XElementSet<XGroup>(toGroups(obj.groups))
+  const databases = new XElementSet<XDatabase>(toDatabases(obj.databases))
+
+  const group: XGroup = {
+    [GROUP_SYMBOL]: true,
+    ...obj,
+    groups,
+    databases,
+    getId() {
+      return this.group_id
+    },
+    getName() {
+      return this.name
+    },
+    getLabel() {
+      return this.label
+    },
+    getSpecifier() {
+      return this.getNamePath()
+    },
+    getPath(): XGroup[] {
+      const path: XGroup[] = []
+      if (this.parent) path.push(...this.parent.getPath())
+      path.push(this)
+
+      return path
+    },
+    getNamePath(depth = 32): string {
+      if (this.parent && depth > 0) return `${this.parent.getNamePath(depth - 1)}.${this.name}`
+      return this.name
+    },
+    getLabelPath(depth = 32): string {
+      if (this.parent && depth > 0) return this.parent.getLabelPath(depth - 1) + ' ' + this.label
+      return this.label
+    },
+    getGroup(s: string): XGroup {
+      if (s.includes('.')) {
+        const parts = splitRest(s, '.', 2)
+        const base = parts[0]
+        const rest = parts[1]
+        return this.groups.get(base).getGroup(rest)
+      } else {
+        return this.groups.get(s)
+      }
+    },
+    getDatabase(s: string): XDatabase | undefined {
+      if (s.includes('.')) {
+        const parts = splitRest(s, '.', 2)
+
+        const base = parts[0]
+        const rest = parts[1]
+
+        const group = this.groups.get(base)
+        if (group) return group.getDatabase(rest)
+
+        const database = this.databases.get(base)
+        if (database) return database.getDatabase(rest)
+
+        return undefined
+      } else {
+        return this.databases.get(s)
+      }
+    },
+    getRoot(): XGroup | undefined {
+      if (this.parent) return this.parent.getRoot()
+      return this
+    }
+  }
+
+  groups.values.forEach((g) => (g.parent = group))
+  databases.values.forEach((d) => (d.parent = group))
+
+  return group
+}
+
+interface XDatabaseInterfaceExt extends XDatabaseInterface {
+  databases: XDatabaseInterfaceExt[]
+
+  fields: XFieldInterfaceExt[]
+  blobs: XBlobInterfaceExt[]
+
+  objects: Record<string, unknown>
+  files: Record<string, unknown>
+
+  getDatabase(s: string): XDatabase
+  getPath(): (XGroup | XDatabase)[]
+  getNamePath(): string
+  getLabelPath(): string
+  formatRecord(record: XRecord, format?: string): string
+}
+
+export interface XDatabase extends XDatabaseInterface, XElement {
+  [DATABASE_SYMBOL]: true
+  parent?: XGroup | XDatabase
+  databases: XElementSet<XDatabase>
   fields: XElementSet<XField>
   blobs: XElementSet<XBlob>
+  objects: Record<string, unknown>
+  files: Record<string, unknown>
+  getDatabase(s: string): XDatabase
+  getPath(): (XGroup | XDatabase)[]
+  getNamePath(): string
+  getLabelPath(): string
+  formatRecord(record: XRecord, format?: string): string
+}
 
-  constructor(obj: Record<string, unknown>) {
-    super()
+export const toDatabases = (objs: XDatabaseInterfaceExt[]): XDatabase[] => objs.map((d) => toDatabase(d))
 
-    if (!trustIs<XDatabaseInterfaceExt>(obj)) throw Error(`invalid database: ${obj}`)
+export const toDatabase = (obj: XDatabaseInterfaceExt): XDatabase => {
+  const databases = new XElementSet<XDatabase>(toDatabases(obj.databases))
+  const fields = new XElementSet<XField>(toFields(obj.fields))
+  const blobs = new XElementSet<XBlob>(toBlobs(obj.blobs))
 
-    this.parent_group_id = obj.parent_group_id
-    this.parent_database_id = obj.parent_database_id
-    this.database_id = obj.database_id
-    this.name = obj.name
-    this.label = obj.label
-    this.version = obj.version
-    this.locked = obj.locked
-    this.format = obj.format
-    this.file_format = obj.file_format
-    this.singular = obj.singular
-    this.plural = obj.plural
-    this.order = obj.order
-    this.indexes = obj.indexes
-    this.partition = obj.partition
-    this.priority = obj.priority
-    this.backup = obj.backup
-    this.dynamic = obj.dynamic
-    this.event = obj.event
-    this.face = obj.face
-    this.file = obj.file
-    this.keyless = obj.keyless
-    this.link = obj.link
-    this.lock = obj.lock
-    this.log = obj.log
-    this.notify = obj.notify
-    this.sign = obj.sign
-    this.subscribe = obj.subscribe
-    this.tag = obj.tag
-    this.track = obj.track
-    this.trash = obj.trash
-    this.wall = obj.wall
-    this.clone_to = obj.clone_to
-    this.desc = obj.desc
+  const database: XDatabase = {
+    [DATABASE_SYMBOL]: true,
+    ...obj,
+    databases,
+    fields,
+    blobs,
+    getId(): number {
+      return this.database_id
+    },
+    getName(): string {
+      return this.name
+    },
+    getLabel(): string {
+      return this.label
+    },
+    getSpecifier() {
+      return this.getNamePath()
+    },
+    getDatabase(s: string): XDatabase {
+      if (s.includes('.')) {
+        const parts = splitRest(s, '.', 2)
+        const base = parts[0]
+        const rest = parts[1]
+        return this.databases.get(base).getDatabase(rest)
+      }
 
-    this.databases = new XElementSet<XDatabase>(XDatabase, obj.databases)
-    this.databases.values.forEach((d) => (d.parent = this))
+      return this.databases.get(s)
+    },
+    getPath(): (XGroup | XDatabase)[] {
+      const path: (XGroup | XDatabase)[] = []
+      if (this.parent) path.push(...this.parent.getPath())
+      path.push(this)
 
-    this.fields = new XElementSet<XField>(XField, obj.fields)
-    this.fields.values.forEach((f) => (f.database = this))
+      return path
+    },
+    getNamePath(): string {
+      return this.getPath()
+        .map((v) => v.name)
+        .join('.')
+    },
+    getLabelPath(): string {
+      return this.getPath()
+        .map((v) => v.label)
+        .join(' ')
+    },
+    formatRecord(record: XRecord, format?: string) {
+      format = format || this.format
 
-    this.blobs = new XElementSet<XBlob>(XBlob, obj.blobs)
-    this.blobs.values.forEach((b) => (b.database = this))
-  }
+      if (!format) {
+        format = ''
+        this.fields.values.filter((f) => f.key).forEach((field) => (format += ' {' + field.name + '}'))
+        format = format.trim()
+      }
 
-  getId(): number {
-    return this.database_id
-  }
-
-  getName(): string {
-    return this.name
-  }
-
-  getLabel(): string {
-    return this.label
-  }
-
-  getSpecifier() {
-    return this.getNamePath()
-  }
-
-  getDatabase(s: string): XDatabase {
-    if (s.includes('.')) {
-      const parts = splitRest(s, '.', 2)
-      const base = parts[0]
-      const rest = parts[1]
-      return this.databases.get(base).getDatabase(rest)
+      return format.replace(/\{(([^{%]+)(%([^{%]+))?)}/g, (_m, _g1, key: string, _g3, f) => {
+        if (record[key] == null) return 'none'
+        if (f === '*us') {
+          return Sugar.Date.format(Sugar.Date.create((record[key] as number) / 1e3), '{yyyy}-{MM}-{dd}-{HH}:{mm}')
+        }
+        return this.fields.get(key).getType().format(record[key])
+      })
     }
-
-    return this.databases.get(s)
   }
 
-  getParameterManager() {
-    return XDatabaseParameterManager
-  }
+  databases.values.forEach((d) => (d.parent = database))
+  fields.values.forEach((f) => (f.database = database))
+  blobs.values.forEach((b) => (b.database = database))
 
-  getPath(): Array<XGroup | XDatabase> {
-    const path: Array<XGroup | XDatabase> = []
-    if (this.parent) path.push(...this.parent.getPath())
-    path.push(this)
-
-    return path
-  }
-
-  getNamePath(): string {
-    return this.getPath()
-      .map((v) => v.name)
-      .join('.')
-  }
-
-  getLabelPath(): string {
-    return this.getPath()
-      .map((v) => v.label)
-      .join(' ')
-  }
-
-  formatRecord(record: XRecord, format = this.format) {
-    if (!format) {
-      format = ''
-      this.fields.values.filter((f) => f.key).forEach((field) => (format += ' {' + field.name + '}'))
-      format = format.trim()
-    }
-
-    return format.replace(/\{(([^{%]+)(%([^{%]+))?)}/g, (_m, _g1, key: string, _g3, f) => {
-      if (record[key] == null) return 'none'
-      if (f === '*us')
-        return Sugar.Date.format(Sugar.Date.create((record[key] as number) / 1e3), '{yyyy}-{MM}-{dd}-{HH}:{mm}')
-      return this.fields.get(key).getType().format(record[key])
-    })
-  }
+  return database
 }
 
 interface XFieldInterfaceExt extends XFieldInterface {
@@ -387,82 +321,34 @@ interface XFieldInterfaceExt extends XFieldInterface {
   files: Record<string, unknown>
 }
 
-export class XField extends XElement<XFieldParameter<unknown>> implements XFieldInterface {
-  database_id: number
-  field_id: number
-  ref?: string
-  ord: number
-  name: string
-  label: string
-  type: string
-  key: boolean
-  nul: boolean
-  options?: unknown[]
-  strict: boolean
-  lock: boolean
-  any: boolean
-  format?: string
-  meas?: string
-  unit?: string
-  desc?: string
-  def?: string
-
-  objects: Record<string, unknown>
-  files: Record<string, unknown>
-
+export interface XField extends XFieldInterfaceExt, XElement {
+  [FIELD_SYMBOL]: true
   database?: XDatabase
+  getType(): XType<unknown>
+}
 
-  constructor(obj: Record<string, unknown>) {
-    super()
-
-    if (!trustIs<XFieldInterfaceExt>(obj)) throw Error(`invalid field: ${obj}`)
-
-    this.database_id = obj.database_id
-    this.field_id = obj.database_id
-    this.ref = obj.ref
-    this.ord = obj.ord
-    this.name = obj.name
-    this.label = obj.label
-    this.type = obj.type
-    this.key = obj.key
-    this.nul = obj.nul
-    this.options = obj.options
-    this.strict = obj.strict
-    this.lock = obj.lock
-    this.any = obj.any
-    this.format = obj.format
-    this.meas = obj.meas
-    this.unit = obj.unit
-    this.desc = obj.desc
-    this.def = obj.def
-
-    this.objects = obj.objects
-    this.files = obj.files
+export const toFields = (objs: XFieldInterfaceExt[]): XField[] => objs.map((f) => toField(f))
+export const toField = (obj: XFieldInterfaceExt): XField => {
+  const field: XField = {
+    [FIELD_SYMBOL]: true,
+    ...obj,
+    getId() {
+      return this.field_id
+    },
+    getName() {
+      return this.name
+    },
+    getLabel() {
+      return this.label
+    },
+    getSpecifier() {
+      return this.name
+    },
+    getType() {
+      return XTypes.of(this.type)
+    }
   }
-
-  getId() {
-    return this.field_id
-  }
-
-  getName() {
-    return this.name
-  }
-
-  getLabel() {
-    return this.label
-  }
-
-  getType() {
-    return XTypes.of(this.type)
-  }
-
-  getSpecifier() {
-    return this.name
-  }
-
-  getParameterManager() {
-    return XFieldParameterManager
-  }
+  return field
 }
 
 interface XBlobInterfaceExt extends XBlobInterface {
@@ -470,58 +356,30 @@ interface XBlobInterfaceExt extends XBlobInterface {
   files: Record<string, unknown>
 }
 
-export class XBlob extends XElement<XBlobParameter<unknown>> implements XBlobInterface {
-  database_id: number
-  blob_id: number
-  ord: number
-  name: string
-  label: string
-  nul: boolean
-  lock: boolean
-  desc?: string
-
+export interface XBlob extends XBlobInterfaceExt, XElement {
+  [BLOB_SYMBOL]: true
   database?: XDatabase
+}
 
-  objects: Record<string, unknown>
-  files: Record<string, unknown>
-
-  constructor(obj: Record<string, unknown>) {
-    super()
-
-    if (!trustIs<XBlobInterfaceExt>(obj)) throw Error(`invalid blob: ${obj}`)
-
-    this.database_id = obj.database_id
-    this.blob_id = obj.blob_id
-    this.ord = obj.ord
-    this.name = obj.name
-    this.label = obj.label
-    this.nul = obj.nul
-    this.lock = obj.lock
-    this.desc = obj.desc
-
-    this.objects = obj.objects
-    this.files = obj.files
+export const toBlobs = (objs: XBlobInterfaceExt[]): XBlob[] => objs.map((b) => toBlob(b))
+export const toBlob = (obj: XBlobInterfaceExt): XBlob => {
+  const blob: XBlob = {
+    [BLOB_SYMBOL]: true,
+    ...obj,
+    getId() {
+      return this.blob_id
+    },
+    getName() {
+      return this.name
+    },
+    getLabel() {
+      return this.label
+    },
+    getSpecifier() {
+      return this.name
+    }
   }
-
-  getId() {
-    return this.blob_id
-  }
-
-  getName() {
-    return this.name
-  }
-
-  getLabel() {
-    return this.label
-  }
-
-  getSpecifier() {
-    return this.name
-  }
-
-  getParameterManager() {
-    return XBlobParameterManager
-  }
+  return blob
 }
 
 interface XTeamInterfaceExt extends XTeamInterface {
@@ -535,64 +393,198 @@ interface XTeamInterfaceExt extends XTeamInterface {
   databases: Record<number, Record<string, boolean>>
 }
 
-export class XTeam extends XElement<XTeamParameter<unknown>> implements XTeamInterfaceExt {
-  team_id: number
-  name: string
-  label: string
-  priority: number
-  group_privileges: unknown[]
-  database_privileges: unknown[]
-  desc?: string
+export interface XTeam extends XTeamInterfaceExt, XElement {
+  [TEAM_SYMBOL]: true
+  groupPrivileges: Partial<Record<string, boolean>>
+  databasePrivileges: Partial<Record<string, boolean>>
+  getGroupPrivileges(g: XGroup | number): Partial<Record<string, boolean>>
+  getDatabasePrivileges(d: XDatabase | number): Partial<Record<string, boolean>>
+}
 
-  objects: Record<string, unknown>
-  files: Record<string, unknown>
+export const toTeams = (objs: XTeamInterfaceExt[]): XTeam[] => objs.map((t) => toTeam(t))
+export const toTeam = (obj: XTeamInterfaceExt): XTeam => {
+  const groupPrivileges: Partial<Record<string, boolean>> = {}
+  const databasePrivileges: Partial<Record<string, boolean>> = {}
 
-  admins: number[]
-  users: number[]
+  obj.group_privileges.forEach((p) => (groupPrivileges[String(p)] = true))
+  obj.database_privileges.forEach((p) => (databasePrivileges[String(p)] = true))
 
-  groups: Record<number, Record<string, boolean>>
-  databases: Record<number, Record<string, boolean>>
+  return {
+    [TEAM_SYMBOL]: true,
+    ...obj,
+    groupPrivileges,
+    databasePrivileges,
+    getId() {
+      return this.team_id
+    },
+    getName() {
+      return this.name
+    },
+    getLabel() {
+      return this.label
+    },
+    getSpecifier() {
+      return this.name
+    },
+    getGroupPrivileges(g: XGroup | number) {
+      const id = isGroup(g) ? g.getId() : g
 
-  constructor(obj: Record<string, unknown>) {
-    super()
+      if (!this.groups[id]) return {}
 
-    if (!trustIs<XTeamInterfaceExt>(obj)) throw Error(`invalid team: ${obj}`)
+      const base = { ...this.groupPrivileges }
+      const overrides = this.groups[id]
 
-    this.team_id = obj.team_id
-    this.name = obj.name
-    this.label = obj.label
-    this.priority = obj.priority
-    this.group_privileges = obj.group_privileges
-    this.database_privileges = obj.database_privileges
-    this.desc = obj.desc
+      XGroupPrivilege.values.forEach((p) => {
+        const override = overrides[p.name]
+        if (override == null) return
+        base[p.name] = override
+      })
 
-    this.objects = obj.objects
-    this.files = obj.files
+      return base
+    },
+    getDatabasePrivileges(d: XDatabase | number) {
+      const id = isDatabase(d) ? d.getId() : d
 
-    this.admins = obj.admins
-    this.users = obj.users
+      if (!this.databases[id]) return {}
 
-    this.groups = obj.groups
-    this.databases = obj.databases
+      const base = { ...this.databasePrivileges }
+      const overrides = this.databases[id]
+
+      XDatabasePrivilege.values.forEach((p) => {
+        const override = overrides[p.name]
+        if (override == null) return
+        base[p.name] = override
+      })
+
+      return base
+    }
   }
+}
 
-  getId(): number {
-    return this.team_id
+export interface XUser extends XUserInterface, XElement {
+  [USER_SYMBOL]: true
+  fullName: string
+  groupPrivileges: Partial<Record<number, Partial<Record<string, boolean>>>>
+  databasePrivileges: Partial<Record<number, Partial<Record<string, boolean>>>>
+  teamGroupPrivileges: Partial<Record<number, Partial<Record<string, boolean>>>>
+  teamDatabasePrivileges: Partial<Record<number, Partial<Record<string, boolean>>>>
+  hasGroupPrivilege(priv: XGroupPrivilege): { on: (g: XGroup) => boolean; in: (gs: XGroup[]) => XGroup[] }
+  hasDatabasePrivilege(priv: XDatabasePrivilege): {
+    on: (d: XDatabase) => boolean
+    in: (ds: XDatabase[]) => XDatabase[]
   }
+  setGroupPrivileges(privs: XPrivGroupInterface[]): this
+  setDatabasePrivileges(privs: XPrivDatabaseInterface[]): this
+  refreshTeamPrivileges(teams: XTeam[]): this
+}
 
-  getName(): string {
-    return this.name
-  }
+export const toUsers = (objs: XUserInterface[]): XUser[] => objs.map((u) => toUser(u))
+export const toUser = (obj: XUserInterface): XUser => {
+  const first = fixCase(obj.first)
+  const last = fixCase(obj.last)
 
-  getLabel(): string {
-    return this.label
-  }
+  const user: XUser = {
+    [USER_SYMBOL]: true,
+    ...obj,
+    first,
+    last,
+    fullName: `${first} ${last}`,
+    groupPrivileges: {},
+    databasePrivileges: {},
+    teamGroupPrivileges: {},
+    teamDatabasePrivileges: {},
+    getId() {
+      return this.user_id
+    },
+    getName() {
+      return this.username
+    },
+    getLabel() {
+      return this.fullName
+    },
+    getSpecifier() {
+      return this.username
+    },
+    hasGroupPrivilege(p: XGroupPrivilege): { on: (g: XGroup) => boolean; in: (gs: XGroup[]) => XGroup[] } {
+      const onFn = (g: XGroup | number): boolean => {
+        if (this.super) return true
+        const id = isGroup(g) ? g.getId() : g
+        return !!(this.groupPrivileges[id]?.[p.name] || this.teamGroupPrivileges[id]?.[p.name])
+      }
 
-  getSpecifier() {
-    return this.name
-  }
+      const inFn = (gs: XGroup[]): XGroup[] => {
+        if (this.super) return [...gs]
+        return gs.filter((g) => onFn(g))
+      }
 
-  getParameterManager() {
-    return XTeamParameterManager
+      return {
+        on: onFn,
+        in: inFn
+      }
+    },
+    hasDatabasePrivilege(p: XDatabasePrivilege): {
+      on: (d: XDatabase) => boolean
+      in: (ds: XDatabase[]) => XDatabase[]
+    } {
+      const onFn = (d: XDatabase | number): boolean => {
+        if (this.super) return true
+        const id = isDatabase(d) ? d.getId() : d
+        return !!(this.databasePrivileges[id]?.[p.name] || this.teamDatabasePrivileges[id]?.[p.name])
+      }
+
+      const inFn = (ds: XDatabase[]): XDatabase[] => {
+        if (this.super) return [...ds]
+        return ds.filter((d) => onFn(d))
+      }
+
+      return {
+        on: onFn,
+        in: inFn
+      }
+    },
+    setGroupPrivileges(ps: XPrivGroupInterface[]) {
+      this.groupPrivileges = {}
+      ps.forEach((p) => (this.groupPrivileges[p.group_id] = p as unknown as Partial<Record<string, boolean>>))
+      return this
+    },
+    setDatabasePrivileges(ps: XPrivDatabaseInterface[]) {
+      this.databasePrivileges = {}
+      ps.forEach((p) => (this.databasePrivileges[p.database_id] = p as unknown as Partial<Record<string, boolean>>))
+      return this
+    },
+    refreshTeamPrivileges(teams: XTeam[]) {
+      this.teamGroupPrivileges = {}
+      this.teamDatabasePrivileges = {}
+
+      teams.forEach((team) => {
+        if (!team.users.includes(this.user_id)) return
+
+        for (const idstr of Object.keys(team.groups)) {
+          const id = Number(idstr)
+          const base = (this.teamGroupPrivileges[id] = this.teamGroupPrivileges[id] || {})
+          const privs = team.getGroupPrivileges(id)
+          XGroupPrivilege.values.forEach((p) => (base[p.name] = base[p.name] || privs[p.name]))
+        }
+
+        for (const idstr of Object.keys(team.databases)) {
+          const id = Number(idstr)
+          const base = (this.teamDatabasePrivileges[id] = this.teamDatabasePrivileges[id] || {})
+          const privs = team.getDatabasePrivileges(id)
+          XDatabasePrivilege.values.forEach((p) => (base[p.name] = base[p.name] || privs[p.name]))
+        }
+      })
+
+      return this
+    }
   }
+  return user
+}
+
+function fixCase(s?: string) {
+  if (!s) return s
+  s = s.trim()
+
+  if (!s.match(/^[a-z\-\s]+$/) && !s.match(/^[A-Z\-\s]+$/)) return s
+
+  return Sugar.String.capitalize(s, true)
 }

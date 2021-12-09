@@ -1,14 +1,9 @@
-const GROUP_SYMBOL = Symbol('group')
-const DATABSE_SYMBOL = Symbol('database')
-
-export class XPrivilege {
-  type: symbol
+abstract class XPrivilege {
   name: string
   category: string
   color: string
 
-  constructor(type: symbol, name: string, category: string) {
-    this.type = type
+  constructor(name: string, category: string) {
     this.name = name
     this.category = category
 
@@ -28,54 +23,54 @@ export class XPrivilege {
   }
 
   isGroup() {
-    return this.type === GROUP_SYMBOL
+    return false
   }
 
   isDatabase() {
-    return this.type === DATABSE_SYMBOL
+    return false
   }
 }
 
-function group(name: string, category: string) {
-  return new XPrivilege(GROUP_SYMBOL, name, category)
+export class XGroupPrivilege extends XPrivilege {
+  private constructor(name: string, category: string) {
+    super(name, category)
+    XGroupPrivilege.values.push(this)
+  }
+
+  isGroup() {
+    return true
+  }
+
+  static readonly values: XGroupPrivilege[] = []
+
+  static readonly SELECT = new XGroupPrivilege('select', 'read')
+  static readonly REPLY = new XGroupPrivilege('reply', 'wall')
+  static readonly POST = new XGroupPrivilege('post', 'wall')
+  static readonly ALTER = new XGroupPrivilege('alter', 'admin')
+  static readonly GRANT = new XGroupPrivilege('grant', 'admin')
 }
 
-function database(name: string, category: string) {
-  return new XPrivilege(DATABSE_SYMBOL, name, category)
+export class XDatabasePrivilege extends XPrivilege {
+  private constructor(name: string, category: string) {
+    super(name, category)
+    XDatabasePrivilege.values.push(this)
+  }
+
+  isDatabase() {
+    return true
+  }
+
+  static readonly values: XDatabasePrivilege[] = []
+
+  static readonly SELECT = new XDatabasePrivilege('select', 'read')
+  static readonly REPLY = new XDatabasePrivilege('reply', 'wall')
+  static readonly POST = new XDatabasePrivilege('post', 'wall')
+  static readonly UPDATE = new XDatabasePrivilege('update', 'write')
+  static readonly SIGN = new XDatabasePrivilege('sign', 'write')
+  static readonly INSERT = new XDatabasePrivilege('insert', 'write')
+  static readonly TRASH = new XDatabasePrivilege('trash', 'delete')
+  static readonly DELETE = new XDatabasePrivilege('delete', 'delete')
+  static readonly LOCK = new XDatabasePrivilege('lock', 'admin')
+  static readonly ALTER = new XDatabasePrivilege('alter', 'admin')
+  static readonly GRANT = new XDatabasePrivilege('grant', 'admin')
 }
-
-export const XDatabasePrivilege = Object.freeze({
-  SELECT: database('select', 'read'),
-  REPLY: database('reply', 'wall'),
-  POST: database('post', 'wall'),
-  UPDATE: database('update', 'write'),
-  SIGN: database('sign', 'write'),
-  INSERT: database('insert', 'write'),
-  TRASH: database('trash', 'delete'),
-  DELETE: database('delete', 'delete'),
-  LOCK: database('lock', 'admin'),
-  ALTER: database('alter', 'admin'),
-  GRANT: database('grant', 'admin')
-})
-
-export const XDatabasePrivileges = [
-  XDatabasePrivilege.SELECT,
-  XDatabasePrivilege.REPLY,
-  XDatabasePrivilege.POST,
-  XDatabasePrivilege.UPDATE,
-  XDatabasePrivilege.SIGN,
-  XDatabasePrivilege.INSERT,
-  XDatabasePrivilege.TRASH,
-  XDatabasePrivilege.DELETE,
-  XDatabasePrivilege.LOCK,
-  XDatabasePrivilege.ALTER,
-  XDatabasePrivilege.GRANT
-]
-
-export const XGroupPrivilege = Object.freeze({
-  SELECT: group('select', 'read'),
-  REPLY: group('reply', 'wall'),
-  POST: group('post', 'wall'),
-  ALTER: group('alter', 'admin'),
-  GRANT: group('grant', 'admin')
-})

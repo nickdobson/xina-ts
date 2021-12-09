@@ -1,4 +1,4 @@
-import { XDatabase } from '../element'
+import { XDatabase, isDatabase } from '../element'
 import { XSystemTable, XDatabaseTable, XDatabaseTableName, XSystemTableName } from '../table'
 import { isSimpleObject, checkOptionalString } from '../util'
 import { XApiContext, XApiComponent, toIdentifier, toSpecifier } from './api'
@@ -27,7 +27,7 @@ export type XSourceable = XSystemTable | XSelect | XSource | XDatabase
 
 export function toSource(v: XSourceable): XSource {
   if (v instanceof XSource) return v
-  if (v instanceof XDatabase) return XDatabaseTableSource.of(v, XDatabaseTable.RECORD)
+  if (isDatabase(v)) return XDatabaseTableSource.of(v, XDatabaseTable.RECORD)
   if (v instanceof XSelect) return XSelectSource.of(v)
   if (v instanceof XSystemTable) return XSystemTableSource.of(v)
 
