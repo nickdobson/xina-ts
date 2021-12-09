@@ -1,7 +1,6 @@
 import Sugar from 'sugar'
-import { isDatabase } from '..'
 import { XAttribute } from '../attribute'
-import { XField, XDatabase, isField } from '../element'
+import { XField, XDatabase, isDatabase, isField } from '../element'
 import { XParameter } from '../parameter'
 import { XSystemTable, XDatabaseTable, XDatabaseTableName, XSystemTableName } from '../table'
 import {
