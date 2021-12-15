@@ -1,6 +1,6 @@
 {
   "name": "xina-ts",
-  "version": "0.1.1",
+  "version": "0.3.1",
   "description": "Boilerplate for TypeScript projects (Node.js and browser modules)",
   "author": "Nick Dobson",
   "repository": "https://github.com/nickdobson/xina-ts",
