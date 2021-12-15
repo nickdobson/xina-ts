@@ -1,7 +1,7 @@
 import { XSelect } from '../select'
 import { XAction } from './action'
 
-export default class XIfAction extends XAction {
+export class XIfAction extends XAction {
   cases: { condition: XSelect; action: XAction }[] = []
   els?: XAction
 

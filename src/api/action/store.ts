@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export default class XStoreAction extends XAction {
+export class XStoreAction extends XAction {
   name?: string
   key?: string
   type?: string
@@ -34,7 +34,7 @@ export default class XStoreAction extends XAction {
   setDesc(desc: string) {
     this.desc = desc
     return this
-  } 
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   buildRest(_pretty: boolean): Record<string, unknown> {

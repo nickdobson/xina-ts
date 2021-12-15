@@ -1,28 +1,41 @@
 import Sugar from 'sugar'
-import { XAttribute } from '../attribute'
-import { XField, XDatabase, isDatabase, isField } from '../element'
-import { XParameter } from '../parameter'
-import { XSystemTable, XDatabaseTable, XDatabaseTableName, XSystemTableName } from '../table'
+
 import {
-  checkOptionalString,
-  checkString,
-  isArray,
+  XApiContext,
   isNumber,
-  ISO8601_DATE,
+  isString,
+  isSimpleObject,
+  XExpressionTypeName,
+  XSelect,
+  XField,
+  XParameter,
+  XAttribute,
+  isField,
+  XDatabaseTable,
+  XApiComponent,
+  XExpressionType,
+  XUnaryOperator,
+  XBinaryOperator,
+  XResultColumn,
   ISO8601_DATETIME,
   ISO8601_LOCALDATETIME,
-  isSimpleObject,
-  isString
-} from '../util'
-import { XApiContext, XApiComponent, toIdentifier, toSpecifier } from './api'
-import { XBinaryOperator } from './binary-operator'
-import { XCompoundOperator } from './compound-operator'
-import { XExpressionType, XExpressionTypeName } from './expression-type'
-import { parseOptionalOrderTerms, XOrderTerm } from './order-term'
-import { XResultColumn } from './result-column'
-import { XSearchOperator } from './search-operator'
-import { XSelect, parseSelect } from './select'
-import { XUnaryOperator } from './unary-operator'
+  isArray,
+  XDatabase,
+  XSystemTable,
+  XSystemTableName,
+  XDatabaseTableName,
+  isDatabase,
+  checkString,
+  toIdentifier,
+  toSpecifier,
+  XCompoundOperator,
+  XOrderTerm,
+  checkOptionalString,
+  parseOptionalOrderTerms,
+  parseSelect,
+  XSearchOperator,
+  ISO8601_DATE
+} from '..'
 
 export function parseExpression(e: unknown, context: XApiContext) {
   if (e === false) return XNumberLiteral.FALSE

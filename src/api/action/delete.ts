@@ -1,6 +1,6 @@
 import { XRecordsActionBase } from './action'
 
-export default class XDeleteAction extends XRecordsActionBase {
+export class XDeleteAction extends XRecordsActionBase {
   getAction() {
     return 'delete'
   }

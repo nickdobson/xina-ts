@@ -1,7 +1,7 @@
 import { XSelect } from '../select'
 import { XAction } from './action'
 
-export default class XSelectAction extends XAction {
+export class XSelectAction extends XAction {
   select?: XSelect
   useStrings = false
 

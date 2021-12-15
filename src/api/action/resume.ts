@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export default class XResumeAction extends XAction {
+export class XResumeAction extends XAction {
   tasks: number[] = []
   cont = false
 

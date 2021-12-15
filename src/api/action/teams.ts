@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export default class XTeamsAction extends XAction {
+export class XTeamsAction extends XAction {
   getAction() {
     return 'teams'
   }

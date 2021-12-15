@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export default class XEditAction extends XAction {
+export class XEditAction extends XAction {
   post?: number
   text?: string
   active?: boolean

@@ -1,7 +1,4 @@
-import { XDatabase } from './element'
-import { XDatabaseParameter } from './parameter'
-import { XRecord } from './record'
-import { XType, XTypes } from './type'
+import { XDatabase, XType, XDatabaseParameter, XRecord, XTypes } from '.'
 
 export function forDatabase(database: XDatabase) {
   const attrs: XRecordAttribute<unknown>[] = []

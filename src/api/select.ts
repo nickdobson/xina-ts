@@ -1,18 +1,24 @@
-import { isSimpleObject } from '../util'
-import { XApiComponent, XApiContext } from './api'
 import {
+  XApiContext,
+  isSimpleObject,
+  XApiComponent,
+  XResultColumn,
+  XSource,
   XExpression,
+  XOrderTerm,
+  XSourceable,
+  toSource,
   XExpressionable,
   toExpression,
   toOptionalExpression,
   XSelectExpression,
+  XSelectSource,
+  parseResultColumns,
+  parseOptionalSource,
   parseOptionalExpression,
-  parseOptionalExpressions
-} from './expression'
-
-import { parseOptionalOrderTerms, XOrderTerm } from './order-term'
-import { parseResultColumns, XResultColumn } from './result-column'
-import { XSource, XSourceable, toSource, XSelectSource, parseOptionalSource } from './source'
+  parseOptionalExpressions,
+  parseOptionalOrderTerms
+} from '..'
 
 export function parseSelect(select: unknown, ctx: XApiContext) {
   if (!isSimpleObject(select)) throw Error(`invalid select: ${select}`)

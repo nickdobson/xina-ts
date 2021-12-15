@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export default class XVersionAction extends XAction {
+export class XVersionAction extends XAction {
   getAction() {
     return 'version'
   }

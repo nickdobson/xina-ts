@@ -1,5 +1,5 @@
 import { XRecordsActionBase } from './action'
-export default class XTrashAction extends XRecordsActionBase {
+export class XTrashAction extends XRecordsActionBase {
   getAction() {
     return 'trash'
   }

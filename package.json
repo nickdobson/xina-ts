@@ -44,11 +44,5 @@
   "dependencies": {
     "sugar": "^2.0.6",
     "zod": "^3.11.6"
-  },
-  "prettier": {
-    "singleQuote": true,
-    "printWidth": 120,
-    "trailingComma": "none",
-    "semi": false
   }
 }

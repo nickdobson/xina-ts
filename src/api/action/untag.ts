@@ -1,6 +1,6 @@
 import { XRecordsActionBase } from './action'
 
-export default class XUntagAction extends XRecordsActionBase {
+export class XUntagAction extends XRecordsActionBase {
   tags: string[] = []
 
   getAction(): string {

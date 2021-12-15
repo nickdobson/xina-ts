@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export default class XPauseAction extends XAction {
+export class XPauseAction extends XAction {
   tasks: number[] = []
 
   getAction() {

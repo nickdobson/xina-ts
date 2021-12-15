@@ -4,7 +4,7 @@ import { toSpecifier } from '../api'
 import { XExpression } from '../expression'
 import { XAction } from './action'
 
-export default class XInsertAction extends XAction {
+export class XInsertAction extends XAction {
   database?: XDatabase
   records: Record<string, unknown>[] = []
   mode?: string
@@ -22,7 +22,7 @@ export default class XInsertAction extends XAction {
   getAction(): string {
     return 'insert'
   }
-  
+
   buildRest(pretty: boolean): Record<string, unknown> {
     const records = this.records.map((record) => {
       if (!(record.expressions && isSimpleObject(record.expressions))) return record

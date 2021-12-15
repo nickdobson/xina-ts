@@ -1,7 +1,11 @@
-
 import { XGroup, XDatabase, XTeam, isGroup, isDatabase } from '../element'
 import { isRecord, XRecord } from '../record'
 import { toSpecifier } from './api'
+
+export function toWall(v: XWall | XDatabase | XRecord | XGroup | XTeam): XWall {
+  if (v instanceof XWall) return v
+  return XWall.of(v)
+}
 
 export abstract class XWall {
   abstract build(): string

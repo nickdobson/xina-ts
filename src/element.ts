@@ -1,20 +1,23 @@
 import Sugar from 'sugar'
 
-import { isNumber, isString, splitRest } from './util'
 import {
-  XDatabaseInterface,
-  XFieldInterface,
+  isNumber,
+  isString,
   XGroupInterface,
-  XTeamInterface,
+  splitRest,
+  XDatabaseInterface,
+  XRecord,
+  XFieldInterface,
+  XType,
+  XTypes,
   XBlobInterface,
+  XTeamInterface,
+  XGroupPrivilege,
+  XDatabasePrivilege,
   XUserInterface,
   XPrivGroupInterface,
   XPrivDatabaseInterface
-} from './parameter'
-
-import { XRecord } from './record'
-import { XType, XTypes } from './type'
-import { XDatabasePrivilege, XGroupPrivilege } from './privilege'
+} from '.'
 
 const GROUP_SYMBOL = Symbol('group')
 const DATABASE_SYMBOL = Symbol('database')

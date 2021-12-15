@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export default class XCleanAction extends XAction {
+export class XCleanAction extends XAction {
   tasks: number[] = []
   ignore = false
 

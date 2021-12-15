@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export default class XMoveAction extends XAction {
+export class XMoveAction extends XAction {
   from?: Record<string, string>
   to?: Record<string, string>
 

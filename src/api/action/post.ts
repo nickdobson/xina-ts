@@ -1,7 +1,7 @@
 import { XWall } from '../wall'
 import { XAction } from './action'
 
-export default class XPostAction extends XAction {
+export class XPostAction extends XAction {
   wall?: XWall
   post?: Record<string, unknown>
   thread?: number

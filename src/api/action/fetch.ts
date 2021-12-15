@@ -1,10 +1,11 @@
-import { XDatabase } from '../../element'
-import { isRecord, XRecord } from '../../record'
-import { isNumber } from '../../util'
-import { XAction } from './action'
-import { toSpecifier } from '../api'
-import { toOptionalExpression, XExpression, XExpressionable } from '../expression'
+import Sugar from 'sugar'
+
+import { XDatabase, XRecord, isRecord, isNumber, XGroup, XTeam, XUser } from '../..'
+import { toSpecifier, toOptionalSpecifier } from '../api'
+import { XExpression, XExpressionable, toOptionalExpression } from '../expression'
 import { XOrderTerm } from '../order-term'
+import { XWall, toWall } from '../wall'
+import { XAction } from './action'
 
 abstract class XFetchAction extends XAction {
   where?: XExpression
@@ -96,7 +97,7 @@ export class XFetchLogsAction extends XFetchAction {
     return this
   }
 
-  buildFetch(pretty: boolean): Record<string, unknown> {
+  buildFetch(pretty: boolean) {
     return {
       database: toSpecifier(this.database, pretty),
       record: toSpecifier(this.record, pretty)
@@ -104,281 +105,249 @@ export class XFetchLogsAction extends XFetchAction {
   }
 }
 
-/*
-;(function () {
-  xo.api.action.fetch.creator = {
-    posts: function (posts) {
-      return new xo.api.action.fetch.Posts(posts)
-    },
-    groups: function (groups) {
-      return new xo.api.action.fetch.Groups(groups)
-    },
-    users: function (users) {
-      return new xo.api.action.fetch.Users(users)
-    },
-    tasks: function (tasks) {
-      return new xo.api.action.fetch.Tasks(tasks)
-    },
-    threads: function () {
-      return new xo.api.action.fetch.Threads()
-    },
-    notifications: function () {
-      return new xo.api.action.fetch.Notifications()
-    },
-    requests: function () {
-      return new xo.api.action.fetch.Requests()
-    },
-    subscriptions: function () {
-      return new xo.api.action.fetch.Subscriptions()
-    },
-    keys: function (user) {
-      return new xo.api.action.fetch.Keys(user)
-    }
+export class XFetchPostsAction extends XFetchAction {
+  wall?: XWall
+  following?: boolean
+  threads?: boolean
+  children?: boolean
+  text?: string
+  post?: number
+  thread?: number
+  from?: number
+  mode?: string
+
+  getFetch() {
+    return 'posts'
   }
 
-  // ---- #xo.api.action.fetch.Posts ---------------------------------------------------------------------------------
-
-  xo.api.action.fetch.Posts = class XOFetchPostsAction extends XOFetchAction {
-    constructor(posts) {
-      super()
-
-      this.posts = posts || null
-      this.wall = null
-    }
-
-    withFollowing() {
-      this.following = true
-      return this
-    }
-
-    withThreads() {
-      this.threads = true
-      return this
-    }
-
-    withChildren() {
-      this.children = true
-      return this
-    }
-
-    withText(text) {
-      this.text = text
-      return this
-    }
-
-    withThread(thread) {
-      this.thread = thread
-      return this
-    }
-
-    fromWall(wall) {
-      this.wall = wall
-      return this
-    }
-
-    fromDatabase(database) {
-      return this.fromWall(new xo.api.wall.Database(database))
-    }
-
-    fromGroup(group) {
-      return this.fromWall(new xo.api.wall.Group(group))
-    }
-
-    fromRecord(database, record) {
-      return this.fromWall(new xo.api.wall.Record(database, record))
-    }
-
-    fromUser(user) {
-      return this.fromWall(new xo.api.wall.User(user))
-    }
-
-    before(t) {
-      this.t = Date.create(t).getTime()
-      this.mode = 'before'
-      return this
-    }
-
-    after(t) {
-      this.t = Date.create(t).getTime()
-      this.mode = 'after'
-      return this
-    }
-
-    build() {
-      return Object.merge(this.buildCore(), {
-        fetch: 'posts',
-        wall: xo.api.util.build(this.wall),
-        posts: xo.util.toSpecifier(this.posts),
-        following: this.following,
-        threads: this.threads,
-        children: this.children,
-        text: this.text,
-        thread: this.thread,
-        from: this.t,
-        mode: this.mode
-      })
-    }
+  setFollowing(following = true) {
+    this.following = following
+    return this
   }
 
-  // ---- #xo.api.action.fetch.Users ---------------------------------------------------------------------------------
-
-  xo.api.action.fetch.Users = class XOFetchUsersAction extends XOFetchAction {
-    constructor(users) {
-      super()
-
-      this.users = users || null
-    }
-
-    build() {
-      return Object.merge(this.buildCore(), {
-        fetch: 'users',
-        users: xo.util.toSpecifier(this.users)
-      })
-    }
+  setThreads(threads = true) {
+    this.threads = threads
+    return this
   }
 
-  // ---- #xo.api.action.fetch.Tasks ---------------------------------------------------------------------------------
-
-  xo.api.action.fetch.Tasks = class XOFetchTasksAction extends XOFetchAction {
-    constructor(tasks) {
-      super()
-
-      this.tasks = tasks || null
-    }
-
-    withUser(user) {
-      this.user = user
-      return this
-    }
-
-    withFrom(from) {
-      this.from = from
-      return this
-    }
-
-    withAuto(auto) {
-      this.auto = auto
-      return this
-    }
-
-    withText(text) {
-      this.text = text
-      return this
-    }
-
-    build() {
-      return Object.merge(this.buildCore(), {
-        fetch: 'tasks',
-        user: this.user ? xo.util.toSpecifier(this.user) : null,
-        from: this.from,
-        auto: this.auto,
-        text: this.text,
-        tasks: this.tasks
-      })
-    }
+  setChildren(children = true) {
+    this.children = children
+    return this
   }
 
-  // ---- #xo.api.action.fetch.Threads ---------------------------------------------------------------------------------
-
-  xo.api.action.fetch.Threads = class XOFetchThreadsAction extends XOFetchAction {
-    constructor() {
-      super()
-    }
-
-    build() {
-      return Object.merge(this.buildCore(), {
-        fetch: 'threads'
-      })
-    }
+  setText(text: string) {
+    this.text = text
+    return this
   }
 
-  // ---- #xo.api.action.fetch.Notifications --------------------------------------------------------------------------
-
-  xo.api.action.fetch.Notifications = class XOFetchNotificationsAction extends XOFetchAction {
-    constructor() {
-      super()
-    }
-
-    withType(type) {
-      this.type = type
-      return this
-    }
-
-    withSeen(seen) {
-      this.seen = seen
-      return this
-    }
-
-    build() {
-      return Object.merge(this.buildCore(), {
-        fetch: 'notifications',
-        type: this.type,
-        seen: this.seen
-      })
-    }
+  setThread(thread: number) {
+    this.thread = thread
+    return this
   }
 
-  // ---- #xo.api.action.fetch.Requests -------------------------------------------------------------------------------
-
-  xo.api.action.fetch.Requests = class XOFetchRequestsAction extends XOFetchAction {
-    constructor() {
-      super()
-    }
-
-    withUser(user) {
-      this.user = user
-      return this
-    }
-
-    build() {
-      return Object.merge(this.buildCore(), {
-        fetch: 'requests',
-        user: this.user ? xo.util.toSpecifier(this.user) : null
-      })
-    }
+  setWall(wall: XWall | XDatabase | XRecord | XGroup | XTeam) {
+    this.wall = toWall(wall)
+    return this
   }
 
-  // ---- #xo.api.action.fetch.Subscriptions --------------------------------------------------------------------------
-
-  xo.api.action.fetch.Subscriptions = class XOFetchSubscriptionsAction extends XOFetchAction {
-    constructor() {
-      super()
-    }
-
-    withUser(user) {
-      this.user = user
-      return this
-    }
-
-    withTeam(team) {
-      this.team = team
-      return this
-    }
-
-    build() {
-      return Object.merge(this.buildCore(), {
-        fetch: 'subscriptions',
-        user: this.user ? xo.util.toSpecifier(this.user) : null,
-        team: this.team ? xo.util.toSpecifier(this.team) : null
-      })
-    }
+  setBefore(t: Date | string | number) {
+    this.from = Sugar.Date.create(t).getTime()
+    this.mode = 'before'
+    return this
   }
 
-  // ---- #xo.api.action.fetch.Keys --------------------------------------------------------------------------
+  setAfter(t: Date | string | number) {
+    this.from = Sugar.Date.create(t).getTime()
+    this.mode = 'after'
+    return this
+  }
 
-  xo.api.action.fetch.Keys = class XOFetchKeysAction extends XOFetchAction {
-    constructor(user) {
-      super()
-
-      this.user = user
-    }
-
-    build() {
-      return Object.merge(this.buildCore(), {
-        fetch: 'keys',
-        user: xo.util.toSpecifier(this.user)
-      })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  buildFetch(_pretty: boolean) {
+    return {
+      wall: this.wall?.build(),
+      post: this.post,
+      following: this.following,
+      threads: this.threads,
+      children: this.children,
+      text: this.text,
+      thread: this.thread,
+      from: this.from,
+      mode: this.mode
     }
   }
-})()
-*/
+}
+
+export class XFetchTasksAction extends XFetchAction {
+  user?: XUser | string | number
+  tasks: number[] = []
+  from?: number
+  auto?: boolean
+  text?: string
+
+  getFetch() {
+    return 'tasks'
+  }
+
+  setUser(user: XUser | string | number) {
+    this.user = user
+    return this
+  }
+
+  setTasks(...tasks: number[]) {
+    this.tasks = [...tasks]
+    return this
+  }
+
+  addTasks(...tasks: number[]) {
+    this.tasks.push(...tasks)
+    return this
+  }
+
+  setFrom(from: Date | string | number) {
+    this.from = Sugar.Date.create(from).getTime()
+    return this
+  }
+
+  setAuto(auto = true) {
+    this.auto = auto
+    return this
+  }
+
+  setText(text: string) {
+    this.text = text
+    return this
+  }
+
+  buildFetch(pretty: boolean): Record<string, unknown> {
+    return {
+      user: toOptionalSpecifier(this.user, pretty),
+      from: this.from,
+      auto: this.auto,
+      text: this.text,
+      tasks: this.tasks.length ? this.tasks : undefined
+    }
+  }
+}
+
+export class XFetchUsersAction extends XFetchAction {
+  users: (XUser | string | number)[] = []
+
+  getFetch() {
+    return 'users'
+  }
+
+  setUsers(...users: (XUser | string | number)[]) {
+    this.users = [...users]
+    return this
+  }
+
+  addUsers(...users: (XUser | string | number)[]) {
+    this.users.push(...users)
+    return this
+  }
+
+  buildFetch(pretty: boolean) {
+    return {
+      users: this.users.length ? this.users.map((u) => toSpecifier(u, pretty)) : undefined
+    }
+  }
+}
+
+export class XFetchThreadsAction extends XFetchAction {
+  getFetch() {
+    return 'threads'
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  buildFetch(_pretty: boolean) {
+    return {}
+  }
+}
+
+export class XFetchNotificationsAction extends XFetchAction {
+  type?: string | number
+  seen?: boolean
+
+  getFetch() {
+    return 'notifications'
+  }
+
+  setType(type: string | number) {
+    this.type = type
+    return this
+  }
+
+  setSeen(seen = true) {
+    this.seen = seen
+    return this
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  buildFetch(_pretty: boolean) {
+    return { type: this.type, seen: this.seen }
+  }
+}
+
+export class XFetchRequestsAction extends XFetchAction {
+  user?: XUser | string | number
+
+  getFetch() {
+    return 'requests'
+  }
+
+  setUser(user: XUser | string | number) {
+    this.user = user
+    return this
+  }
+
+  buildFetch(pretty: boolean) {
+    return {
+      user: toOptionalSpecifier(this.user, pretty)
+    }
+  }
+}
+
+export class XFetchSubscriptionsAction extends XFetchAction {
+  user?: XUser | string | number
+  team?: XTeam | string | number
+
+  getFetch() {
+    return 'requests'
+  }
+
+  setUser(user: XUser | string | number) {
+    this.user = user
+    return this
+  }
+
+  setTeam(team: XTeam | string | number) {
+    this.team = team
+    return this
+  }
+
+  buildFetch(pretty: boolean) {
+    return {
+      user: toOptionalSpecifier(this.user, pretty),
+      team: toOptionalSpecifier(this.team, pretty)
+    }
+  }
+}
+export class XFetchKeysAction extends XFetchAction {
+  user?: XUser | string | number
+
+  getFetch() {
+    return 'keys'
+  }
+
+  setUser(user: XUser | string | number) {
+    this.user = user
+    return this
+  }
+
+  buildFetch(pretty: boolean) {
+    return {
+      user: toSpecifier(this.user, pretty)
+    }
+  }
+}

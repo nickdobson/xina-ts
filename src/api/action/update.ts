@@ -1,7 +1,7 @@
 import { XField } from '../../element'
 import { XRecordsActionBase } from './action'
 
-export default class XUpdateAction extends XRecordsActionBase {
+export class XUpdateAction extends XRecordsActionBase {
   values: Record<string, unknown> = {}
 
   getAction(): string {

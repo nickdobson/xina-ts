@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export default class XSchemaAction extends XAction {
+export class XSchemaAction extends XAction {
   getAction() {
     return 'schema'
   }

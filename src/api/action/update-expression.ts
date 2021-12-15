@@ -2,7 +2,7 @@ import { XField } from '../../element'
 import { toExpression, XExpression, XExpressionable } from '../expression'
 import { XRecordsActionBase } from './action'
 
-export default class XUpdateExpressionAction extends XRecordsActionBase {
+export class XUpdateExpressionAction extends XRecordsActionBase {
   values: Record<string, XExpression> = {}
 
   getAction(): string {

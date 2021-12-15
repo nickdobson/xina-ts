@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export default class XDestroyAction extends XAction {
+export class XDestroyAction extends XAction {
   tasks: number[] = []
 
   getAction() {

@@ -1,6 +1,5 @@
-import { XRecordAttributeName, XRecordInterface } from './attribute'
-import { XDatabase } from './element'
-import { isNumber, trustIs } from './util'
+import { XRecordAttributeName, XDatabase, XRecordInterface, isNumber, trustIs } from "."
+
 
 const RECORD_SYMBOL = Symbol()
 
