@@ -1,18 +1,16 @@
 {
   "name": "xina-ts",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Boilerplate for TypeScript projects (Node.js and browser modules)",
   "author": "Nick Dobson",
   "repository": "https://github.com/nickdobson/xina-ts",
   "keywords": [
     "javascript",
     "typescript",
-    "xina",
-    "esbuild"
+    "xina"
   ],
-  "main": "./dist/tsc/index.js",
-  "types": "./dist/tsc/index.d.ts",
-  "browser": "./dist/esbuild/browser.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "cli": "ts-node src/cli.ts",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
@@ -21,11 +19,7 @@
     "ts-node": "ts-node",
     "docs": "typedoc --entryPoints src/index.ts",
     "generate-barrels": "barrelsby -c barrelsby.json",
-    "build": "tsc -p tsconfig.json",
-    "build-all": "yarn clean && yarn build && yarn esbuild-browser",
-    "esbuild-browser": "esbuild src/browser.ts --bundle --minify --sourcemap=external --outfile=dist/esbuild/browser.js",
-    "esbuild-browser:dev": "esbuild src/browser.ts --bundle --outfile=dist/esbuild/browser.js",
-    "esbuild-browser:watch": "esbuild src/browser.ts --bundle --watch --outfile=dist/esbuild/browser.js"
+    "build": "yarn clean && tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
