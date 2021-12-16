@@ -1,6 +1,6 @@
 {
   "name": "xina-ts",
-  "version": "0.3.3",
+  "version": "0.3.5",
   "description": "Boilerplate for TypeScript projects (Node.js and browser modules)",
   "author": "Nick Dobson",
   "repository": "https://github.com/nickdobson/xina-ts",
@@ -37,6 +37,7 @@
     "eslint": "^8.3.0",
     "jest": "^27.4.3",
     "ts-jest": "^27.0.7",
+    "ts-loader": "^9.2.6",
     "ts-node": "^10.4.0",
     "typedoc": "^0.22.10",
     "typescript": "^4.5.2"
