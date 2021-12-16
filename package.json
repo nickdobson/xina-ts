@@ -1,6 +1,6 @@
 {
   "name": "xina-ts",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Boilerplate for TypeScript projects (Node.js and browser modules)",
   "author": "Nick Dobson",
   "repository": "https://github.com/nickdobson/xina-ts",
@@ -21,7 +21,7 @@
     "ts-node": "ts-node",
     "docs": "typedoc --entryPoints src/index.ts",
     "generate-barrels": "barrelsby -c barrelsby.json",
-    "build": "yarn generate-barrels && tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
     "build-all": "yarn clean && yarn build && yarn esbuild-browser",
     "esbuild-browser": "esbuild src/browser.ts --bundle --minify --sourcemap=external --outfile=dist/esbuild/browser.js",
     "esbuild-browser:dev": "esbuild src/browser.ts --bundle --outfile=dist/esbuild/browser.js",
