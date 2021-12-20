@@ -1,4 +1,4 @@
-import { XDatabase, XType, XDatabaseParameter, XRecord, XTypes } from '.'
+import { XDatabase, XDatabaseParameter, XRecord, XType, XTypes } from './internal'
 
 export function forDatabase(database: XDatabase) {
   const attrs: XRecordAttribute<unknown>[] = []

@@ -1,5 +1,4 @@
-import { XRecordAttributeName, XDatabase, XRecordInterface, isNumber, trustIs } from "."
-
+import { isNumber, trustIs, XDatabase, XRecordAttributeName, XRecordInterface } from './internal'
 
 const RECORD_SYMBOL = Symbol()
 

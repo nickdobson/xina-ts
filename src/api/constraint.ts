@@ -1,7 +1,14 @@
-import { isSimpleObject } from '../util'
-import { XApiComponent, XApiContext } from './api'
-import { XConstraintType, XConstraintTypeName } from './constraint-type'
-import { XExpressionable, XExpression, toExpression, parseExpression } from './expression'
+import {
+  isSimpleObject,
+  parseExpression,
+  toExpression,
+  XApiComponent,
+  XApiContext,
+  XConstraintType,
+  XConstraintTypeName,
+  XExpression,
+  XExpressionable
+} from '../internal'
 
 export type XConstraintable = XConstraint | XExpressionable | string[]
 

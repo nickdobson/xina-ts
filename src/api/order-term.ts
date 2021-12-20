@@ -1,7 +1,13 @@
-import { isSimpleObject } from '../util'
-import { XApiComponent, XApiContext } from './api'
-import { XExpressionable, XExpression, toExpression, parseExpression } from './expression'
-import { XOrderType } from './order-type'
+import {
+  isSimpleObject,
+  parseExpression,
+  toExpression,
+  XApiComponent,
+  XApiContext,
+  XExpression,
+  XExpressionable,
+  XOrderType
+} from '../internal'
 
 export function parseOrderTerm(t: unknown, ctx: XApiContext) {
   if (!isSimpleObject(t)) throw Error(`invalid order term: ${t}`)

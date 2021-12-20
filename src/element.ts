@@ -3,21 +3,21 @@ import Sugar from 'sugar'
 import {
   isNumber,
   isString,
-  XGroupInterface,
   splitRest,
+  XBlobInterface,
   XDatabaseInterface,
-  XRecord,
+  XDatabasePrivilege,
   XFieldInterface,
+  XGroupInterface,
+  XGroupPrivilege,
+  XPrivDatabaseInterface,
+  XPrivGroupInterface,
+  XRecord,
+  XTeamInterface,
   XType,
   XTypes,
-  XBlobInterface,
-  XTeamInterface,
-  XGroupPrivilege,
-  XDatabasePrivilege,
-  XUserInterface,
-  XPrivGroupInterface,
-  XPrivDatabaseInterface
-} from '.'
+  XUserInterface
+} from './internal'
 
 const GROUP_SYMBOL = Symbol('group')
 const DATABASE_SYMBOL = Symbol('database')

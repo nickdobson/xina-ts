@@ -1,6 +1,13 @@
-import { checkOptionalString, isSimpleObject } from '../util'
-import { XApiComponent, XApiContext } from './api'
-import { XExpressionable, XExpression, toExpression, parseExpression } from './expression'
+import {
+  checkOptionalString,
+  isSimpleObject,
+  parseExpression,
+  toExpression,
+  XApiComponent,
+  XApiContext,
+  XExpression,
+  XExpressionable
+} from '../internal'
 
 export type XResultColumnable = XResultColumn | XExpressionable
 

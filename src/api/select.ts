@@ -1,24 +1,24 @@
 import {
-  XApiContext,
   isSimpleObject,
-  XApiComponent,
-  XResultColumn,
-  XSource,
-  XExpression,
-  XOrderTerm,
-  XSourceable,
-  toSource,
-  XExpressionable,
-  toExpression,
-  toOptionalExpression,
-  XSelectExpression,
-  XSelectSource,
-  parseResultColumns,
-  parseOptionalSource,
   parseOptionalExpression,
   parseOptionalExpressions,
-  parseOptionalOrderTerms
-} from '..'
+  parseOptionalOrderTerms,
+  parseOptionalSource,
+  parseResultColumns,
+  toExpression,
+  toOptionalExpression,
+  toSource,
+  XApiComponent,
+  XApiContext,
+  XExpression,
+  XExpressionable,
+  XOrderTerm,
+  XResultColumn,
+  XSelectExpression,
+  XSelectSource,
+  XSource,
+  XSourceable
+} from '../internal'
 
 export function parseSelect(select: unknown, ctx: XApiContext) {
   if (!isSimpleObject(select)) throw Error(`invalid select: ${select}`)

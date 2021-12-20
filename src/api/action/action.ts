@@ -15,7 +15,6 @@ export abstract class XRecordsActionBase extends XAction {
   database?: XDatabase | string | number
   records: XRecordsSpecifier = []
 
-  abstract getAction(): string
   abstract buildRestRest(pretty: boolean): Record<string, unknown>
 
   setDatabase(database: XDatabase) {

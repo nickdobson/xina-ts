@@ -1,12 +1,27 @@
-import { XDatabase, isDatabase } from '../element'
-import { XSystemTable, XDatabaseTable, XDatabaseTableName, XSystemTableName } from '../table'
-import { isSimpleObject, checkOptionalString } from '../util'
-import { XApiContext, XApiComponent, toIdentifier, toSpecifier } from './api'
-import { parseConstraint, XConstraint, XOnConstraint, XUsingConstraint } from './constraint'
-import { XExpressionable } from './expression'
-import { XJoinOperator } from './join-operator'
-import { XSelect, parseSelect } from './select'
-import { XSourceTypeName, XSourceType } from './source-type'
+import {
+  XDatabase,
+  isDatabase,
+  checkOptionalString,
+  isSimpleObject,
+  parseConstraint,
+  parseSelect,
+  toIdentifier,
+  toSpecifier,
+  XApiComponent,
+  XApiContext,
+  XConstraint,
+  XDatabaseTable,
+  XDatabaseTableName,
+  XExpressionable,
+  XJoinOperator,
+  XOnConstraint,
+  XSelect,
+  XSourceType,
+  XSourceTypeName,
+  XSystemTable,
+  XSystemTableName,
+  XUsingConstraint
+} from '../internal'
 
 export function parseSources(sources: unknown, context: XApiContext) {
   if (!(sources instanceof Array)) throw Error('sources must be an array')

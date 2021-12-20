@@ -1,56 +1,47 @@
+import { XAlterUserObjectsAction } from './action/alter'
+import { XCancelAction } from './action/cancel'
+import { XCleanAction } from './action/clean'
+import { XDeleteAction } from './action/delete'
+import { XDestroyAction } from './action/destroy'
+import { XEditAction } from './action/edit'
 import {
-  toExpression,
-  XAliasExpression,
-  toSource,
-  XExpressionable,
-  XOrderTerm,
-  XSelect,
-  XAlterUserObjectsAction,
-  XCancelAction,
-  XCleanAction,
-  XDeleteAction,
-  XDestroyAction,
-  XEditAction,
   XFetchRecordsAction,
   XFetchLogsAction,
-  XGrantSuperAction,
-  XGrantDatabasesAction,
-  XIfAction,
-  XInsertAction,
-  XLinkAction,
-  XGrantGroupsAction,
-  XMoveAction,
-  XPauseAction,
-  XPostAction,
-  XResumeAction,
-  XRevokeGroupsAction,
-  XRevokeSuperAction,
-  XRevokeDatabasesAction,
-  XRunAction,
-  XSelectAction,
-  XStoreAction,
-  XTagAction,
-  XTeamsAction,
-  XTrashAction,
-  XUnlinkAction,
-  XUntagAction,
-  XUpdateAction,
-  XUpdateExpressionAction,
-  XVersionAction,
-  XViewTasksAction,
-  XViewNotificationsAction,
-  XJoinGroupsAction,
-  XJoinDatabasesAction,
-  XJoinUsersAction,
-  XLeaveDatabasesAction,
-  XLeaveGroupsAction,
-  XLeaveUsersAction,
-  XFetchKeysAction,
-  XFetchNotificationsAction,
+  XFetchTasksAction,
   XFetchRequestsAction,
+  XFetchNotificationsAction,
   XFetchSubscriptionsAction,
-  XFetchTasksAction
-} from '..'
+  XFetchKeysAction,
+  XFetchUsersAction,
+  XFetchThreadsAction
+} from './action/fetch'
+import { XGrantSuperAction, XGrantGroupsAction, XGrantDatabasesAction } from './action/grant'
+import { XIfAction } from './action/if'
+import { XInsertAction } from './action/insert'
+import { XJoinDatabasesAction, XJoinGroupsAction, XJoinUsersAction } from './action/join'
+import { XLeaveDatabasesAction, XLeaveGroupsAction, XLeaveUsersAction } from './action/leave'
+import { XLinkAction } from './action/link'
+import { XMoveAction } from './action/move'
+import { XPauseAction } from './action/pause'
+import { XPostAction } from './action/post'
+import { XResumeAction } from './action/resume'
+import { XRevokeSuperAction, XRevokeGroupsAction, XRevokeDatabasesAction } from './action/revoke'
+import { XRunAction } from './action/run'
+import { XSelectAction } from './action/select'
+import { XStoreAction } from './action/store'
+import { XTagAction } from './action/tag'
+import { XTeamsAction } from './action/teams'
+import { XTrashAction } from './action/trash'
+import { XUnlinkAction } from './action/unlink'
+import { XUntagAction } from './action/untag'
+import { XUpdateAction } from './action/update'
+import { XUpdateExpressionAction } from './action/update-expression'
+import { XVersionAction } from './action/version'
+import { XViewNotificationsAction, XViewTasksAction } from './action/view'
+import { toExpression, XAliasExpression, XExpressionable } from './expression'
+import { XOrderTerm } from './order-term'
+import { XSelect } from './select'
+import { toSource } from './source'
 
 export const xapi = {
   expr: toExpression,
@@ -72,13 +63,15 @@ export const xapi = {
     destroy: () => new XDestroyAction(),
     edit: () => new XEditAction(),
     fetch: {
-      records: () => new XFetchRecordsAction(),
+      keys: () => new XFetchKeysAction(),
       logs: () => new XFetchLogsAction(),
-      tasks: () => new XFetchTasksAction(),
-      requests: () => new XFetchRequestsAction(),
       notifications: () => new XFetchNotificationsAction(),
+      records: () => new XFetchRecordsAction(),
+      requests: () => new XFetchRequestsAction(),
       subscriptions: () => new XFetchSubscriptionsAction(),
-      keys: () => new XFetchKeysAction()
+      tasks: () => new XFetchTasksAction(),
+      threads: () => new XFetchThreadsAction(),
+      users: () => new XFetchUsersAction()
     } as const,
     grant: {
       super: () => new XGrantSuperAction(),
