@@ -1,5 +1,7 @@
 import Sugar from 'sugar'
 
+import type { XSelectResponse } from '.'
+
 export const ISO8601_DATE = '{yyyy}-{MM}-{dd}'
 export const ISO8601_LOCALDATETIME = `${ISO8601_DATE}T{HH}:{mm}:{ss}.{SSS}`
 export const ISO8601_DATETIME = `${ISO8601_LOCALDATETIME}{Z}`
@@ -197,16 +199,13 @@ export function assertNonEmptyArray<T>(arr: T[], name = 'value'): T[] {
   return arr
 }
 
-export function mapResultSet(rs: Record<string, unknown>) {
-  const header = rs.header as { name: string }[]
-  const rows = rs.rows as unknown[][]
-
-  return rows.map((row) => {
+export function mapResultSet<T>(rs: XSelectResponse) {
+  return rs.rows.map((row) => {
     const obj: Record<string, unknown> = {}
-    header.forEach((col, i) => {
+    rs.header.forEach((col, i) => {
       if (row[i] !== null) obj[col.name] = row[i]
     })
-    return obj
+    return obj as T
   })
 }
 

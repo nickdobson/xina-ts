@@ -1,6 +1,13 @@
 import { XSelect } from '../select'
 import { XAction } from './action'
 
+export type XSelectResponse = {
+  header: {
+    name: string
+    type: string
+  }[]
+  rows: unknown[][]
+}
 export class XSelectAction extends XAction {
   select?: XSelect
   useStrings = false

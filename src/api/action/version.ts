@@ -1,5 +1,12 @@
 import { XAction } from './action'
 
+export type XVersionResponse = {
+  server: string
+  host: string
+  schema: number
+  team: number
+}
+
 export class XVersionAction extends XAction {
   getAction() {
     return 'version'

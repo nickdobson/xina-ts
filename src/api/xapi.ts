@@ -27,6 +27,7 @@ import { XPostAction } from './action/post'
 import { XResumeAction } from './action/resume'
 import { XRevokeSuperAction, XRevokeGroupsAction, XRevokeDatabasesAction } from './action/revoke'
 import { XRunAction } from './action/run'
+import { XSchemaAction } from './action/schema'
 import { XSelectAction } from './action/select'
 import { XStoreAction } from './action/store'
 import { XTagAction } from './action/tag'
@@ -101,6 +102,7 @@ export const xapi = {
       databases: () => new XRevokeDatabasesAction()
     } as const,
     run: () => new XRunAction(),
+    schema: () => new XSchemaAction(),
     select: () => new XSelectAction(),
     store: () => new XStoreAction(),
     tag: () => new XTagAction(),
