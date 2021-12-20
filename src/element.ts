@@ -110,7 +110,7 @@ export class XElementSet<T extends XElement> {
   }
 }
 
-interface XGroupInterfaceExt extends XGroupInterface {
+export interface XGroupInterfaceExt extends XGroupInterface {
   groups: XGroupInterfaceExt[]
   databases: XDatabaseInterfaceExt[]
   objects: Record<string, unknown>
@@ -210,7 +210,7 @@ export const toGroup = (obj: XGroupInterfaceExt): XGroup => {
   return group
 }
 
-interface XDatabaseInterfaceExt extends XDatabaseInterface {
+export interface XDatabaseInterfaceExt extends XDatabaseInterface {
   databases: XDatabaseInterfaceExt[]
 
   fields: XFieldInterfaceExt[]
@@ -319,7 +319,7 @@ export const toDatabase = (obj: XDatabaseInterfaceExt): XDatabase => {
   return database
 }
 
-interface XFieldInterfaceExt extends XFieldInterface {
+export interface XFieldInterfaceExt extends XFieldInterface {
   objects: Record<string, unknown>
   files: Record<string, unknown>
 }
@@ -354,7 +354,7 @@ export const toField = (obj: XFieldInterfaceExt): XField => {
   return field
 }
 
-interface XBlobInterfaceExt extends XBlobInterface {
+export interface XBlobInterfaceExt extends XBlobInterface {
   objects: Record<string, unknown>
   files: Record<string, unknown>
 }
@@ -385,7 +385,7 @@ export const toBlob = (obj: XBlobInterfaceExt): XBlob => {
   return blob
 }
 
-interface XTeamInterfaceExt extends XTeamInterface {
+export interface XTeamInterfaceExt extends XTeamInterface {
   objects: Record<string, unknown>
   files: Record<string, unknown>
 
