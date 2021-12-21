@@ -45,6 +45,9 @@ export const isTeam = (v: unknown): v is XTeam => v && (v as any)[TEAM_SYMBOL]
 export const isUser = (v: unknown): v is XUser => v && (v as any)[USER_SYMBOL]
 
 export interface XElement {
+  /**
+   * Returns the unique ID val
+   */
   getId(): number
   getName(): string
   getLabel(): string
@@ -53,19 +56,23 @@ export interface XElement {
 }
 
 export class XElementSet<T extends XElement> {
-  readonly values: T[]
+  readonly values: T[] = []
 
-  private readonly idMap: Record<number, T> = {}
-  private readonly nameMap: Record<string, T> = {}
-  private readonly labelMap: Record<string, T> = {}
+  private readonly map: Record<number | string, T> = {}
 
-  constructor(values: T[]) {
-    this.values = [...values]
+  constructor(values: T[] = []) {
+    this.push(...values)
+  }
 
-    this.values.forEach((e) => {
-      this.idMap[e.getId()] = e
-      this.nameMap[e.getName()] = e
-      this.labelMap[e.getLabel()] = e
+  push(...values: T[]) {
+    this.values.push(...values)
+
+    values.forEach((e) => {
+      this.map[e.getId()] = e
+      this.map[e.getName()] = e
+      this.map[e.getName().toLowerCase()] = e
+      this.map[e.getLabel()] = e
+      this.map[e.getLabel().toLowerCase()] = e
     })
   }
 
@@ -75,29 +82,15 @@ export class XElementSet<T extends XElement> {
   }
 
   get(s: number | string): T {
-    let found: T | undefined
-
-    if (isNumber(s)) {
-      found = this.idMap[s]
-    } else {
-      s = s.toLowerCase()
-      found = this.nameMap[s] || this.labelMap[s]
-    }
+    const found = this.find(s)
 
     if (found) return found
 
-    throw Error(`not found: ${s}`)
+    throw Error(`element not found: ${s}`)
   }
 
   find(s: number | string): T | undefined {
-    if (isNumber(s)) return this.idMap[s]
-
-    if (isString(s)) {
-      s = s.toLowerCase()
-      return this.nameMap[s] || this.labelMap[s]
-    }
-
-    return undefined
+    return this.map[s] || (isString(s) ? this.map[s.toLowerCase()] : undefined)
   }
 
   findAll(s: (number | string)[]): T[] {
@@ -128,8 +121,10 @@ export interface XGroup extends XGroupInterface, XElement {
   getNamePath(depth?: number): string
   getLabelPath(depth?: number): string
   getGroup(s: string): XGroup
-  getDatabase(s: string): XDatabase | undefined
-  getRoot(): XGroup | undefined
+  getDatabase(s: string): XDatabase
+  findGroup(s: string): XGroup | undefined
+  findDatabase(s: string): XDatabase | undefined
+  getRoot(): XGroup
 }
 
 export const toGroups = (objs: XGroupInterfaceExt[]): XGroup[] => objs.map((g) => toGroup(g))
@@ -172,33 +167,37 @@ export const toGroup = (obj: XGroupInterfaceExt): XGroup => {
     },
     getGroup(s: string): XGroup {
       if (s.includes('.')) {
-        const parts = splitRest(s, '.', 2)
-        const base = parts[0]
-        const rest = parts[1]
+        const [base, rest] = splitRest(s, '.', 2)
         return this.groups.get(base).getGroup(rest)
       } else {
         return this.groups.get(s)
       }
     },
-    getDatabase(s: string): XDatabase | undefined {
+    findGroup(s: string): XGroup | undefined {
       if (s.includes('.')) {
-        const parts = splitRest(s, '.', 2)
-
-        const base = parts[0]
-        const rest = parts[1]
-
-        const group = this.groups.get(base)
-        if (group) return group.getDatabase(rest)
-
-        const database = this.databases.get(base)
-        if (database) return database.getDatabase(rest)
-
-        return undefined
+        const [base, rest] = splitRest(s, '.', 2)
+        return this.groups.find(base)?.findGroup(rest)
+      } else {
+        return this.groups.find(s)
+      }
+    },
+    getDatabase(s: string): XDatabase {
+      if (s.includes('.')) {
+        const [base, rest] = splitRest(s, '.', 2)
+        return (this.groups.get(base) || this.databases.get(base)).getDatabase(rest)
       } else {
         return this.databases.get(s)
       }
     },
-    getRoot(): XGroup | undefined {
+    findDatabase(s: string): XDatabase | undefined {
+      if (s.includes('.')) {
+        const [base, rest] = splitRest(s, '.', 2)
+        return (this.groups.find(base) || this.databases.find(base))?.findDatabase(rest)
+      } else {
+        return this.databases.find(s)
+      }
+    },
+    getRoot(): XGroup {
       if (this.parent) return this.parent.getRoot()
       return this
     }
@@ -235,6 +234,7 @@ export interface XDatabase extends XDatabaseInterface, XElement {
   objects: Record<string, unknown>
   files: Record<string, unknown>
   getDatabase(s: string): XDatabase
+  findDatabase(s: string): XDatabase | undefined
   getPath(): (XGroup | XDatabase)[]
   getNamePath(): string
   getLabelPath(): string
@@ -268,13 +268,19 @@ export const toDatabase = (obj: XDatabaseInterfaceExt): XDatabase => {
     },
     getDatabase(s: string): XDatabase {
       if (s.includes('.')) {
-        const parts = splitRest(s, '.', 2)
-        const base = parts[0]
-        const rest = parts[1]
+        const [base, rest] = splitRest(s, '.', 2)
         return this.databases.get(base).getDatabase(rest)
+      } else {
+        return this.databases.get(s)
       }
-
-      return this.databases.get(s)
+    },
+    findDatabase(s: string): XDatabase | undefined {
+      if (s.includes('.')) {
+        const [base, rest] = splitRest(s, '.', 2)
+        return this.databases.find(base)?.findDatabase(rest)
+      } else {
+        return this.databases.find(s)
+      }
     },
     getPath(): (XGroup | XDatabase)[] {
       const path: (XGroup | XDatabase)[] = []
