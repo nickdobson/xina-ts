@@ -1,3 +1,4 @@
+import { toResultColumn } from '..'
 import {
   isSimpleObject,
   parseOptionalExpression,
@@ -14,6 +15,7 @@ import {
   XExpressionable,
   XOrderTerm,
   XResultColumn,
+  XResultColumnable,
   XSelectExpression,
   XSelectSource,
   XSource,
@@ -60,8 +62,14 @@ export class XSelect implements XApiComponent<XSelect> {
     return this
   }
 
-  setFrom(source: XSourceable) {
-    return this.setSource(source)
+  setColumns(...columns: XResultColumnable[]) {
+    this.columns = [...columns.map((c) => toResultColumn(c))]
+    return this
+  }
+
+  addColumns(...columns: XResultColumnable[]) {
+    this.columns.push(...columns.map((c) => toResultColumn(c)))
+    return this
   }
 
   setWhere(where: XExpressionable) {
@@ -74,9 +82,40 @@ export class XSelect implements XApiComponent<XSelect> {
     return this
   }
 
+  addGroupBy(...groupBy: XExpressionable[]) {
+    this.groupBy.push(...groupBy.map((e) => toExpression(e)))
+    return this
+  }
+
   setHaving(having?: XExpressionable) {
     this.having = toOptionalExpression(having)
     return this
+  }
+
+  setOrderBy(...orderBy: XOrderTerm[]) {
+    this.orderBy = [...orderBy]
+    return this
+  }
+
+  addOrderBy(...orderBy: XOrderTerm[]) {
+    this.orderBy.push(...orderBy)
+    return this
+  }
+
+  setOrderByAsc(...orderBy: XExpressionable[]) {
+    return this.setOrderBy(...orderBy.map((o) => XOrderTerm.ofAsc(o)))
+  }
+
+  setOrderByDesc(...orderBy: XExpressionable[]) {
+    return this.setOrderBy(...orderBy.map((o) => XOrderTerm.ofDesc(o)))
+  }
+
+  addOrderByAsc(...orderBy: XExpressionable[]) {
+    return this.addOrderBy(...orderBy.map((o) => XOrderTerm.ofAsc(o)))
+  }
+
+  addOrderByDesc(...orderBy: XExpressionable[]) {
+    return this.addOrderBy(...orderBy.map((o) => XOrderTerm.ofDesc(o)))
   }
 
   setLimit(limit?: XExpressionable) {
