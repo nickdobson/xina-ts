@@ -799,7 +799,7 @@ export class XBinaryExpression extends XExpression {
 
   buildRest(pretty: boolean) {
     return {
-      op: this.op,
+      op: this.op?.name,
       e1: this.e1?.build(pretty),
       e2: this.e2?.build(pretty)
     }
@@ -1176,7 +1176,7 @@ export class XCompoundExpression extends XExpression {
 
   buildRest(pretty: boolean) {
     return {
-      op: this.op,
+      op: this.op?.name,
       expressions: this.expressions.map((e) => e.build(pretty))
     }
   }
@@ -1800,7 +1800,7 @@ export class XUnaryExpression extends XExpression {
 
   buildRest(pretty: boolean) {
     return {
-      op: this.op,
+      op: this.op?.name,
       e: this.e?.build(pretty)
     }
   }

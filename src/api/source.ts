@@ -88,7 +88,7 @@ export abstract class XSource implements XApiComponent<XSource> {
 
   build(pretty: boolean): Record<string, unknown> {
     const obj: Record<string, unknown> = {
-      type: this.getType(),
+      type: this.getType().name,
       ...this.buildRest(pretty)
     }
 
@@ -346,7 +346,7 @@ export default class XJoinSource extends XSource {
 
   buildRest(pretty: boolean) {
     return {
-      op: this.op,
+      op: this.op?.name,
       s1: this.s1?.build(pretty),
       s2: this.s2?.build(pretty),
       constraint: this.constraint?.build(pretty)

@@ -27,7 +27,7 @@ export abstract class XConstraint implements XApiComponent<XConstraint> {
   abstract buildRest(pretty: boolean): Record<string, unknown>
 
   build(pretty: boolean): Record<string, unknown> {
-    return { type: this.getType(), ...this.buildRest(pretty) }
+    return { type: this.getType().name, ...this.buildRest(pretty) }
   }
 }
 

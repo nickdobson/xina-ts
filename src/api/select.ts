@@ -42,7 +42,7 @@ export class XSelect implements XApiComponent<XSelect> {
   limit?: XExpression
   offset?: XExpression
 
-  setDistinct(distinct: boolean) {
+  setDistinct(distinct = true) {
     this.distinct = distinct
     return this
   }
@@ -57,11 +57,6 @@ export class XSelect implements XApiComponent<XSelect> {
     return this
   }
 
-  setSource(source: XSourceable) {
-    this.source = toSource(source)
-    return this
-  }
-
   setColumns(...columns: XResultColumnable[]) {
     this.columns = [...columns.map((c) => toResultColumn(c))]
     return this
@@ -70,6 +65,15 @@ export class XSelect implements XApiComponent<XSelect> {
   addColumns(...columns: XResultColumnable[]) {
     this.columns.push(...columns.map((c) => toResultColumn(c)))
     return this
+  }
+
+  setSource(source: XSourceable) {
+    this.source = toSource(source)
+    return this
+  }
+
+  setFrom(source: XSourceable) {
+    return this.setSource(source)
   }
 
   setWhere(where: XExpressionable) {

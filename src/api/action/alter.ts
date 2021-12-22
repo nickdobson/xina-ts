@@ -26,6 +26,11 @@ abstract class XAlterUserAction extends XAlterAction {
   getAlter() {
     return 'user'
   }
+
+  setUser(user: XUser | string | number) {
+    this.user = user
+    return this
+  }
 }
 
 export class XAlterUserObjectsAction extends XAlterUserAction {
@@ -37,6 +42,7 @@ export class XAlterUserObjectsAction extends XAlterUserAction {
 
   setObjects(objects: Record<string, unknown>) {
     this.objects = { ...objects }
+    return this
   }
 
   buildRestRest(pretty: boolean) {

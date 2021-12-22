@@ -191,10 +191,6 @@ export class XDatabaseTable extends XTable<XDatabaseTableName> {
   static readonly TRASH = database(TRASH, 'Trash')
 }
 
-export const XSystemTables = Object.freeze({})
-
-export const XDatabaseTables = Object.freeze({})
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function system(name: XSystemTableName, label: string, parameter: XParameterManager<any>) {
   return new XSystemTable(name, label, parameter)
