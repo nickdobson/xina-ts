@@ -1,17 +1,18 @@
-import { isNumber, trustIs, XDatabase, XRecordAttributeName, XRecordInterface } from './internal'
+import { isNumber, trustIs, XDatabase, XRecordInterface } from './internal'
 
 const RECORD_SYMBOL = Symbol()
 
-export interface XRecord extends Partial<Record<XRecordAttributeName, unknown>>, Record<string, unknown> {
+export interface XRecord extends XRecordInterface, Record<string, unknown> {
   [RECORD_SYMBOL]: true
   record_id: number
+  file_url?: string
   $id: number
   $database: XDatabase
   $parent?: XRecord
   $children?: Record<string, XRecord[]>
   $fileName?: string
   $get: <T>(f: string) => T
-  $format: (f: string) => string
+  $format: (f?: string) => string
 }
 
 interface XRecordInterfaceExt extends XRecordInterface {
@@ -52,7 +53,7 @@ export function toRecord(database: XDatabase, obj: Record<string, unknown> | XRe
     $get<T>(f: string): T {
       return this[this.$database.fields.get(f).name] as T
     },
-    $format(f: string): string {
+    $format(f?: string): string {
       return this.$database.formatRecord(this, f)
     }
   }

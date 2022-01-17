@@ -1,13 +1,13 @@
 import { XAction } from './action'
 
 export class XRunAction extends XAction {
-  tasks: Record<string, unknown>[] = []
+  tasks: (Record<string, unknown> | number)[] = []
 
   getAction() {
     return 'run'
   }
 
-  setTasks(...tasks: Record<string, unknown>[]) {
+  setTasks(...tasks: (Record<string, unknown> | number)[]) {
     this.tasks = [...tasks]
     return this
   }

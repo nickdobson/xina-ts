@@ -1,21 +1,21 @@
 import { XAction } from './action'
 
 export class XPauseAction extends XAction {
-  tasks: number[] = []
+  threads: string[] = []
 
   getAction() {
     return 'pause'
   }
 
-  setTasks(...tasks: number[]) {
-    this.tasks = [...tasks]
+  setThreads(...threads: string[]) {
+    this.threads = [...threads]
     return this
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   buildRest(_pretty: boolean): Record<string, unknown> {
     return {
-      tasks: this.tasks
+      threads: this.threads
     }
   }
 }

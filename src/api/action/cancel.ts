@@ -1,3 +1,5 @@
+import { isNumber } from '../../util'
+import { XTaskInterface } from '../../parameter'
 import { XAction } from './action'
 
 export class XCancelAction extends XAction {
@@ -8,12 +10,12 @@ export class XCancelAction extends XAction {
     return 'cancel'
   }
 
-  setTasks(...tasks: number[]) {
-    this.tasks = [...tasks]
+  setTasks(...tasks: (XTaskInterface | number)[]) {
+    this.tasks = [...tasks.map((t) => (isNumber(t) ? t : t.task_id))]
     return this
   }
 
-  setIgnore(ignore: boolean) {
+  setIgnore(ignore = false) {
     this.ignore = ignore
     return this
   }

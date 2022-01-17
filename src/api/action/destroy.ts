@@ -1,3 +1,5 @@
+import { XTaskInterface } from '../../parameter'
+import { isNumber } from '../../util'
 import { XAction } from './action'
 
 export class XDestroyAction extends XAction {
@@ -7,8 +9,8 @@ export class XDestroyAction extends XAction {
     return 'destroy'
   }
 
-  setTasks(...tasks: number[]) {
-    this.tasks = [...tasks]
+  setTasks(...tasks: (XTaskInterface | number)[]) {
+    this.tasks = [...tasks.map((t) => (isNumber(t) ? t : t.task_id))]
     return this
   }
 

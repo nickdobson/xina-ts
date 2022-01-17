@@ -1,4 +1,4 @@
-import { toResultColumn } from '..'
+import { toOptionalSource, toResultColumn } from '..'
 import {
   isSimpleObject,
   parseOptionalExpression,
@@ -67,17 +67,17 @@ export class XSelect implements XApiComponent<XSelect> {
     return this
   }
 
-  setSource(source: XSourceable) {
-    this.source = toSource(source)
+  setSource(source?: XSourceable) {
+    this.source = toOptionalSource(source)
     return this
   }
 
-  setFrom(source: XSourceable) {
+  setFrom(source?: XSourceable) {
     return this.setSource(source)
   }
 
-  setWhere(where: XExpressionable) {
-    this.where = toExpression(where)
+  setWhere(where?: XExpressionable) {
+    this.where = toOptionalExpression(where)
     return this
   }
 
@@ -226,6 +226,7 @@ export class XSelect implements XApiComponent<XSelect> {
     clone.groupBy = this.groupBy.map((g) => g.clone())
     clone.orderBy = this.orderBy.map((o) => o.clone())
 
+    clone.source = this.source?.clone()
     clone.where = this.where?.clone()
     clone.having = this.having?.clone()
     clone.limit = this.limit?.clone()

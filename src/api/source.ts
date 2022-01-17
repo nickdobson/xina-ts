@@ -40,6 +40,11 @@ export function parseOptionalSource(source: unknown, context: XApiContext) {
 
 export type XSourceable = XSystemTable | XSelect | XSource | XDatabase
 
+export function toOptionalSource(v?: XSourceable) {
+  if (v === undefined) return undefined
+  return toSource(v)
+}
+
 export function toSource(v: XSourceable): XSource {
   if (v instanceof XSource) return v
   if (isDatabase(v)) return XDatabaseTableSource.of(v, XDatabaseTable.RECORD)

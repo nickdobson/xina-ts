@@ -125,6 +125,7 @@ export interface XGroup extends XGroupInterface, XElement {
   findGroup(s: string): XGroup | undefined
   findDatabase(s: string): XDatabase | undefined
   getRoot(): XGroup
+  toString(): string
 }
 
 export const toGroups = (objs: XGroupInterfaceExt[]): XGroup[] => objs.map((g) => toGroup(g))
@@ -200,6 +201,9 @@ export const toGroup = (obj: XGroupInterfaceExt): XGroup => {
     getRoot(): XGroup {
       if (this.parent) return this.parent.getRoot()
       return this
+    },
+    toString(): string {
+      return this.getLabelPath()
     }
   }
 
@@ -239,6 +243,7 @@ export interface XDatabase extends XDatabaseInterface, XElement {
   getNamePath(): string
   getLabelPath(): string
   formatRecord(record: XRecord, format?: string): string
+  toString(): string
 }
 
 export const toDatabases = (objs: XDatabaseInterfaceExt[]): XDatabase[] => objs.map((d) => toDatabase(d))
@@ -315,6 +320,9 @@ export const toDatabase = (obj: XDatabaseInterfaceExt): XDatabase => {
         }
         return this.fields.get(key).getType().format(record[key])
       })
+    },
+    toString(): string {
+      return this.getLabelPath()
     }
   }
 
@@ -334,6 +342,9 @@ export interface XField extends XFieldInterfaceExt, XElement {
   [FIELD_SYMBOL]: true
   database?: XDatabase
   getType(): XType<unknown>
+  formatValue(v: unknown): string
+  formatRecord(r: XRecord): string
+  toString(): string
 }
 
 export const toFields = (objs: XFieldInterfaceExt[]): XField[] => objs.map((f) => toField(f))
@@ -355,6 +366,15 @@ export const toField = (obj: XFieldInterfaceExt): XField => {
     },
     getType() {
       return XTypes.of(this.type)
+    },
+    formatValue(v: unknown) {
+      return this.getType().format(v, this.format)
+    },
+    formatRecord(r: XRecord) {
+      return this.formatValue(r[this.name])
+    },
+    toString(): string {
+      return this.label
     }
   }
   return field
@@ -408,6 +428,7 @@ export interface XTeam extends XTeamInterfaceExt, XElement {
   databasePrivileges: Partial<Record<string, boolean>>
   getGroupPrivileges(g: XGroup | number): Partial<Record<string, boolean>>
   getDatabasePrivileges(d: XDatabase | number): Partial<Record<string, boolean>>
+  toString(): string
 }
 
 export const toTeams = (objs: XTeamInterfaceExt[]): XTeam[] => objs.map((t) => toTeam(t))
@@ -466,6 +487,9 @@ export const toTeam = (obj: XTeamInterfaceExt): XTeam => {
       })
 
       return base
+    },
+    toString(): string {
+      return this.label
     }
   }
 }

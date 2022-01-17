@@ -1,19 +1,19 @@
 import { XAction } from './action'
 
 export class XResumeAction extends XAction {
-  tasks: number[] = []
+  threads: string[] = []
   cont = false
 
   getAction() {
     return 'resume'
   }
 
-  setTasks(...tasks: number[]) {
-    this.tasks = [...tasks]
+  setTasks(...threads: string[]) {
+    this.threads = [...threads]
     return this
   }
 
-  setContinue(cont: boolean) {
+  setContinue(cont = false) {
     this.cont = cont
     return this
   }
@@ -21,7 +21,7 @@ export class XResumeAction extends XAction {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   buildRest(_pretty: boolean): Record<string, unknown> {
     return {
-      tasks: this.tasks,
+      threads: this.threads,
       continue: this.cont
     }
   }
