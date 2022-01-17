@@ -8,7 +8,7 @@ export class XResumeAction extends XAction {
     return 'resume'
   }
 
-  setTasks(...threads: string[]) {
+  setThreads(...threads: string[]) {
     this.threads = [...threads]
     return this
   }

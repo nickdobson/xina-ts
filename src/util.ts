@@ -306,6 +306,42 @@ export function pluralize(v: number, base: string, plural = 's', single = '') {
   return `${v} ${base}${v === 1 ? single : plural}`
 }
 
+export function toHHMMSS(n: number, pretty = false) {
+  const hours = Math.floor(n / 3600)
+  const minutes = Math.floor((n - hours * 3600) / 60)
+  const seconds = Sugar.Number.round(n - hours * 3600 - minutes * 60, 6)
+
+  if (pretty) return hours + ' hr, ' + minutes + ' min, ' + Sugar.Number.round(seconds, 3) + ' sec'
+
+  const pad = (v: number) => (v < 10 ? '0' + v : v)
+
+  return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds)
+}
+
+export function toDDHHMMSS(n: number, pretty = false, short = false) {
+  const day = 24 * 60 * 60
+  const hour = 60 * 60
+  const minute = 60
+
+  const days = Math.floor(n / day)
+  const hours = Math.floor((n - days * day) / hour)
+  const minutes = Math.floor((n - days * day - hours * hour) / minute)
+  const seconds = n - days * day - hours * hour - minutes * minute
+
+  if (pretty) {
+    return (
+      (!short || days ? days + 'd ' : '') +
+      (!short || hours ? hours + 'h ' : '') +
+      (!short || minutes ? minutes + 'm ' : '') +
+      (!short || seconds ? Sugar.Number.round(seconds, short ? 0 : 3) + 's' : '')
+    )
+  }
+
+  const pad = (v: number) => (v < 10 ? '0' + v : v)
+
+  return days + ':' + pad(hours) + ':' + pad(minutes) + ':' + pad(seconds)
+}
+
 export class XRange {
   private min: number
   private max: number

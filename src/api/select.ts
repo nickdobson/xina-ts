@@ -8,7 +8,6 @@ import {
   parseResultColumns,
   toExpression,
   toOptionalExpression,
-  toSource,
   XApiComponent,
   XApiContext,
   XExpression,
