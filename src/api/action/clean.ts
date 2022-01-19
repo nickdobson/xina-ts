@@ -4,6 +4,7 @@ import { XAction } from './action'
 
 export class XCleanAction extends XAction {
   tasks: number[] = []
+
   ignore = false
 
   getAction() {

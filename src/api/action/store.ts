@@ -2,9 +2,13 @@ import { XAction } from './action'
 
 export class XStoreAction extends XAction {
   name?: string
+
   key?: string
+
   type?: string
+
   value?: unknown
+
   desc?: string
 
   getAction(): string {

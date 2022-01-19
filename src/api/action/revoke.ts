@@ -45,6 +45,7 @@ export class XRevokeSuperAction extends XRevokeAction {
 
 export class XRevokeGroupsAction extends XRevokeAction {
   groups: (XGroup | string | number)[] = []
+
   privileges: XGroupPrivilege[] = []
 
   getRevoke() {
@@ -81,6 +82,7 @@ export class XRevokeGroupsAction extends XRevokeAction {
 
 export class XRevokeDatabasesAction extends XRevokeAction {
   databases: (XDatabase | string | number)[] = []
+
   privileges: XDatabasePrivilege[] = []
 
   getRevoke() {

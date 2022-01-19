@@ -439,6 +439,7 @@ export class XNumberLiteral extends XExpression {
   }
 
   static readonly FALSE = XNumberLiteral.of(0)
+
   static readonly TRUE = XNumberLiteral.of(1)
 }
 
@@ -671,7 +672,9 @@ export class XAliasExpression extends XExpression {
 
 export class XBetweenExpression extends XExpression {
   e?: XExpression
+
   min?: XExpression
+
   max?: XExpression
 
   getName() {
@@ -744,7 +747,9 @@ export class XBetweenExpression extends XExpression {
 
 export class XBinaryExpression extends XExpression {
   op?: XBinaryOperator
+
   e1?: XExpression
+
   e2?: XExpression
 
   getName() {
@@ -816,7 +821,9 @@ export class XBinaryExpression extends XExpression {
 
 export class XCaseExpression extends XExpression {
   baseExpression?: XExpression
+
   elseExpression?: XExpression
+
   cases: { when: XExpression; then: XExpression }[] = []
 
   getName() {
@@ -949,6 +956,7 @@ export class XCaseExpression extends XExpression {
 
 export class XCollateExpression extends XExpression {
   e?: XExpression
+
   collation?: string
 
   getName() {
@@ -1010,7 +1018,9 @@ export class XCollateExpression extends XExpression {
 
 export class XColumnExpression extends XExpression {
   database?: XDatabase | string | number
+
   table?: XSystemTable | XSystemTableName | XDatabaseTable | XDatabaseTableName
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   column?: XField | XParameter<any, any> | XAttribute<any, any> | string
 
@@ -1120,6 +1130,7 @@ export class XColumnExpression extends XExpression {
 
 export class XCompoundExpression extends XExpression {
   op?: XCompoundOperator
+
   expressions: XExpression[] = []
 
   getName() {
@@ -1270,6 +1281,7 @@ export class XExistsExpression extends XExpression {
 
 export class XFunctionExpression extends XExpression {
   func?: string
+
   args: XExpression[] = []
 
   getName() {
@@ -1336,8 +1348,11 @@ export class XFunctionExpression extends XExpression {
 
 export class XGroupConcatExpression extends XExpression {
   distinct = false
+
   args: XExpression[] = []
+
   separator?: string
+
   orderBy: XOrderTerm[] = []
 
   getName() {
@@ -1452,6 +1467,7 @@ export class XGroupConcatExpression extends XExpression {
 
 export class XInExpression extends XExpression {
   e?: XExpression
+
   es: XExpression[] = []
 
   getName() {
@@ -1518,6 +1534,7 @@ export class XInExpression extends XExpression {
 
 export class XInSelectExpression extends XExpression {
   e?: XExpression
+
   select?: XSelect
 
   getName() {
@@ -1627,10 +1644,15 @@ export class XIsNullExpression extends XExpression {
 
 export class XSearchExpression extends XExpression {
   database?: XDatabase | string | number
+
   search?: XField | string
+
   op?: XSearchOperator
+
   value?: Date | string
+
   cs?: boolean
+
   js?: string
 
   getName() {
@@ -1757,6 +1779,7 @@ export class XSelectExpression extends XExpression {
 
 export class XUnaryExpression extends XExpression {
   op?: XUnaryOperator
+
   e?: XExpression
 
   getName() {

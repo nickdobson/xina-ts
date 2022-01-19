@@ -3,7 +3,9 @@ import { XAction } from './action'
 
 export class XPostAction extends XAction {
   wall?: XWall
+
   post?: Record<string, unknown>
+
   thread?: number
 
   setWall(wall: XWall) {

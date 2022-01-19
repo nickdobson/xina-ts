@@ -20,6 +20,7 @@ abstract class XCreateAction extends XAction {
 
 export class XCreateGroupAction extends XCreateAction {
   parent?: XGroup
+
   group?: Record<string, unknown>
 
   getCreate(): string {
@@ -46,6 +47,7 @@ export class XCreateGroupAction extends XCreateAction {
 
 export class XCreateDatabaseAction extends XCreateAction {
   parent?: XGroup | XDatabase
+
   database?: Record<string, unknown>
 
   getCreate() {

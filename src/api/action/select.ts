@@ -10,6 +10,7 @@ export type XSelectResponse = {
 }
 export class XSelectAction extends XAction {
   select?: XSelect
+
   useStrings = false
 
   getAction() {

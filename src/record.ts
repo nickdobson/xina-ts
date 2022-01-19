@@ -15,7 +15,7 @@ export interface XRecord extends XRecordInterface, Record<string, unknown> {
   $format: (f?: string) => string
 }
 
-interface XRecordInterfaceExt extends XRecordInterface {
+export interface XRecordInterfaceExt extends XRecordInterface {
   children?: Record<string, XRecordInterfaceExt[]>
 }
 

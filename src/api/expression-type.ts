@@ -65,6 +65,7 @@ export const XExpressionTypeName = z.enum([
   UNARY
 ])
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type XExpressionTypeName = z.infer<typeof XExpressionTypeName>
 
 const of = (name: XExpressionTypeName, aliases?: XExpressionTypeName[]) => new XExpressionType(name, aliases)
@@ -83,30 +84,52 @@ export class XExpressionType extends XVariant<XExpressionTypeName> {
   }
 
   static readonly map = {} as Record<XExpressionTypeName, XExpressionType>
+
   static readonly values: XExpressionType[] = []
 
   static readonly ALIAS = of(ALIAS)
+
   static readonly BETWEEN = of(BETWEEN)
+
   static readonly BINARY = of(BINARY)
+
   static readonly CASE = of(CASE)
+
   static readonly COLLATE = of(COLLATE)
+
   static readonly COLUMN = of(COL, [COLUMN])
+
   static readonly COMPOUND = of(COMPOUND)
+
   static readonly COUNT_ROWS = of(COUNT_ROWS)
+
   static readonly DATETIME = of(DT, [DATETIME, DATE_TIME])
+
   static readonly EXISTS = of(EXISTS)
+
   static readonly FUNCTION = of(FUNCTION)
+
   static readonly GROUP_CONCAT = of(GROUP_CONCAT)
+
   static readonly IN = of(IN)
+
   static readonly IN_SELECT = of(IN_SELECT)
+
   static readonly IS_NULL = of(IS_NULL)
+
   static readonly LOCALDATETIME = of(LDT, [LOCALDATETIME])
+
   // static readonly LOCALDATE = of(LD, [LOCALDATE])
   // static readonly LOCALTIME = of(LT, [LOCALTIME])
   static readonly NULL = of(NULL)
+
   static readonly NUMBER = of(NUMBER)
+
   static readonly SEARCH = of(SEARCH)
+
   static readonly SELECT = of(SELECT)
+
   static readonly STRING = of(STRING)
+
   static readonly UNARY = of(UNARY)
 }

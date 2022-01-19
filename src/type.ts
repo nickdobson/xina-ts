@@ -40,26 +40,45 @@ type XTypeFormat = string | XTypeFormatProps
 
 export abstract class XType<T> {
   readonly name: string
+
   readonly nameSafe: string
 
   readonly isBoolean = false
+
   readonly isEnum = false
+
   readonly isCollection = false
+
   readonly isList = false
+
   readonly isSet = false
+
   readonly isNumeric = false
+
   readonly isInteger = false
+
   readonly isFloat = false
+
   readonly isCharacter = false
+
   readonly isString = false
+
   readonly isText = false
+
   readonly isAscii = false
+
   readonly isUtf8 = false
+
   readonly isHtml = false
+
   readonly isXml = false
+
   readonly isTemporal = false
+
   readonly isInstant = false
+
   readonly isLocal = false
+
   readonly isDuration = false
 
   constructor(name: string, props: XTypeProps, safeMode = false) {
@@ -174,6 +193,7 @@ export abstract class XType<T> {
 
 class XEnumType<T extends XEnum> extends XType<number> {
   values: T[]
+
   valueMap: Record<string | number, T> = {}
 
   constructor(name: string, values: T[]) {
@@ -239,6 +259,7 @@ class XBooleanType extends XType<boolean> {
 
 class XIntegerType extends XNumericType {
   min: number
+
   max: number
 
   /**
@@ -399,7 +420,9 @@ class XXmlType extends XUtf8Type {
 
 class XInstantType extends XType<number> {
   unit: string
+
   fromMs: (ms: number) => number
+
   toMs: (v: number) => number
 
   constructor(unit: string, fromMs = (ms: number) => ms, toMs = (ms: number) => ms) {
@@ -442,7 +465,7 @@ class XInstantType extends XType<number> {
 
     const formats: Record<string, string> = { iso_d, iso_h, iso_m, iso_s, iso_f, iso: iso_f }
 
-    const resolveFormat = (f?: string) => (f ? formats[f.toLowerCase()] || f : f)
+    const resolveFormat = (ft?: string) => (ft ? formats[ft.toLowerCase()] || ft : ft)
 
     if (f instanceof Object) {
       if (f.safe) return v.toString()
@@ -457,6 +480,7 @@ class XInstantType extends XType<number> {
 
 class XDurationType extends XType<number> {
   unit: string
+
   base: number
 
   constructor(unit: string, base: number) {
@@ -517,7 +541,9 @@ class XDurationType extends XType<number> {
 
 class XDateTimeType extends XType<number> {
   readonly unit: string = 'ms'
+
   readonly fromMs = (ms: number) => ms
+
   readonly toMs = (ms: number) => ms
 
   constructor() {
@@ -556,7 +582,7 @@ class XDateTimeType extends XType<number> {
 
     const formats: Record<string, string> = { iso_d, iso_h, iso_m, iso_s, iso_f, iso: iso_f }
 
-    const resolveFormat = (f?: string) => (f ? formats[f.toLowerCase()] || f : f)
+    const resolveFormat = (ft?: string) => (ft ? formats[ft.toLowerCase()] || ft : ft)
 
     if (f instanceof Object) {
       if (f.safe) return v.toString()
@@ -667,7 +693,7 @@ class XLocalDateTimeType extends XType<string> {
 
     const formats: Record<string, string> = { iso_d, iso_h, iso_m, iso_s, iso_f, iso: iso_f } as const
 
-    const resolveFormat = (f?: string) => (f ? formats[f.toLowerCase()] || f : f)
+    const resolveFormat = (ft?: string) => (ft ? formats[ft.toLowerCase()] || ft : ft)
 
     if (f instanceof Object) {
       if (f.safe) return v.toString()

@@ -2,6 +2,7 @@ import { XAction } from './action'
 
 export class XResumeAction extends XAction {
   threads: string[] = []
+
   cont = false
 
   getAction() {

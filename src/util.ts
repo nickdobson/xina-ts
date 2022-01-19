@@ -344,6 +344,7 @@ export function toDDHHMMSS(n: number, pretty = false, short = false) {
 
 export class XRange {
   private min: number
+
   private max: number
 
   constructor(v1: number, v2: number) {
@@ -438,7 +439,7 @@ export class XRange {
   static parse(s: string) {
     const match = s.replace(/\s/g, '').match(/^(-?\d+)(-(-?\d+))?$/)
 
-    if (!match) throw `Invalid range format: ${s}`
+    if (!match) throw Error(`Invalid range format: ${s}`)
 
     if (!match[3] === undefined) {
       const first = parseInt(match[1])
@@ -460,6 +461,7 @@ export class XRange {
 
 export default class XRangeSet {
   private values: Set<number> = new Set()
+
   private ranges: Array<XRange> = []
 
   constructor(ranges: number | XRange | XRangeSet | Array<number | XRange | XRangeSet>) {

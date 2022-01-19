@@ -51,6 +51,7 @@ export const XBinaryOperatorName = z.enum([
   SHIFT_RIGHT
 ])
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type XBinaryOperatorName = z.infer<typeof XBinaryOperatorName>
 
 const of = (name: XBinaryOperatorName) => new XBinaryOperator(name)
@@ -68,33 +69,46 @@ export class XBinaryOperator extends XVariant<XBinaryOperatorName> {
   }
 
   static readonly map = {} as Record<XBinaryOperatorName, XBinaryOperator>
+
   static readonly values: XBinaryOperator[] = []
 
   static readonly AND = of(AND)
+
   static readonly OR = of(OR)
 
   static readonly EQUAL = of(EQUAL)
+
   static readonly NOT_EQUAL = of(NOT_EQUAL)
 
   static readonly GREATER = of(GREATER)
+
   static readonly GREATER_OR_EQUAL = of(GREATER_OR_EQUAL)
 
   static readonly LESS = of(LESS)
+
   static readonly LESS_OR_EQUAL = of(LESS_OR_EQUAL)
 
   static readonly IS = of(IS)
+
   static readonly LIKE = of(LIKE)
+
   static readonly REGEXP = of(REGEXP)
 
   static readonly PLUS = of(PLUS)
+
   static readonly MINUS = of(MINUS)
+
   static readonly MULTIPLY = of(MULTIPLY)
+
   static readonly DIVIDE = of(DIVIDE)
+
   static readonly MOD = of(MOD)
 
   static readonly BIT_AND = of(BIT_AND)
+
   static readonly BIT_OR = of(BIT_OR)
 
   static readonly SHIFT_LEFT = of(SHIFT_LEFT)
+
   static readonly SHIFT_RIGHT = of(SHIFT_RIGHT)
 }

@@ -2,6 +2,7 @@ import { XTypes, XType } from './type'
 
 export class XFlag {
   name: string
+
   flags: XFlag[]
 
   constructor(name: string, flags: XFlag[] = []) {
@@ -22,10 +23,15 @@ const KEY = new XFlag('key', [SYSTEM, REQUIRED])
 
 export class XParameter<T, N extends string> {
   readonly name: N
+
   readonly label: string
+
   readonly type: XType<T>
+
   readonly desc: string
+
   readonly flags?: XFlag[]
+
   readonly def?: string
 
   constructor(name: N, label: string, type: XType<T>, desc: string, flags?: XFlag[], def?: string) {
@@ -68,6 +74,7 @@ export class XParameterManager<P extends XParameter<any, any>> {
   readonly values: P[]
 
   readonly nameMap: Record<string, P> = {}
+
   readonly labelMap: Record<string, P> = {}
 
   constructor(values: P[]) {
@@ -113,13 +120,18 @@ export class XBlobParameter<T> extends XParameter<T, XBlobParameterName> {
     'unique database identifier',
     [REQUIRED]
   )
+
   static readonly BLOB_ID = new XBlobParameter('blob_id', 'Blob ID', XTypes.SELF_ID, 'unique blob identifier', [KEY])
+
   static readonly ORD = new XBlobParameter('ord', 'Ordinal', XTypes.INT4, 'ordinal position of the blob', [
     SYSTEM,
     REQUIRED
   ])
+
   static readonly NAME = new XBlobParameter('name', 'Name', XTypes.ASCIISTRING32, 'name of the blob', [REQUIRED])
+
   static readonly LABEL = new XBlobParameter('label', 'Label', XTypes.UTF8STRING64, 'label of the blob', [REQUIRED])
+
   static readonly NUL = new XBlobParameter(
     'nul',
     'Nullable',
@@ -128,6 +140,7 @@ export class XBlobParameter<T> extends XParameter<T, XBlobParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly LOCK = new XBlobParameter(
     'lock',
     'Lock',
@@ -136,6 +149,7 @@ export class XBlobParameter<T> extends XParameter<T, XBlobParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly DESC = new XBlobParameter('desc', 'Description', XTypes.UTF8TEXT, 'description of the blob')
 }
 
@@ -164,9 +178,13 @@ export class XBlobFileParameter<T> extends XParameter<T, XBlobFileParameterName>
   static readonly BLOB_ID = new XBlobFileParameter('blob_id', 'Blob ID', XTypes.BLOB_ID, 'unique blob identifier', [
     KEY
   ])
+
   static readonly KEY = new XBlobFileParameter('key', 'Key', XTypes.UTF8STRING32, 'unique file identifier', [KEY])
+
   static readonly TYPE = new XBlobFileParameter('type', 'Type', XTypes.UTF8STRING64, 'file content type', [REQUIRED])
+
   static readonly SIZE = new XBlobFileParameter('size', 'Size', XTypes.INT8, 'file size in bytes', [REQUIRED])
+
   static readonly MD5 = new XBlobFileParameter('md5', 'MD5', XTypes.ASCIISTRING32, 'MD5 hash of the file', [REQUIRED])
 }
 
@@ -188,7 +206,9 @@ export interface XBlobObjectInterface extends Partial<Record<XBlobObjectParamete
 
 export class XBlobObjectParameter<T> extends XParameter<T, XBlobObjectParameterName> {
   static readonly BLOB_ID = new XBlobObjectParameter('blob_id', 'Blob ID', XTypes.INT8, 'unique blob identifier', [KEY])
+
   static readonly KEY = new XBlobObjectParameter('key', 'Key', XTypes.UTF8STRING32, 'unique object identifier', [KEY])
+
   static readonly VALUE = new XBlobObjectParameter('value', 'Value', XTypes.JSON, 'object value')
 }
 
@@ -277,6 +297,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     'parent group identifier',
     [SYSTEM]
   )
+
   static readonly PARENT_DATABASE_ID = new XDatabaseParameter(
     'parent_database_id',
     'Parent Database ID',
@@ -284,6 +305,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     'parent database identifier',
     [SYSTEM]
   )
+
   static readonly DATABASE_ID = new XDatabaseParameter(
     'database_id',
     'Database ID',
@@ -291,13 +313,16 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     'unique database identifier',
     [KEY, IMMUTABLE]
   )
+
   static readonly NAME = new XDatabaseParameter('name', 'Name', XTypes.ASCIISTRING32, 'unique database name', [
     REQUIRED,
     IMMUTABLE
   ])
+
   static readonly LABEL = new XDatabaseParameter('label', 'Label', XTypes.UTF8STRING64, 'unique database label', [
     REQUIRED
   ])
+
   static readonly VERSION = new XDatabaseParameter(
     'version',
     'Version',
@@ -306,6 +331,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [SYSTEM, REQUIRED],
     '0'
   )
+
   static readonly LOCKED = new XDatabaseParameter(
     'locked',
     'Locked',
@@ -314,11 +340,17 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [SYSTEM, REQUIRED],
     'false'
   )
+
   static readonly FORMAT = new XDatabaseParameter('format', 'Format', XTypes.UTF8STRING, 'record format')
+
   static readonly FILE_FORMAT = new XDatabaseParameter('file_format', 'File Format', XTypes.UTF8STRING, 'file format')
+
   static readonly SINGULAR = new XDatabaseParameter('singular', 'Singular', XTypes.UTF8STRING32, 'singular record name')
+
   static readonly PLURAL = new XDatabaseParameter('plural', 'Plural', XTypes.UTF8STRING32, 'plural record name')
+
   static readonly ORDER = new XDatabaseParameter('order', 'Order', XTypes.JSONARRAY, 'default ordering')
+
   static readonly INDEXES = new XDatabaseParameter(
     'indexes',
     'Indexes',
@@ -326,6 +358,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     'list of indexes on the database',
     [SYSTEM]
   )
+
   static readonly PARTITION = new XDatabaseParameter(
     'partition',
     'Partition',
@@ -333,6 +366,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     'partition configuration',
     [SYSTEM]
   )
+
   static readonly PRIORITY = new XDatabaseParameter(
     'priority',
     'Priority',
@@ -341,6 +375,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED],
     '0'
   )
+
   static readonly BACKUP = new XDatabaseParameter(
     'backup',
     'Backup',
@@ -349,6 +384,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED],
     'false'
   )
+
   static readonly DYNAMIC = new XDatabaseParameter(
     'dynamic',
     'Dynamic',
@@ -357,6 +393,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED, IMMUTABLE],
     'false'
   )
+
   static readonly EVENT = new XDatabaseParameter(
     'event',
     'Event',
@@ -365,7 +402,9 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED, IMMUTABLE],
     'false'
   )
+
   static readonly FACE = new XDatabaseParameter('face', 'Face', XTypes.BOOLEAN, 'face flag', [REQUIRED], 'true')
+
   static readonly FILE = new XDatabaseParameter(
     'file',
     'File',
@@ -374,6 +413,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED, IMMUTABLE],
     'false'
   )
+
   static readonly KEYLESS = new XDatabaseParameter(
     'keyless',
     'Keyless',
@@ -382,7 +422,9 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED],
     'false'
   )
+
   static readonly LINK = new XDatabaseParameter('link', 'Link', XTypes.BOOLEAN, 'record link flag', [REQUIRED], 'false')
+
   static readonly LOCK = new XDatabaseParameter(
     'lock',
     'Lock',
@@ -391,7 +433,9 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED, IMMUTABLE],
     'false'
   )
+
   static readonly LOG = new XDatabaseParameter('log', 'Log', XTypes.BOOLEAN, 'log flag', [REQUIRED, IMMUTABLE], 'false')
+
   static readonly NOTIFY = new XDatabaseParameter(
     'notify',
     'Notify',
@@ -400,6 +444,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED],
     'false'
   )
+
   static readonly SIGN = new XDatabaseParameter(
     'sign',
     'Sign',
@@ -408,6 +453,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED, IMMUTABLE],
     'false'
   )
+
   static readonly SUBSCRIBE = new XDatabaseParameter(
     'subscribe',
     'Subscribe',
@@ -416,7 +462,9 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED],
     'false'
   )
+
   static readonly TAG = new XDatabaseParameter('tag', 'Tag', XTypes.BOOLEAN, 'tag flag', [REQUIRED, IMMUTABLE], 'false')
+
   static readonly TRACK = new XDatabaseParameter(
     'track',
     'Track',
@@ -425,6 +473,7 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED, IMMUTABLE],
     'false'
   )
+
   static readonly TRASH = new XDatabaseParameter(
     'trash',
     'Trash',
@@ -433,13 +482,16 @@ export class XDatabaseParameter<T> extends XParameter<T, XDatabaseParameterName>
     [REQUIRED, IMMUTABLE],
     'false'
   )
+
   static readonly WALL = new XDatabaseParameter('wall', 'Wall', XTypes.BOOLEAN, 'wall flag', [REQUIRED], 'false')
+
   static readonly CLONE_TO = new XDatabaseParameter(
     'clone_to',
     'Clone To',
     XTypes.DATABASE_ID,
     'clone to database identifier'
   )
+
   static readonly DESC = new XDatabaseParameter('desc', 'Description', XTypes.UTF8TEXT, 'database description')
 }
 
@@ -497,11 +549,15 @@ export class XDatabaseFileParameter<T> extends XParameter<T, XDatabaseFileParame
     'unique database identifier',
     [KEY]
   )
+
   static readonly KEY = new XDatabaseFileParameter('key', 'Key', XTypes.UTF8STRING32, 'unique file identifier', [KEY])
+
   static readonly TYPE = new XDatabaseFileParameter('type', 'Type', XTypes.UTF8STRING64, 'file content type', [
     REQUIRED
   ])
+
   static readonly SIZE = new XDatabaseFileParameter('size', 'Size', XTypes.INT8, 'file size in bytes', [REQUIRED])
+
   static readonly MD5 = new XDatabaseFileParameter('md5', 'MD5', XTypes.ASCIISTRING32, 'MD5 hash of the file', [
     REQUIRED
   ])
@@ -531,9 +587,11 @@ export class XDatabaseObjectParameter<T> extends XParameter<T, XDatabaseObjectPa
     'unique database identifier',
     [KEY]
   )
+
   static readonly KEY = new XDatabaseObjectParameter('key', 'Key', XTypes.UTF8STRING32, 'unique object identifier', [
     KEY
   ])
+
   static readonly VALUE = new XDatabaseObjectParameter('value', 'Value', XTypes.JSON, 'object value')
 }
 
@@ -592,19 +650,25 @@ export class XFieldParameter<T> extends XParameter<T, XFieldParameterName> {
     'unique database identifier',
     [KEY]
   )
+
   static readonly FIELD_ID = new XFieldParameter('field_id', 'Field ID', XTypes.SELF_ID, 'unique field identifier', [
     KEY
   ])
+
   static readonly REF = new XFieldParameter('ref', 'Reference', XTypes.ASCIISTRING32, 'reference field name', [SYSTEM])
+
   static readonly ORD = new XFieldParameter('ord', 'Ordinal', XTypes.INT4, 'ordinal position of the field', [
     SYSTEM,
     REQUIRED
   ])
+
   static readonly NAME = new XFieldParameter('name', 'Name', XTypes.ASCIISTRING32, 'name of the field', [
     REQUIRED,
     IMMUTABLE
   ])
+
   static readonly LABEL = new XFieldParameter('label', 'Label', XTypes.UTF8STRING64, 'label of the field', [REQUIRED])
+
   static readonly TYPE = new XFieldParameter(
     'type',
     'Type',
@@ -613,6 +677,7 @@ export class XFieldParameter<T> extends XParameter<T, XFieldParameterName> {
     [REQUIRED],
     'utf8text'
   )
+
   static readonly KEY = new XFieldParameter(
     'key',
     'Key',
@@ -621,6 +686,7 @@ export class XFieldParameter<T> extends XParameter<T, XFieldParameterName> {
     [REQUIRED, IMMUTABLE],
     'false'
   )
+
   static readonly NUL = new XFieldParameter(
     'nul',
     'Nullable',
@@ -629,7 +695,9 @@ export class XFieldParameter<T> extends XParameter<T, XFieldParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly OPTIONS = new XFieldParameter('options', 'Options', XTypes.JSONARRAY, 'the options for the field')
+
   static readonly STRICT = new XFieldParameter(
     'strict',
     'Strict',
@@ -638,6 +706,7 @@ export class XFieldParameter<T> extends XParameter<T, XFieldParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly LOCK = new XFieldParameter(
     'lock',
     'Lock',
@@ -646,6 +715,7 @@ export class XFieldParameter<T> extends XParameter<T, XFieldParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly ANY = new XFieldParameter(
     'any',
     'Any',
@@ -654,10 +724,15 @@ export class XFieldParameter<T> extends XParameter<T, XFieldParameterName> {
     [REQUIRED],
     'true'
   )
+
   static readonly FORMAT = new XFieldParameter('format', 'Format', XTypes.UTF8STRING32, 'format to display the field')
+
   static readonly MEAS = new XFieldParameter('meas', 'Measure', XTypes.UTF8STRING32, 'measure of the field')
+
   static readonly UNIT = new XFieldParameter('unit', 'Units', XTypes.UTF8STRING32, 'units of the field')
+
   static readonly DESC = new XFieldParameter('desc', 'Description', XTypes.UTF8TEXT, 'description of the field')
+
   static readonly DEF = new XFieldParameter('def', 'Default', XTypes.UTF8TEXT, 'default value of the field', [
     IMMUTABLE
   ])
@@ -702,9 +777,13 @@ export class XFieldFileParameter<T> extends XParameter<T, XFieldFileParameterNam
     'unique field identifier',
     [KEY]
   )
+
   static readonly KEY = new XFieldFileParameter('key', 'Key', XTypes.UTF8STRING32, 'unique file identifier', [KEY])
+
   static readonly TYPE = new XFieldFileParameter('type', 'Type', XTypes.UTF8STRING64, 'file content type', [REQUIRED])
+
   static readonly SIZE = new XFieldFileParameter('size', 'Size', XTypes.INT8, 'file size in bytes', [REQUIRED])
+
   static readonly MD5 = new XFieldFileParameter('md5', 'MD5', XTypes.ASCIISTRING32, 'MD5 hash of the file', [REQUIRED])
 }
 
@@ -728,7 +807,9 @@ export class XFieldObjectParameter<T> extends XParameter<T, XFieldObjectParamete
   static readonly FIELD_ID = new XFieldObjectParameter('field_id', 'Field ID', XTypes.INT8, 'unique field identifier', [
     KEY
   ])
+
   static readonly KEY = new XFieldObjectParameter('key', 'Key', XTypes.UTF8STRING32, 'unique object identifier', [KEY])
+
   static readonly VALUE = new XFieldObjectParameter('value', 'Value', XTypes.JSON, 'object value')
 }
 
@@ -769,18 +850,26 @@ export class XGroupParameter<T> extends XParameter<T, XGroupParameterName> {
     'parent group identifier',
     [SYSTEM]
   )
+
   static readonly GROUP_ID = new XGroupParameter('group_id', 'Group ID', XTypes.SELF_ID, 'unique group identifier', [
     KEY
   ])
+
   static readonly NAME = new XGroupParameter('name', 'Name', XTypes.ASCIISTRING32, 'unique group name', [
     REQUIRED,
     IMMUTABLE
   ])
+
   static readonly LABEL = new XGroupParameter('label', 'Label', XTypes.UTF8STRING64, 'unique group label', [REQUIRED])
+
   static readonly DESC = new XGroupParameter('desc', 'Description', XTypes.UTF8TEXT, 'group description')
+
   static readonly PRIORITY = new XGroupParameter('priority', 'Priority', XTypes.INT4, 'group priority', [REQUIRED], '0')
+
   static readonly FACE = new XGroupParameter('face', 'Face', XTypes.BOOLEAN, 'face flag', [REQUIRED], 'true')
+
   static readonly WALL = new XGroupParameter('wall', 'Wall', XTypes.BOOLEAN, 'wall flag', [REQUIRED], 'true')
+
   static readonly ALIAS_ID = new XGroupParameter('alias_id', 'Alias ID', XTypes.GROUP_ID, 'alias group identifier')
 }
 
@@ -814,9 +903,13 @@ export class XGroupFileParameter<T> extends XParameter<T, XGroupFileParameterNam
     'unique group identifier',
     [KEY]
   )
+
   static readonly KEY = new XGroupFileParameter('key', 'Key', XTypes.UTF8STRING64, 'unique file identifier', [KEY])
+
   static readonly TYPE = new XGroupFileParameter('type', 'Type', XTypes.UTF8STRING64, 'file content type', [REQUIRED])
+
   static readonly SIZE = new XGroupFileParameter('size', 'Size', XTypes.INT8, 'file size in bytes', [REQUIRED])
+
   static readonly MD5 = new XGroupFileParameter('md5', 'MD5', XTypes.ASCIISTRING32, 'MD5 hash of the file', [REQUIRED])
 }
 
@@ -844,7 +937,9 @@ export class XGroupObjectParameter<T> extends XParameter<T, XGroupObjectParamete
     'unique group identifier',
     [KEY]
   )
+
   static readonly KEY = new XGroupObjectParameter('key', 'Key', XTypes.UTF8STRING64, 'unique object identifier', [KEY])
+
   static readonly VALUE = new XGroupObjectParameter('value', 'Value', XTypes.JSON, 'object value')
 }
 
@@ -865,10 +960,13 @@ export interface XLogInterface extends Partial<Record<XLogParameterName, unknown
 
 export class XLogParameter<T> extends XParameter<T, XLogParameterName> {
   static readonly LOG_ID = new XLogParameter('log_id', 'Log ID', XTypes.SELF_ID, 'log identifier', [KEY, AUTO_INC])
+
   static readonly USER_ID = new XLogParameter('user_id', 'User ID', XTypes.USER_ID, 'unique user identifier', [
     REQUIRED
   ])
+
   static readonly TIMESTAMP = new XLogParameter('timestamp', 'Timestamp', XTypes.INSTANT_MS, 'timestamp', [REQUIRED])
+
   static readonly DESC = new XLogParameter('desc', 'Description', XTypes.UTF8TEXT, 'description')
 }
 
@@ -914,21 +1012,29 @@ export interface XLogEditInterface extends Partial<Record<XLogEditParameterName,
 
 export class XLogEditParameter<T> extends XParameter<T, XLogEditParameterName> {
   static readonly LOG_ID = new XLogEditParameter('log_id', 'Log ID', XTypes.LOG_ID, 'log identifier', [REQUIRED])
+
   static readonly EDIT_ID = new XLogEditParameter('edit_id', 'Edit ID', XTypes.SELF_ID, 'log edit identifier', [
     KEY,
     AUTO_INC
   ])
+
   static readonly RECORD_ID = new XLogEditParameter(
     'record_id',
     'Record ID',
     XTypes.RECORD_ID,
     'unique record identifier'
   )
+
   static readonly FIELD_ID = new XLogEditParameter('field_id', 'Field ID', XTypes.FIELD_ID, 'unique field identifier')
+
   static readonly BLOB_ID = new XLogEditParameter('blob_id', 'Blob ID', XTypes.BLOB_ID, 'unique blob identifier')
+
   static readonly INSERT = new XLogEditParameter('insert', 'Insert', XTypes.BOOLEAN, 'insert flag', [REQUIRED], 'false')
+
   static readonly DELETE = new XLogEditParameter('delete', 'Delete', XTypes.BOOLEAN, 'delete flag', [REQUIRED], 'false')
+
   static readonly TRASH = new XLogEditParameter('trash', 'Trash', XTypes.BOOLEAN, 'trash flag', [REQUIRED], 'false')
+
   static readonly RESTORE = new XLogEditParameter(
     'restore',
     'Restore',
@@ -937,6 +1043,7 @@ export class XLogEditParameter<T> extends XParameter<T, XLogEditParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly DISPOSE = new XLogEditParameter(
     'dispose',
     'Dispose',
@@ -945,9 +1052,13 @@ export class XLogEditParameter<T> extends XParameter<T, XLogEditParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly FILE = new XLogEditParameter('file', 'File', XTypes.BOOLEAN, 'file flag', [REQUIRED], 'false')
+
   static readonly TAG = new XLogEditParameter('tag', 'Tag', XTypes.BOOLEAN, 'tag flag', [REQUIRED], 'false')
+
   static readonly OLD = new XLogEditParameter('old', 'Old', XTypes.UTF8TEXT, 'old value of field')
+
   static readonly NEW = new XLogEditParameter('new', 'New', XTypes.UTF8TEXT, 'new value of field')
 }
 
@@ -1005,8 +1116,11 @@ export class XNotificationParameter<T> extends XParameter<T, XNotificationParame
     'notification identifier',
     [REQUIRED]
   )
+
   static readonly TIME = new XNotificationParameter('time', 'Time', XTypes.INSTANT_MS, 'time', [REQUIRED])
+
   static readonly USER_ID = new XNotificationParameter('user_id', 'User ID', XTypes.SELF_ID, 'unique user identifier')
+
   static readonly SOURCE_ID = new XNotificationParameter(
     'source_id',
     'Source ID',
@@ -1014,18 +1128,24 @@ export class XNotificationParameter<T> extends XParameter<T, XNotificationParame
     'source identifier',
     [REQUIRED]
   )
+
   static readonly POST_ID = new XNotificationParameter('post_id', 'Post ID', XTypes.SELF_ID, 'post identifier')
+
   static readonly THREAD_ID = new XNotificationParameter('thread_id', 'Thread ID', XTypes.INT8, 'thread identifier')
+
   static readonly TASK_ID = new XNotificationParameter('task_id', 'Task ID', XTypes.SELF_ID, 'unique task identifier')
+
   static readonly REQUEST_ID = new XNotificationParameter(
     'request_id',
     'Request ID',
     XTypes.SELF_ID,
     'unique request identifier'
   )
+
   static readonly TYPE = new XNotificationParameter('type', 'Type', XTypes.NOTIFICATION_TYPE, 'notification type', [
     REQUIRED
   ])
+
   static readonly LEVEL = new XNotificationParameter(
     'level',
     'Level',
@@ -1033,7 +1153,9 @@ export class XNotificationParameter<T> extends XParameter<T, XNotificationParame
     'notification level',
     [REQUIRED]
   )
+
   static readonly SEEN = new XNotificationParameter('seen', 'Seen', XTypes.BOOLEAN, 'seen flag', [REQUIRED], 'false')
+
   static readonly CAUSE = new XNotificationParameter('cause', 'Cause', XTypes.JSONARRAY, 'cause reference(s)')
 }
 
@@ -1085,7 +1207,7 @@ export type XPostParameterName =
   | 'files'
 
 export interface XPostInterface extends Partial<Record<XPostParameterName, unknown>> {
-  wall_id?: string
+  wall_id: string
   post_id: number
   thread_id?: number
   global: boolean
@@ -1118,9 +1240,12 @@ export interface XPostInterface extends Partial<Record<XPostParameterName, unkno
 }
 
 export class XPostParameter<T> extends XParameter<T, XPostParameterName> {
-  static readonly WALL_ID = new XPostParameter('wall_id', 'Wall ID', XTypes.WALL_ID, 'wall identifier')
+  static readonly WALL_ID = new XPostParameter('wall_id', 'Wall ID', XTypes.WALL_ID, 'wall identifier', [REQUIRED])
+
   static readonly POST_ID = new XPostParameter('post_id', 'Post ID', XTypes.SELF_ID, 'post identifier', [KEY])
+
   static readonly THREAD_ID = new XPostParameter('thread_id', 'Thread ID', XTypes.INT8, 'thread identifier')
+
   static readonly GLOBAL = new XPostParameter(
     'global',
     'Global',
@@ -1129,18 +1254,26 @@ export class XPostParameter<T> extends XParameter<T, XPostParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly USER_ID = new XPostParameter('user_id', 'User ID', XTypes.SELF_ID, 'unique user identifier')
+
   static readonly TEAM_ID = new XPostParameter('team_id', 'Team ID', XTypes.SELF_ID, 'unique team identifier')
+
   static readonly GROUP_ID = new XPostParameter('group_id', 'Group ID', XTypes.SELF_ID, 'unique group identifier')
+
   static readonly DATABASE_ID = new XPostParameter(
     'database_id',
     'Database ID',
     XTypes.SELF_ID,
     'unique database identifier'
   )
+
   static readonly RECORD_ID = new XPostParameter('record_id', 'Record ID', XTypes.SELF_ID, 'unique record identifier')
+
   static readonly PATH = new XPostParameter('path', 'Path', XTypes.listOf<string>(XTypes.WALL_ID), 'full post path')
+
   static readonly REF = new XPostParameter('ref', 'Ref', XTypes.JSONOBJECT, 'post reference')
+
   static readonly ROOT = new XPostParameter(
     'root',
     'Root',
@@ -1149,7 +1282,9 @@ export class XPostParameter<T> extends XParameter<T, XPostParameterName> {
     [REQUIRED],
     'true'
   )
+
   static readonly REPLIES = new XPostParameter('replies', 'Replies', XTypes.INT4, 'post reply count')
+
   static readonly ACTIVE = new XPostParameter(
     'active',
     'Active',
@@ -1158,9 +1293,13 @@ export class XPostParameter<T> extends XParameter<T, XPostParameterName> {
     [REQUIRED],
     'true'
   )
+
   static readonly TYPE = new XPostParameter('type', 'Type', XTypes.POST_TYPE, 'post type', [REQUIRED], 'MESSAGE')
+
   static readonly LEVEL = new XPostParameter('level', 'Level', XTypes.POST_LEVEL, 'post level', [REQUIRED], 'NONE')
+
   static readonly TEXT = new XPostParameter('text', 'Text', XTypes.UTF8TEXT, 'post text')
+
   static readonly INSERT_AT = new XPostParameter(
     'insert_at',
     'Insert At',
@@ -1168,6 +1307,7 @@ export class XPostParameter<T> extends XParameter<T, XPostParameterName> {
     'timestamp when the post was inserted',
     [REQUIRED]
   )
+
   static readonly INSERT_BY = new XPostParameter(
     'insert_by',
     'Insert By',
@@ -1175,6 +1315,7 @@ export class XPostParameter<T> extends XParameter<T, XPostParameterName> {
     'user who inserted the post',
     [REQUIRED]
   )
+
   static readonly REPLY_AT = new XPostParameter(
     'reply_at',
     'Reply At',
@@ -1182,6 +1323,7 @@ export class XPostParameter<T> extends XParameter<T, XPostParameterName> {
     'timestamp when the post was last replied to',
     [REQUIRED]
   )
+
   static readonly REPLY_BY = new XPostParameter(
     'reply_by',
     'Reply By',
@@ -1189,34 +1331,43 @@ export class XPostParameter<T> extends XParameter<T, XPostParameterName> {
     'user who last replied to the post',
     [REQUIRED]
   )
+
   static readonly UPDATE_AT = new XPostParameter(
     'update_at',
     'Update At',
     XTypes.INSTANT_MS,
     'timestamp when the post was last updated'
   )
+
   static readonly UPDATE_BY = new XPostParameter(
     'update_by',
     'Update By',
     XTypes.USER_ID,
     'user who last updated the post'
   )
+
   static readonly TRASH_AT = new XPostParameter(
     'trash_at',
     'Trash At',
     XTypes.INSTANT_MS,
     'timestamp when the post was trashed'
   )
+
   static readonly TRASH_BY = new XPostParameter('trash_by', 'Trash By', XTypes.USER_ID, 'user who trashed the post')
+
   static readonly REACTIONS = new XPostParameter('reactions', 'Reactions', XTypes.JSONOBJECT, 'user reactions')
+
   static readonly MENTIONS = new XPostParameter(
     'mentions',
     'Mentions',
     XTypes.setOf<number>(XTypes.USER_ID),
     'user mentions'
   )
+
   static readonly TAGS = new XPostParameter('tags', 'Tags', XTypes.setOf<string>(XTypes.UTF8STRING64), 'tags')
+
   static readonly NAMES = new XPostParameter('names', 'Names', XTypes.UTF8TEXT, 'names')
+
   static readonly FILES = new XPostParameter(
     'files',
     'Files',
@@ -1295,6 +1446,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
   static readonly USER_ID = new XPrivDatabaseParameter('user_id', 'User ID', XTypes.SELF_ID, 'unique user identifier', [
     KEY
   ])
+
   static readonly DATABASE_ID = new XPrivDatabaseParameter(
     'database_id',
     'Database ID',
@@ -1302,6 +1454,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     'unique database identifier',
     [KEY]
   )
+
   static readonly SELECT = new XPrivDatabaseParameter(
     'select',
     'select',
@@ -1310,6 +1463,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     [REQUIRED],
     'false'
   )
+
   static readonly POST = new XPrivDatabaseParameter(
     'post',
     'post',
@@ -1318,6 +1472,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     [REQUIRED],
     'false'
   )
+
   static readonly REPLY = new XPrivDatabaseParameter(
     'reply',
     'reply',
@@ -1326,7 +1481,9 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     [REQUIRED],
     'false'
   )
+
   static readonly TAG = new XPrivDatabaseParameter('tag', 'tag', XTypes.BOOLEAN, 'tag privilege', [REQUIRED], 'false')
+
   static readonly UPDATE = new XPrivDatabaseParameter(
     'update',
     'update',
@@ -1335,6 +1492,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     [REQUIRED],
     'false'
   )
+
   static readonly INSERT = new XPrivDatabaseParameter(
     'insert',
     'insert',
@@ -1343,6 +1501,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     [REQUIRED],
     'false'
   )
+
   static readonly TRASH = new XPrivDatabaseParameter(
     'trash',
     'trash',
@@ -1351,6 +1510,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     [REQUIRED],
     'false'
   )
+
   static readonly DELETE = new XPrivDatabaseParameter(
     'delete',
     'delete',
@@ -1359,6 +1519,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     [REQUIRED],
     'false'
   )
+
   static readonly SIGN = new XPrivDatabaseParameter(
     'sign',
     'sign',
@@ -1367,6 +1528,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     [REQUIRED],
     'false'
   )
+
   static readonly LOCK = new XPrivDatabaseParameter(
     'lock',
     'lock',
@@ -1375,6 +1537,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     [REQUIRED],
     'false'
   )
+
   static readonly ALTER = new XPrivDatabaseParameter(
     'alter',
     'alter',
@@ -1383,6 +1546,7 @@ export class XPrivDatabaseParameter<T> extends XParameter<T, XPrivDatabaseParame
     [REQUIRED],
     'false'
   )
+
   static readonly GRANT = new XPrivDatabaseParameter(
     'grant',
     'grant',
@@ -1426,6 +1590,7 @@ export class XPrivGroupParameter<T> extends XParameter<T, XPrivGroupParameterNam
   static readonly USER_ID = new XPrivGroupParameter('user_id', 'User ID', XTypes.SELF_ID, 'unique user identifier', [
     KEY
   ])
+
   static readonly GROUP_ID = new XPrivGroupParameter(
     'group_id',
     'Group ID',
@@ -1433,6 +1598,7 @@ export class XPrivGroupParameter<T> extends XParameter<T, XPrivGroupParameterNam
     'unique group identifier',
     [KEY]
   )
+
   static readonly SELECT = new XPrivGroupParameter(
     'select',
     'select',
@@ -1441,7 +1607,9 @@ export class XPrivGroupParameter<T> extends XParameter<T, XPrivGroupParameterNam
     [REQUIRED],
     'false'
   )
+
   static readonly POST = new XPrivGroupParameter('post', 'post', XTypes.BOOLEAN, 'post privilege', [REQUIRED], 'false')
+
   static readonly REPLY = new XPrivGroupParameter(
     'reply',
     'reply',
@@ -1450,6 +1618,7 @@ export class XPrivGroupParameter<T> extends XParameter<T, XPrivGroupParameterNam
     [REQUIRED],
     'false'
   )
+
   static readonly ALTER = new XPrivGroupParameter(
     'alter',
     'alter',
@@ -1458,6 +1627,7 @@ export class XPrivGroupParameter<T> extends XParameter<T, XPrivGroupParameterNam
     [REQUIRED],
     'false'
   )
+
   static readonly GRANT = new XPrivGroupParameter(
     'grant',
     'grant',
@@ -1501,6 +1671,7 @@ export class XRecordLinkParameter<T> extends XParameter<T, XRecordLinkParameterN
     'from database ID',
     [KEY]
   )
+
   static readonly FROM_RECORD_ID = new XRecordLinkParameter(
     'from_record_id',
     'From Record ID',
@@ -1508,6 +1679,7 @@ export class XRecordLinkParameter<T> extends XParameter<T, XRecordLinkParameterN
     'from record ID',
     [KEY]
   )
+
   static readonly TO_DATABASE_ID = new XRecordLinkParameter(
     'to_database_id',
     'To Database ID',
@@ -1515,6 +1687,7 @@ export class XRecordLinkParameter<T> extends XParameter<T, XRecordLinkParameterN
     'to database ID',
     [KEY]
   )
+
   static readonly TO_RECORD_ID = new XRecordLinkParameter(
     'to_record_id',
     'To Record ID',
@@ -1522,6 +1695,7 @@ export class XRecordLinkParameter<T> extends XParameter<T, XRecordLinkParameterN
     'to record ID',
     [KEY]
   )
+
   static readonly DESC = new XRecordLinkParameter('desc', 'Description', XTypes.UTF8TEXT, 'description of the link')
 }
 
@@ -1564,9 +1738,11 @@ export class XRequestParameter<T> extends XParameter<T, XRequestParameterName> {
     'unique request identifier',
     [KEY, AUTO_INC]
   )
+
   static readonly REQUEST_BY = new XRequestParameter('request_by', 'Request By', XTypes.USER_ID, 'requesting user', [
     REQUIRED
   ])
+
   static readonly REQUEST_AT = new XRequestParameter(
     'request_at',
     'Request At',
@@ -1574,13 +1750,16 @@ export class XRequestParameter<T> extends XParameter<T, XRequestParameterName> {
     'requesting timestamp',
     [REQUIRED]
   )
+
   static readonly RESOLVE_BY = new XRequestParameter('resolve_by', 'Resolve By', XTypes.USER_ID, 'resolving user')
+
   static readonly RESOLVE_AT = new XRequestParameter(
     'resolve_at',
     'Resolve At',
     XTypes.INSTANT_MS,
     'resolving timestamp'
   )
+
   static readonly STATUS = new XRequestParameter(
     'status',
     'Status',
@@ -1589,13 +1768,16 @@ export class XRequestParameter<T> extends XParameter<T, XRequestParameterName> {
     [REQUIRED],
     'REQUESTED'
   )
+
   static readonly JUSTIFICATION = new XRequestParameter(
     'justification',
     'Justification',
     XTypes.UTF8TEXT,
     'request justification'
   )
+
   static readonly RESPONSE = new XRequestParameter('response', 'Response', XTypes.UTF8TEXT, 'request response')
+
   static readonly ACTION = new XRequestParameter('action', 'Action', XTypes.JSONOBJECT, 'request action', [REQUIRED])
 }
 
@@ -1636,8 +1818,11 @@ export interface XStoreInterface extends Partial<Record<XStoreParameterName, unk
 
 export class XStoreParameter<T> extends XParameter<T, XStoreParameterName> {
   static readonly NAME = new XStoreParameter('name', 'Name', XTypes.ASCIISTRING32, 'unique store name', [KEY])
+
   static readonly KEY = new XStoreParameter('key', 'Key', XTypes.ASCIISTRING64, 'unique object identifier', [KEY])
+
   static readonly TYPE = new XStoreParameter('type', 'Type', XTypes.ASCIISTRING16, 'object type', [KEY])
+
   static readonly TIMESTAMP = new XStoreParameter(
     'timestamp',
     'Timestamp',
@@ -1645,12 +1830,17 @@ export class XStoreParameter<T> extends XParameter<T, XStoreParameterName> {
     'timestamp when created',
     [KEY]
   )
+
   static readonly REF = new XStoreParameter('ref', 'Ref', XTypes.ASCIISTRING64, 'object identifier when created', [
     REQUIRED
   ])
+
   static readonly VALUE = new XStoreParameter('value', 'Value', XTypes.JSON, 'object value')
+
   static readonly USER_ID = new XStoreParameter('user_id', 'User ID', XTypes.USER_ID, 'user identifier', [REQUIRED])
+
   static readonly ACTIVE = new XStoreParameter('active', 'Active', XTypes.BOOLEAN, 'active flag', [REQUIRED])
+
   static readonly DESC = new XStoreParameter('desc', 'Description', XTypes.UTF8TEXT, 'description')
 }
 
@@ -1727,28 +1917,47 @@ export interface XTaskInterface extends Partial<Record<XTaskParameterName, unkno
 
 export class XTaskParameter<T> extends XParameter<T, XTaskParameterName> {
   static readonly TASK_ID = new XTaskParameter('task_id', 'Task ID', XTypes.SELF_ID, 'unique task identifier', [KEY])
+
   static readonly USER_ID = new XTaskParameter('user_id', 'User ID', XTypes.USER_ID, 'user who ran the task', [
     REQUIRED
   ])
+
   static readonly NAME = new XTaskParameter('name', 'Name', XTypes.ASCIISTRING64, 'task name', [REQUIRED])
+
   static readonly PARENT_ID = new XTaskParameter('parent_id', 'Parent ID', XTypes.INT8, 'task parent ID')
+
   static readonly REF_ID = new XTaskParameter('ref_id', 'Ref ID', XTypes.INT8, 'task reference ID')
+
   static readonly PRIORITY = new XTaskParameter('priority', 'Priority', XTypes.INT4, 'task priority', [REQUIRED], '0')
+
   static readonly TIMEOUT = new XTaskParameter('timeout', 'Timeout', XTypes.INT4, 'task timeout')
+
   static readonly CONF = new XTaskParameter('conf', 'Conf', XTypes.JSONOBJECT, 'task configuration', [REQUIRED])
+
   static readonly STATE = new XTaskParameter('state', 'State', XTypes.INT4, 'task state', [REQUIRED], '0')
+
   static readonly CREATED = new XTaskParameter('created', 'Created', XTypes.INSTANT_MS, 'task creation time', [
     REQUIRED
   ])
+
   static readonly UPDATED = new XTaskParameter('updated', 'Updated', XTypes.INSTANT_MS, 'task update time', [REQUIRED])
+
   static readonly STARTED = new XTaskParameter('started', 'Started', XTypes.INSTANT_MS, 'task execution start time')
+
   static readonly ENDED = new XTaskParameter('ended', 'Ended', XTypes.INSTANT_MS, 'task execution end time')
+
   static readonly CONCLUDED = new XTaskParameter('concluded', 'Concluded', XTypes.INSTANT_MS, 'task conclusion time')
+
   static readonly PROGRESS = new XTaskParameter('progress', 'Progress', XTypes.INT4, 'task progress')
+
   static readonly IMPORTS = new XTaskParameter('imports', 'Imports', XTypes.INT4, 'files to import')
+
   static readonly IMPORTED = new XTaskParameter('imported', 'Imported', XTypes.INT4, 'files imported')
+
   static readonly RUNNER = new XTaskParameter('runner', 'Runner', XTypes.ASCIISTRING64, 'task runner')
+
   static readonly THREAD = new XTaskParameter('thread', 'Thread', XTypes.ASCIISTRING64, 'task thread name')
+
   static readonly ARCHIVE = new XTaskParameter(
     'archive',
     'Archive',
@@ -1757,8 +1966,11 @@ export class XTaskParameter<T> extends XParameter<T, XTaskParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly AUTO = new XTaskParameter('auto', 'Auto', XTypes.BOOLEAN, 'task auto flag', [REQUIRED], 'false')
+
   static readonly OPEN = new XTaskParameter('open', 'Open', XTypes.BOOLEAN, 'task open flag', [REQUIRED], 'false')
+
   static readonly SEEN = new XTaskParameter(
     'seen',
     'Seen',
@@ -1767,9 +1979,13 @@ export class XTaskParameter<T> extends XParameter<T, XTaskParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly DESC = new XTaskParameter('desc', 'Desc', XTypes.UTF8STRING, 'task description')
+
   static readonly LOG = new XTaskParameter('log', 'Log', XTypes.ASCIISTRING, 'task log')
+
   static readonly RESULT = new XTaskParameter('result', 'Result', XTypes.JSONOBJECT, 'task result')
+
   static readonly WARNING = new XTaskParameter('warning', 'Warning', XTypes.UTF8STRING, 'task warning')
 }
 
@@ -1822,14 +2038,19 @@ export class XTaskEventParameter<T> extends XParameter<T, XTaskEventParameterNam
     'unique event identifier',
     [KEY, AUTO_INC]
   )
+
   static readonly TASK_ID = new XTaskEventParameter('task_id', 'Task ID', XTypes.TASK_ID, 'unique task identifier', [
     REQUIRED
   ])
+
   static readonly STATE = new XTaskEventParameter('state', 'State', XTypes.INT4, 'event state', [REQUIRED])
+
   static readonly TIMESTAMP = new XTaskEventParameter('timestamp', 'Timestamp', XTypes.INSTANT_MS, 'timestamp', [
     REQUIRED
   ])
+
   static readonly PROGRESS = new XTaskEventParameter('progress', 'Progress', XTypes.INT4, 'task progress')
+
   static readonly DESC = new XTaskEventParameter('desc', 'Description', XTypes.UTF8TEXT, 'event description')
 }
 
@@ -1859,11 +2080,17 @@ export class XTaskFileParameter<T> extends XParameter<T, XTaskFileParameterName>
     KEY,
     AUTO_INC
   ])
+
   static readonly TASK_ID = new XTaskFileParameter('task_id', 'Task ID', XTypes.TASK_ID, 'task identifier', [REQUIRED])
+
   static readonly NAME = new XTaskFileParameter('name', 'Name', XTypes.UTF8STRING128, 'file name', [REQUIRED])
+
   static readonly LOG = new XTaskFileParameter('log', 'Log', XTypes.BOOLEAN, 'log file flag', [REQUIRED], 'false')
+
   static readonly TYPE = new XTaskFileParameter('type', 'Type', XTypes.UTF8STRING64, 'file type', [REQUIRED])
+
   static readonly SIZE = new XTaskFileParameter('size', 'Size', XTypes.INT8, 'file size in bytes', [REQUIRED])
+
   static readonly MD5 = new XTaskFileParameter('md5', 'MD5', XTypes.ASCIISTRING32, 'MD5 file checksum', [REQUIRED])
 }
 
@@ -1910,14 +2137,18 @@ export interface XTaskThreadInterface extends Partial<Record<XTaskThreadParamete
 
 export class XTaskThreadParameter<T> extends XParameter<T, XTaskThreadParameterName> {
   static readonly NAME = new XTaskThreadParameter('name', 'Name', XTypes.ASCIISTRING64, 'thread name', [KEY])
+
   static readonly TASK_ID = new XTaskThreadParameter('task_id', 'Task ID', XTypes.TASK_ID, 'current task identifier')
+
   static readonly TASK_STATE = new XTaskThreadParameter('task_state', 'Task State', XTypes.INT4, 'task state')
+
   static readonly TASK_UPDATE = new XTaskThreadParameter(
     'task_update',
     'Task Update',
     XTypes.INSTANT_MS,
     'task update time'
   )
+
   static readonly LOCK = new XTaskThreadParameter(
     'lock',
     'Lock',
@@ -1926,8 +2157,11 @@ export class XTaskThreadParameter<T> extends XParameter<T, XTaskThreadParameterN
     [REQUIRED],
     'false'
   )
+
   static readonly LOCK_AT = new XTaskThreadParameter('lock_at', 'Lock At', XTypes.INSTANT_MS, 'thread lock timestamp')
+
   static readonly LOCK_BY = new XTaskThreadParameter('lock_by', 'Lock By', XTypes.TASK_ID, 'thread lock task ID')
+
   static readonly PAUSE = new XTaskThreadParameter(
     'pause',
     'Pause',
@@ -1936,13 +2170,16 @@ export class XTaskThreadParameter<T> extends XParameter<T, XTaskThreadParameterN
     [REQUIRED],
     'false'
   )
+
   static readonly PAUSE_AT = new XTaskThreadParameter(
     'pause_at',
     'Pause At',
     XTypes.INSTANT_MS,
     'thread pause timestamp'
   )
+
   static readonly PAUSE_BY = new XTaskThreadParameter('pause_by', 'Pause By', XTypes.USER_ID, 'thread pause user ID')
+
   static readonly RESUME = new XTaskThreadParameter(
     'resume',
     'Resume',
@@ -1951,12 +2188,14 @@ export class XTaskThreadParameter<T> extends XParameter<T, XTaskThreadParameterN
     [REQUIRED],
     'false'
   )
+
   static readonly RESUME_AT = new XTaskThreadParameter(
     'resume_at',
     'Resume At',
     XTypes.INSTANT_MS,
     'thread resume timestamp'
   )
+
   static readonly RESUME_BY = new XTaskThreadParameter(
     'resume_by',
     'Resume By',
@@ -2002,9 +2241,13 @@ export interface XTeamInterface extends Partial<Record<XTeamParameterName, unkno
 
 export class XTeamParameter<T> extends XParameter<T, XTeamParameterName> {
   static readonly TEAM_ID = new XTeamParameter('team_id', 'Team ID', XTypes.SELF_ID, 'unique team identifier', [KEY])
+
   static readonly NAME = new XTeamParameter('name', 'Name', XTypes.ASCIISTRING32, 'unique team name', [REQUIRED])
+
   static readonly LABEL = new XTeamParameter('label', 'Label', XTypes.UTF8STRING64, 'unique team label', [REQUIRED])
+
   static readonly PRIORITY = new XTeamParameter('priority', 'Priority', XTypes.INT4, 'team priority', [REQUIRED], '0')
+
   static readonly GROUP_PRIVILEGES = new XTeamParameter(
     'group_privileges',
     'Group Privileges',
@@ -2012,6 +2255,7 @@ export class XTeamParameter<T> extends XParameter<T, XTeamParameterName> {
     'default group privileges',
     [REQUIRED]
   )
+
   static readonly DATABASE_PRIVILEGES = new XTeamParameter(
     'database_privileges',
     'Database Privileges',
@@ -2019,6 +2263,7 @@ export class XTeamParameter<T> extends XParameter<T, XTeamParameterName> {
     'default database privileges',
     [REQUIRED]
   )
+
   static readonly DESC = new XTeamParameter('desc', 'Description', XTypes.UTF8TEXT, 'team description')
 }
 
@@ -2046,9 +2291,13 @@ export class XTeamFileParameter<T> extends XParameter<T, XTeamFileParameterName>
   static readonly TEAM_ID = new XTeamFileParameter('team_id', 'Team ID', XTypes.TEAM_ID, 'unique team identifier', [
     KEY
   ])
+
   static readonly KEY = new XTeamFileParameter('key', 'Key', XTypes.UTF8STRING64, 'unique file identifier', [KEY])
+
   static readonly TYPE = new XTeamFileParameter('type', 'Type', XTypes.UTF8STRING64, 'file content type', [REQUIRED])
+
   static readonly SIZE = new XTeamFileParameter('size', 'Size', XTypes.INT8, 'file size in bytes', [REQUIRED])
+
   static readonly MD5 = new XTeamFileParameter('md5', 'MD5', XTypes.ASCIISTRING32, 'MD5 hash of the file', [REQUIRED])
 }
 
@@ -2072,7 +2321,9 @@ export class XTeamObjectParameter<T> extends XParameter<T, XTeamObjectParameterN
   static readonly TEAM_ID = new XTeamObjectParameter('team_id', 'Team ID', XTypes.TEAM_ID, 'unique team identifier', [
     KEY
   ])
+
   static readonly KEY = new XTeamObjectParameter('key', 'Key', XTypes.UTF8STRING64, 'unique object identifier', [KEY])
+
   static readonly VALUE = new XTeamObjectParameter('value', 'Value', XTypes.JSON, 'object value')
 }
 
@@ -2107,26 +2358,34 @@ export interface XTeamSubInterface extends Partial<Record<XTeamSubParameterName,
 
 export class XTeamSubParameter<T> extends XParameter<T, XTeamSubParameterName> {
   static readonly SUB_ID = new XTeamSubParameter('sub_id', 'Sub ID', XTypes.UUID, 'subscription identifier', [KEY])
+
   static readonly TEAM_ID = new XTeamSubParameter('team_id', 'Team ID', XTypes.TEAM_ID, 'team identifier', [
     REQUIRED,
     SYSTEM
   ])
+
   static readonly WALL_ID = new XTeamSubParameter('wall_id', 'Wall ID', XTypes.WALL_ID, 'wall identifier')
+
   static readonly EMAIL = new XTeamSubParameter('email', 'Email', XTypes.BOOLEAN, 'email flag', [REQUIRED], 'false')
+
   static readonly FILE = new XTeamSubParameter('file', 'File', XTypes.BOOLEAN, 'file filter flag', [REQUIRED], 'false')
+
   static readonly TYPES = new XTeamSubParameter('types', 'Types', XTypes.setOf<number>(XTypes.POST_TYPE), 'post types')
+
   static readonly LEVELS = new XTeamSubParameter(
     'levels',
     'Levels',
     XTypes.setOf<number>(XTypes.POST_LEVEL),
     'post levels'
   )
+
   static readonly KEYWORDS = new XTeamSubParameter(
     'keywords',
     'Keywords',
     XTypes.setOf<string>(XTypes.UTF8STRING64),
     'post keywords'
   )
+
   static readonly DESC = new XTeamSubParameter('desc', 'Description', XTypes.UTF8STRING, 'subscription description')
 }
 
@@ -2179,11 +2438,14 @@ export interface XUserInterface extends Partial<Record<XUserParameterName, unkno
 
 export class XUserParameter<T> extends XParameter<T, XUserParameterName> {
   static readonly USER_ID = new XUserParameter('user_id', 'User ID', XTypes.SELF_ID, 'unique user identifier', [KEY])
+
   static readonly USERNAME = new XUserParameter('username', 'Username', XTypes.UTF8VSTRING128, 'unique username', [
     SYSTEM,
     REQUIRED
   ])
+
   static readonly SUPER = new XUserParameter('super', 'Super', XTypes.BOOLEAN, 'super privilege', [SYSTEM], 'false')
+
   static readonly READ_ALL = new XUserParameter(
     'read_all',
     'Read All',
@@ -2192,6 +2454,7 @@ export class XUserParameter<T> extends XParameter<T, XUserParameterName> {
     [SYSTEM],
     'false'
   )
+
   static readonly WRITE_ALL = new XUserParameter(
     'write_all',
     'Write All',
@@ -2200,15 +2463,25 @@ export class XUserParameter<T> extends XParameter<T, XUserParameterName> {
     [SYSTEM],
     'false'
   )
+
   static readonly EMAIL = new XUserParameter('email', 'Email', XTypes.UTF8TEXT, 'email address')
+
   static readonly EMAIL2 = new XUserParameter('email2', 'Email2', XTypes.UTF8TEXT, 'secondary email address')
+
   static readonly FIRST = new XUserParameter('first', 'First', XTypes.UTF8STRING64, 'first name')
+
   static readonly MIDDLE = new XUserParameter('middle', 'Middle', XTypes.UTF8STRING64, 'middle name')
+
   static readonly LAST = new XUserParameter('last', 'Last', XTypes.UTF8STRING64, 'last name')
+
   static readonly CENTER = new XUserParameter('center', 'Center', XTypes.UTF8STRING16, 'NASA center')
+
   static readonly EMPLOYER = new XUserParameter('employer', 'Employer', XTypes.UTF8STRING64, 'employer')
+
   static readonly PHONE = new XUserParameter('phone', 'Phone', XTypes.UTF8STRING16, 'phone')
+
   static readonly TITLE = new XUserParameter('title', 'Title', XTypes.UTF8STRING64, 'title')
+
   static readonly INFO = new XUserParameter('info', 'Info', XTypes.UTF8TEXT, 'information')
 }
 
@@ -2239,6 +2512,7 @@ export interface XUserFollowInterface extends Partial<Record<XUserFollowParamete
 
 export class XUserFollowParameter<T> extends XParameter<T, XUserFollowParameterName> {
   static readonly USER_ID = new XUserFollowParameter('user_id', 'User ID', XTypes.USER_ID, 'user identifier', [KEY])
+
   static readonly WALL_ID = new XUserFollowParameter('wall_id', 'Wall ID', XTypes.WALL_ID, 'wall identifier', [KEY])
 }
 
@@ -2261,9 +2535,13 @@ export class XUserFileParameter<T> extends XParameter<T, XUserFileParameterName>
   static readonly USER_ID = new XUserFileParameter('user_id', 'User ID', XTypes.USER_ID, 'unique user identifier', [
     KEY
   ])
+
   static readonly KEY = new XUserFileParameter('key', 'Key', XTypes.UTF8STRING64, 'unique object identifier', [KEY])
+
   static readonly TYPE = new XUserFileParameter('type', 'Type', XTypes.UTF8STRING64, 'file content type', [REQUIRED])
+
   static readonly SIZE = new XUserFileParameter('size', 'Size', XTypes.INT8, 'file size in bytes', [REQUIRED])
+
   static readonly MD5 = new XUserFileParameter('md5', 'MD5', XTypes.ASCIISTRING32, 'MD5 hash of the blob', [REQUIRED])
 }
 
@@ -2287,7 +2565,9 @@ export class XUserObjectParameter<T> extends XParameter<T, XUserObjectParameterN
   static readonly USER_ID = new XUserObjectParameter('user_id', 'User ID', XTypes.USER_ID, 'unique user identifier', [
     KEY
   ])
+
   static readonly KEY = new XUserObjectParameter('key', 'Key', XTypes.UTF8STRING64, 'unique object identifier', [KEY])
+
   static readonly VALUE = new XUserObjectParameter('value', 'Value', XTypes.JSON, 'object value')
 }
 
@@ -2328,11 +2608,14 @@ export interface XUserSubInterface extends Partial<Record<XUserSubParameterName,
 
 export class XUserSubParameter<T> extends XParameter<T, XUserSubParameterName> {
   static readonly SUB_ID = new XUserSubParameter('sub_id', 'Sub ID', XTypes.UUID, 'subscription identifier', [KEY])
+
   static readonly USER_ID = new XUserSubParameter('user_id', 'User ID', XTypes.USER_ID, 'user identifier', [
     REQUIRED,
     SYSTEM
   ])
+
   static readonly WALL_ID = new XUserSubParameter('wall_id', 'Wall ID', XTypes.WALL_ID, 'wall identifier')
+
   static readonly DISABLED = new XUserSubParameter(
     'disabled',
     'Disabled',
@@ -2341,23 +2624,31 @@ export class XUserSubParameter<T> extends XParameter<T, XUserSubParameterName> {
     [REQUIRED],
     'false'
   )
+
   static readonly EMAIL = new XUserSubParameter('email', 'Email', XTypes.BOOLEAN, 'email flag', [REQUIRED], 'false')
+
   static readonly TYPES = new XUserSubParameter('types', 'Types', XTypes.setOf<number>(XTypes.POST_TYPE), 'post types')
+
   static readonly LEVELS = new XUserSubParameter(
     'levels',
     'Levels',
     XTypes.setOf<number>(XTypes.POST_LEVEL),
     'post levels'
   )
+
   static readonly KEYWORDS = new XUserSubParameter(
     'keywords',
     'Keywords',
     XTypes.setOf<string>(XTypes.UTF8STRING64),
     'post keywords'
   )
+
   static readonly FILE = new XUserSubParameter('file', 'File', XTypes.BOOLEAN, 'file filter flag', [REQUIRED], 'false')
+
   static readonly DESC = new XUserSubParameter('desc', 'Description', XTypes.UTF8STRING, 'description')
+
   static readonly SRC_ID = new XUserSubParameter('src_id', 'Source ID', XTypes.TEAM_ID, 'source team ID', [SYSTEM])
+
   static readonly REF_ID = new XUserSubParameter('ref_id', 'Ref ID', XTypes.UUID, 'reference ID', [SYSTEM])
 }
 
@@ -2386,9 +2677,11 @@ export interface XUserThreadInterface extends Partial<Record<XUserThreadParamete
 
 export class XUserThreadParameter<T> extends XParameter<T, XUserThreadParameterName> {
   static readonly USER_ID = new XUserThreadParameter('user_id', 'User ID', XTypes.USER_ID, 'user identifier', [KEY])
+
   static readonly THREAD_ID = new XUserThreadParameter('thread_id', 'Thread ID', XTypes.INT8, 'thread identifier', [
     KEY
   ])
+
   static readonly WALL_ID = new XUserThreadParameter('wall_id', 'Wall ID', XTypes.WALL_ID, 'wall identifier')
 }
 

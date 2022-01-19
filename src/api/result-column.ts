@@ -28,6 +28,7 @@ export function parseResultColumn(c: unknown, ctx: XApiContext) {
 
 export class XResultColumn implements XApiComponent<XResultColumn> {
   e?: XExpression
+
   alias?: string
 
   setExpression(e: XExpressionable) {

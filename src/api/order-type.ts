@@ -6,6 +6,7 @@ const DESC = 'desc'
 
 export const XOrderTypeName = z.enum([ASC, DESC])
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type XOrderTypeName = z.infer<typeof XOrderTypeName>
 
 export class XOrderType extends XVariant<XOrderTypeName> {
@@ -21,8 +22,10 @@ export class XOrderType extends XVariant<XOrderTypeName> {
   }
 
   static readonly map = {} as Record<XOrderTypeName, XOrderType>
+
   static readonly values: XOrderType[] = []
 
   static readonly ASC = new XOrderType(ASC)
+
   static readonly DESC = new XOrderType(DESC)
 }

@@ -9,8 +9,11 @@ import { XAction } from './action'
 
 abstract class XFetchAction extends XAction {
   where?: XExpression
+
   orderBy: XOrderTerm[] = []
+
   limit?: XExpression
+
   offset?: XExpression
 
   abstract getFetch(): string
@@ -42,6 +45,7 @@ abstract class XFetchAction extends XAction {
 
 export class XFetchRecordsAction extends XFetchAction {
   database?: XDatabase | string | number
+
   records: Array<XRecord | Record<string, unknown> | number> = []
 
   getFetch() {
@@ -81,6 +85,7 @@ export class XFetchRecordsAction extends XFetchAction {
 
 export class XFetchLogsAction extends XFetchAction {
   database?: XDatabase | string | number
+
   record?: XRecord | number
 
   getFetch() {
@@ -107,13 +112,21 @@ export class XFetchLogsAction extends XFetchAction {
 
 export class XFetchPostsAction extends XFetchAction {
   wall?: XWall
+
   following?: boolean
+
   threads?: boolean
+
   children?: boolean
+
   text?: string
+
   post?: number
+
   thread?: number
+
   from?: number
+
   mode?: string
 
   getFetch() {
@@ -180,9 +193,13 @@ export class XFetchPostsAction extends XFetchAction {
 
 export class XFetchTasksAction extends XFetchAction {
   user?: XUser | string | number
+
   tasks: number[] = []
+
   from?: number
+
   auto?: boolean
+
   text?: string
 
   getFetch() {
@@ -267,6 +284,7 @@ export class XFetchThreadsAction extends XFetchAction {
 
 export class XFetchNotificationsAction extends XFetchAction {
   type?: string | number
+
   seen?: boolean
 
   getFetch() {
@@ -310,6 +328,7 @@ export class XFetchRequestsAction extends XFetchAction {
 
 export class XFetchSubscriptionsAction extends XFetchAction {
   user?: XUser | string | number
+
   team?: XTeam | string | number
 
   getFetch() {

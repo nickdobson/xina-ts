@@ -6,6 +6,7 @@ const OR = 'or'
 
 export const XCompoundOperatorName = z.enum([AND, OR])
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type XCompoundOperatorName = z.infer<typeof XCompoundOperatorName>
 
 export class XCompoundOperator extends XVariant<XCompoundOperatorName> {
@@ -21,8 +22,10 @@ export class XCompoundOperator extends XVariant<XCompoundOperatorName> {
   }
 
   static readonly map = {} as Record<XCompoundOperatorName, XCompoundOperator>
+
   static readonly values: XCompoundOperator[] = []
 
   static readonly AND = new XCompoundOperator(AND)
+
   static readonly OR = new XCompoundOperator(OR)
 }

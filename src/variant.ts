@@ -7,8 +7,11 @@ export interface XVariantProps<N> {
 
 export default abstract class XVariant<N extends string> {
   readonly name: N
+
   readonly label: string
+
   readonly desc: string
+
   readonly aliases?: N[]
 
   constructor(name: N, desc: string, props?: XVariantProps<N>) {

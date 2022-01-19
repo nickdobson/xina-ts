@@ -6,7 +6,9 @@ import { XAction } from './action'
 
 export class XInsertAction extends XAction {
   database?: XDatabase
+
   records: Record<string, unknown>[] = []
+
   mode?: string
 
   setDatabase(database: XDatabase) {

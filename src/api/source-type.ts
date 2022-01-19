@@ -10,6 +10,7 @@ const SELECT = 'select'
 
 export const XSourceTypeName = z.enum([TABLE_SYSTEM, TS, TABLE_DATABASE, TD, JOIN, SELECT])
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type XSourceTypeName = z.infer<typeof XSourceTypeName>
 
 const of = (name: XSourceTypeName, aliases?: XSourceTypeName[]) => new XSourceType(name, aliases)
@@ -28,10 +29,14 @@ export class XSourceType extends XVariant<XSourceTypeName> {
   }
 
   static readonly map = {} as Record<XSourceTypeName, XSourceType>
+
   static readonly values: XSourceType[] = []
 
   static readonly TABLE_SYSTEM = of(TS, [TABLE_SYSTEM])
+
   static readonly TABLE_DATABASE = of(TD, [TABLE_DATABASE])
+
   static readonly JOIN = of(JOIN)
+
   static readonly SELECT = of(SELECT)
 }

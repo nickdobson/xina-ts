@@ -18,10 +18,15 @@ export function forDatabase(database: XDatabase) {
 
 export class XAttribute<T, N extends string> {
   readonly name: N
+
   readonly label: string
+
   readonly type: XType<T>
+
   readonly desc: string
+
   readonly params?: XDatabaseParameter<unknown>[]
+
   readonly def?: string
 
   constructor(
@@ -54,6 +59,7 @@ export class XAttributeManager<A extends XAttribute<any, any>> {
   readonly values: A[]
 
   readonly nameMap: Record<string, A> = {}
+
   readonly labelMap: Record<string, A> = {}
 
   constructor(values: A[]) {
@@ -152,7 +158,9 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     'parent record identifier',
     [XDatabaseParameter.PARENT_DATABASE_ID]
   )
+
   static readonly RECORD_ID = new XRecordAttribute('record_id', 'Record ID', XTypes.SELF_ID, 'unique record identifier')
+
   static readonly VERSION = new XRecordAttribute(
     'version',
     'Version',
@@ -161,10 +169,12 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     [XDatabaseParameter.LOG],
     '0'
   )
+
   static readonly INSERT_ID = new XRecordAttribute('insert_id', 'Insert ID', XTypes.LOG_ID, 'record insert ID', [
     XDatabaseParameter.LOG,
     XDatabaseParameter.TRACK
   ])
+
   static readonly INSERT_AT = new XRecordAttribute(
     'insert_at',
     'Insert At',
@@ -172,13 +182,16 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     'record insert instant',
     [XDatabaseParameter.TRACK]
   )
+
   static readonly INSERT_BY = new XRecordAttribute('insert_by', 'Insert By', XTypes.USER_ID, 'record insert user', [
     XDatabaseParameter.TRACK
   ])
+
   static readonly UPDATE_ID = new XRecordAttribute('update_id', 'Update ID', XTypes.LOG_ID, 'record update ID', [
     XDatabaseParameter.LOG,
     XDatabaseParameter.TRACK
   ])
+
   static readonly UPDATE_AT = new XRecordAttribute(
     'update_at',
     'Update At',
@@ -186,6 +199,7 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     'last record update instant',
     [XDatabaseParameter.TRACK]
   )
+
   static readonly UPDATE_BY = new XRecordAttribute(
     'update_by',
     'Update By',
@@ -193,19 +207,23 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     'last record update user',
     [XDatabaseParameter.TRACK]
   )
+
   static readonly TRASH_ID = new XRecordAttribute('trash_id', 'Trash ID', XTypes.LOG_ID, 'record trash ID', [
     XDatabaseParameter.LOG,
     XDatabaseParameter.TRACK,
     XDatabaseParameter.TRASH
   ])
+
   static readonly TRASH_AT = new XRecordAttribute('trash_at', 'Trash At', XTypes.INSTANT_MS, 'record trash instant', [
     XDatabaseParameter.TRACK,
     XDatabaseParameter.TRASH
   ])
+
   static readonly TRASH_BY = new XRecordAttribute('trash_by', 'Trash By', XTypes.USER_ID, 'record trash user', [
     XDatabaseParameter.TRACK,
     XDatabaseParameter.TRASH
   ])
+
   static readonly RESTORE_ID = new XRecordAttribute(
     'restore_id',
     'Restore ID',
@@ -213,6 +231,7 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     'record restoration ID',
     [XDatabaseParameter.LOG, XDatabaseParameter.TRACK, XDatabaseParameter.TRASH]
   )
+
   static readonly RESTORE_AT = new XRecordAttribute(
     'restore_at',
     'Restore At',
@@ -220,10 +239,12 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     'record restoration instant',
     [XDatabaseParameter.TRACK, XDatabaseParameter.TRASH]
   )
+
   static readonly RESTORE_BY = new XRecordAttribute('restore_by', 'Restore By', XTypes.USER_ID, 'record restore user', [
     XDatabaseParameter.TRACK,
     XDatabaseParameter.TRASH
   ])
+
   static readonly LOCK = new XRecordAttribute(
     'lock',
     'Lock',
@@ -232,14 +253,17 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     [XDatabaseParameter.LOCK],
     'false'
   )
+
   static readonly LOCK_AT = new XRecordAttribute('lock_at', 'Lock At', XTypes.INSTANT_MS, 'record locked instant', [
     XDatabaseParameter.LOCK,
     XDatabaseParameter.TRACK
   ])
+
   static readonly LOCK_BY = new XRecordAttribute('lock_by', 'Lock By', XTypes.INT8, 'user who locked the record', [
     XDatabaseParameter.LOCK,
     XDatabaseParameter.TRACK
   ])
+
   static readonly SIGN = new XRecordAttribute(
     'sign',
     'Sign',
@@ -248,12 +272,15 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     [XDatabaseParameter.SIGN],
     'false'
   )
+
   static readonly SIGN_AT = new XRecordAttribute('sign_at', 'Sign At', XTypes.INSTANT_MS, 'record signed instant', [
     XDatabaseParameter.SIGN
   ])
+
   static readonly SIGN_BY = new XRecordAttribute('sign_by', 'Sign By', XTypes.INT8, 'user who signed the record', [
     XDatabaseParameter.SIGN
   ])
+
   static readonly SIGN_COMMENT = new XRecordAttribute(
     'sign_comment',
     'Sign Comment',
@@ -261,6 +288,7 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     'signature comment',
     [XDatabaseParameter.SIGN]
   )
+
   static readonly FILE_VERSION = new XRecordAttribute(
     'file_version',
     'File Version',
@@ -269,15 +297,19 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     [XDatabaseParameter.FILE, XDatabaseParameter.LOG],
     '0'
   )
+
   static readonly FILE_TYPE = new XRecordAttribute('file_type', 'File Type', XTypes.UTF8STRING64, 'file content type', [
     XDatabaseParameter.FILE
   ])
+
   static readonly FILE_SIZE = new XRecordAttribute('file_size', 'File Size', XTypes.INT8, 'file size in bytes', [
     XDatabaseParameter.FILE
   ])
+
   static readonly FILE_MD5 = new XRecordAttribute('file_md5', 'File MD5', XTypes.ASCIISTRING32, 'file MD5 hash', [
     XDatabaseParameter.FILE
   ])
+
   static readonly FILE_OBJECT_ID = new XRecordAttribute(
     'file_object_id',
     'File Object ID',
@@ -285,10 +317,13 @@ export class XRecordAttribute<T> extends XAttribute<T, XRecordAttributeName> {
     'file object ID',
     [XDatabaseParameter.FILE]
   )
+
   static readonly TAGS = new XRecordAttribute('tags', 'Tags', XTypes.UTF8STRING, 'tags', [XDatabaseParameter.TAG], ';')
+
   static readonly TAGS_ADD = new XRecordAttribute('tags_add', 'Tags Add', XTypes.UTF8STRING, 'add tags buffer', [
     XDatabaseParameter.TAG
   ])
+
   static readonly TAGS_REMOVE = new XRecordAttribute(
     'tags_remove',
     'Tags Remove',
@@ -351,10 +386,15 @@ export class XBlobAttribute<T> extends XAttribute<T, XBlobAttributeName> {
     [XDatabaseParameter.LOG],
     '0'
   )
+
   static readonly SIZE = new XBlobAttribute('size', 'Size', XTypes.INT8, 'size in bytes')
+
   static readonly MD5 = new XBlobAttribute('md5', 'MD5', XTypes.ASCIISTRING32, 'MD5 hash')
+
   static readonly TYPE = new XBlobAttribute('type', 'Type', XTypes.UTF8STRING64, 'content type')
+
   static readonly UPDATE = new XBlobAttribute('update', 'Update', XTypes.BOOLEAN, 'update flag')
+
   static readonly OBJECT_ID = new XBlobAttribute('object_id', 'Object ID', XTypes.ASCIISTRING16, 'object ID')
 }
 

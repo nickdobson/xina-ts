@@ -40,6 +40,7 @@ export const XSearchOperatorName = z.enum([
   IS_NOT_NULL
 ])
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type XSearchOperatorName = z.infer<typeof XSearchOperatorName>
 
 const contains = (a: any, b: any): boolean => ('' + a).toLowerCase().includes(('' + b).toLowerCase())
@@ -64,26 +65,34 @@ export class XSearchOperator extends XVariant<XSearchOperatorName> {
   }
 
   static readonly map: Record<XSearchOperatorName, XSearchOperator> = {} as Record<XSearchOperatorName, XSearchOperator>
+
   static readonly values: XSearchOperator[] = []
 
   static readonly EQUAL = of(EQUAL, (a: any, b: any) => a === b)
+
   static readonly NOT_EQUAL = of(NOT_EQUAL, (a: any, b: any) => a !== b)
 
   static readonly GREATER = of(GREATER, (a: any, b: any) => a > b)
+
   static readonly GREATER_OR_EQUAL = of(GREATER_OR_EQUAL, (a: any, b: any) => a >= b)
 
   static readonly LESS = of(LESS, (a: any, b: any) => a < b)
+
   static readonly LESS_OR_EQUAL = of(LESS_OR_EQUAL, (a: any, b: any) => a <= b)
 
   static readonly CONTAINS = of(CONTAINS, contains)
+
   static readonly NOT_CONTAINS = of(NOT_CONTAINS, (a: any, b: any) => !contains(a, b))
 
   static readonly STARTS_WITH = of(STARTS_WITH, startsWith)
+
   static readonly NOT_STARTS_WITH = of(NOT_STARTS_WITH, (a: any, b: any) => !startsWith(a, b))
 
   static readonly ENDS_WITH = of(ENDS_WITH, endsWith)
+
   static readonly NOT_ENDS_WITH = of(NOT_ENDS_WITH, (a: any, b: any) => !endsWith(a, b))
 
   static readonly IS_NULL = of(IS_NULL, (a: any) => a == null)
+
   static readonly IS_NOT_NULL = of(IS_NOT_NULL, (a: any) => a != null)
 }

@@ -34,11 +34,17 @@ export class XSelect implements XApiComponent<XSelect> {
   columns: XResultColumn[] = []
 
   source?: XSource
+
   where?: XExpression
+
   groupBy: XExpression[] = []
+
   having?: XExpression
+
   orderBy: XOrderTerm[] = []
+
   limit?: XExpression
+
   offset?: XExpression
 
   setDistinct(distinct = true) {

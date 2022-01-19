@@ -4,6 +4,7 @@ import { XAction } from './action'
 
 export class XCancelAction extends XAction {
   tasks: number[] = []
+
   ignore = false
 
   getAction() {

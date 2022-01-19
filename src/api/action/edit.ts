@@ -2,7 +2,9 @@ import { XAction } from './action'
 
 export class XEditAction extends XAction {
   post?: number
+
   text?: string
+
   active?: boolean
 
   getAction(): string {

@@ -45,6 +45,7 @@ export class XGrantSuperAction extends XGrantAction {
 
 export class XGrantGroupsAction extends XGrantAction {
   groups: (XGroup | string | number)[] = []
+
   privileges: XGroupPrivilege[] = []
 
   getGrant() {
@@ -81,6 +82,7 @@ export class XGrantGroupsAction extends XGrantAction {
 
 export class XGrantDatabasesAction extends XGrantAction {
   databases: (XDatabase | string | number)[] = []
+
   privileges: XDatabasePrivilege[] = []
 
   getGrant() {

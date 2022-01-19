@@ -56,6 +56,7 @@ export function toSource(v: XSourceable): XSource {
 
 export abstract class XSource implements XApiComponent<XSource> {
   meta?: string | Record<string, unknown>
+
   alias?: string
 
   abstract getName(): string
@@ -174,6 +175,7 @@ export class XSystemTableSource extends XSource {
 
 export class XDatabaseTableSource extends XSource {
   database?: XDatabase | string | number
+
   table?: XDatabaseTable | XDatabaseTableName
 
   getName() {
@@ -280,8 +282,11 @@ export class XSelectSource extends XSource {
 
 export default class XJoinSource extends XSource {
   op?: XJoinOperator
+
   s1?: XSource
+
   s2?: XSource
+
   constraint?: XConstraint
 
   getName() {

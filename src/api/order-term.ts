@@ -31,6 +31,7 @@ export function parseOptionalOrderTerms(ts: unknown, ctx: XApiContext) {
 
 export class XOrderTerm implements XApiComponent<XOrderTerm> {
   e?: XExpression
+
   order?: XOrderType
 
   setExpression(e: XExpressionable) {

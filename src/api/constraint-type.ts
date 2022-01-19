@@ -6,6 +6,7 @@ const USING = 'using'
 
 export const XConstraintTypeName = z.enum([ON, USING])
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type XConstraintTypeName = z.infer<typeof XConstraintTypeName>
 
 export class XConstraintType extends XVariant<XConstraintTypeName> {
@@ -21,8 +22,10 @@ export class XConstraintType extends XVariant<XConstraintTypeName> {
   }
 
   static readonly map = {} as Record<XConstraintTypeName, XConstraintType>
+
   static readonly values: XConstraintType[] = []
 
   static readonly ON = new XConstraintType(ON)
+
   static readonly USING = new XConstraintType(USING)
 }

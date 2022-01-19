@@ -1,6 +1,8 @@
 abstract class XPrivilege {
   name: string
+
   category: string
+
   color: string
 
   constructor(name: string, category: string) {
@@ -44,9 +46,13 @@ export class XGroupPrivilege extends XPrivilege {
   static readonly values: XGroupPrivilege[] = []
 
   static readonly SELECT = new XGroupPrivilege('select', 'read')
+
   static readonly REPLY = new XGroupPrivilege('reply', 'wall')
+
   static readonly POST = new XGroupPrivilege('post', 'wall')
+
   static readonly ALTER = new XGroupPrivilege('alter', 'admin')
+
   static readonly GRANT = new XGroupPrivilege('grant', 'admin')
 }
 
@@ -63,14 +69,24 @@ export class XDatabasePrivilege extends XPrivilege {
   static readonly values: XDatabasePrivilege[] = []
 
   static readonly SELECT = new XDatabasePrivilege('select', 'read')
+
   static readonly REPLY = new XDatabasePrivilege('reply', 'wall')
+
   static readonly POST = new XDatabasePrivilege('post', 'wall')
+
   static readonly UPDATE = new XDatabasePrivilege('update', 'write')
+
   static readonly SIGN = new XDatabasePrivilege('sign', 'write')
+
   static readonly INSERT = new XDatabasePrivilege('insert', 'write')
+
   static readonly TRASH = new XDatabasePrivilege('trash', 'delete')
+
   static readonly DELETE = new XDatabasePrivilege('delete', 'delete')
+
   static readonly LOCK = new XDatabasePrivilege('lock', 'admin')
+
   static readonly ALTER = new XDatabasePrivilege('alter', 'admin')
+
   static readonly GRANT = new XDatabasePrivilege('grant', 'admin')
 }

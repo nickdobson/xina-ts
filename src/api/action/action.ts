@@ -13,6 +13,7 @@ export abstract class XAction {
 
 export abstract class XRecordsActionBase extends XAction {
   database?: XDatabase | string | number
+
   records: XRecordsSpecifier = []
 
   abstract buildRestRest(pretty: boolean): Record<string, unknown>

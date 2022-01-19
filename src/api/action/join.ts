@@ -33,6 +33,7 @@ abstract class XJoinAction extends XAction {
 
 export class XJoinUsersAction extends XJoinAction {
   users: (XUser | string | number)[] = []
+
   admin = false
 
   getJoin() {
@@ -59,6 +60,7 @@ export class XJoinUsersAction extends XJoinAction {
 
 export class XJoinGroupsAction extends XJoinAction {
   groups: (XGroup | string | number)[] = []
+
   privileges?: Record<string, boolean>
 
   getJoin() {
@@ -90,6 +92,7 @@ export class XJoinGroupsAction extends XJoinAction {
 
 export class XJoinDatabasesAction extends XJoinAction {
   databases: (XDatabase | string | number)[] = []
+
   privileges?: Record<string, boolean>
 
   getJoin() {

@@ -39,9 +39,12 @@ import {
 
 abstract class XTable<N extends string> {
   name: N
+
   label: string
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   parameter?: XParameterManager<any>
+
   record = false
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -131,6 +134,7 @@ export const XSystemTableName = z.enum([
   USER_SUBSCRIPTION
 ])
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type XSystemTableName = z.infer<typeof XSystemTableName>
 
 export class XSystemTable extends XTable<XSystemTableName> {
@@ -139,35 +143,65 @@ export class XSystemTable extends XTable<XSystemTableName> {
   }
 
   static readonly BLOB = system('blob', 'Blob', XBlobParameterManager)
+
   static readonly BLOB_FILE = system('blob_file', 'Blob File', XBlobFileParameterManager)
+
   static readonly BLOB_OBJECT = system('blob_object', 'Blob Object', XBlobObjectParameterManager)
+
   static readonly DATABASE = system('database', 'Database', XDatabaseParameterManager)
+
   static readonly DATABASE_FILE = system('database_file', 'Database File', XDatabaseFileParameterManager)
+
   static readonly DATABASE_OBJECT = system('database_object', 'Database Object', XDatabaseObjectParameterManager)
+
   static readonly FIELD = system('field', 'Field', XFieldParameterManager)
+
   static readonly FIELD_FILE = system('field_file', 'Field File', XFieldFileParameterManager)
+
   static readonly FIELD_OBJECT = system('field_object', 'Field Object', XFieldObjectParameterManager)
+
   static readonly GROUP = system('group', 'Group', XGroupParameterManager)
+
   static readonly GROUP_FILE = system('group_file', 'Group File', XGroupFileParameterManager)
+
   static readonly GROUP_OBJECT = system('group_object', 'Group Object', XGroupObjectParameterManager)
+
   static readonly NOTIFICATION = system('notification', 'Notification', XNotificationParameterManager)
+
   static readonly POST = system('post', 'Post', XPostParameterManager)
+
   static readonly PRIV_DATABASE = system('priv_database', 'Priv Database', XPrivDatabaseParameterManager)
+
   static readonly PRIV_GROUP = system('priv_group', 'Priv Group', XPrivGroupParameterManager)
+
   static readonly RECORD_LINK = system('record_link', 'Record Link', XRecordLinkParameterManager)
+
   static readonly REQUEST = system('request', 'Request', XRequestParameterManager)
+
   static readonly STORE = system('store', 'Store', XStoreParameterManager)
+
   static readonly TASK = system('task', 'Task', XTaskParameterManager)
+
   static readonly TASK_EVENT = system('task_event', 'Task Event', XTaskEventParameterManager)
+
   static readonly TASK_FILE = system('task_file', 'Task File', XTaskFileParameterManager)
+
   static readonly TASK_THREAD = system('task_thread', 'Task Thread', XTaskThreadParameterManager)
+
   static readonly TEAM = system('team', 'Team', XTeamParameterManager)
+
   static readonly TEAM_FILE = system('team_file', 'Team File', XTeamFileParameterManager)
+
   static readonly TEAM_OBJECT = system('team_object', 'Team Object', XTeamObjectParameterManager)
+
   static readonly TEAM_SUBSCRIPTION = system('team_subscription', 'Team Subscription', XTeamSubParameterManager)
+
   static readonly USER = system('user', 'User', XUserParameterManager)
+
   static readonly USER_FILE = system('user_file', 'User File', XUserFileParameterManager)
+
   static readonly USER_OBJECT = system('user_object', 'User Object', XUserObjectParameterManager)
+
   static readonly USER_SUBSCRIPTION = system('user_subscription', 'User Subscription', XUserSubParameterManager)
 }
 
@@ -178,6 +212,7 @@ const TRASH = 'trash'
 
 export const XDatabaseTableName = z.enum([RECORD, TRASH, LOG, LOG_EDIT])
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type XDatabaseTableName = z.infer<typeof XDatabaseTableName>
 
 export class XDatabaseTable extends XTable<XDatabaseTableName> {
@@ -186,8 +221,11 @@ export class XDatabaseTable extends XTable<XDatabaseTableName> {
   }
 
   static readonly LOG = database(LOG, 'Log', XLogParameterManager)
+
   static readonly LOG_EDIT = database(LOG_EDIT, 'Log Edit', XLogEditParameterManager)
+
   static readonly RECORD = database(RECORD, 'Record')
+
   static readonly TRASH = database(TRASH, 'Trash')
 }
 

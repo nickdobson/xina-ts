@@ -5,9 +5,11 @@ import { XAction } from './action'
 
 export class XUnlinkAction extends XAction {
   fromDatabase?: XDatabase | string | number
+
   fromRecords: XRecordsSpecifier = []
 
   toDatabase?: XDatabase | string | number
+
   toRecords: XRecordsSpecifier = []
 
   getAction() {
