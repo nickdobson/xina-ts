@@ -1,7 +1,7 @@
 import { XWall } from '../wall'
 import { XAction } from './action'
 
-export class XPostAction extends XAction {
+export class XPostAction extends XAction<void> {
   wall?: XWall
 
   post?: Record<string, unknown>

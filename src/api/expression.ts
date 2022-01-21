@@ -1230,7 +1230,7 @@ export class XCountRowsExpression extends XExpression {
 // ----------------------------------------------------------------------------
 
 export class XExistsExpression extends XExpression {
-  e?: XExpression
+  select?: XSelect
 
   getName() {
     return 'Exists Expression'
@@ -1240,38 +1240,38 @@ export class XExistsExpression extends XExpression {
     return XExpressionType.EXISTS
   }
 
-  setExpression(e: XExpressionable) {
-    this.e = toExpression(e)
+  setSelect(select: XSelect) {
+    this.select = select
     return this
   }
 
   isValid() {
-    return !!this.e?.isValid()
+    return !!this.select?.isValid()
   }
 
   toString() {
-    return `EXISTS (${this.e})`
+    return `EXISTS (${this.select})`
   }
 
   load(obj: Record<string, unknown>, context: XApiContext) {
-    this.e = parseExpression(obj.e, context)
+    this.select = parseSelect(obj.e, context)
     return this
   }
 
   clone() {
     const clone = Object.assign(new XExistsExpression(), this)
-    clone.e = this.e?.clone()
+    clone.select = this.select?.clone()
     return clone
   }
 
   buildRest(pretty: boolean) {
     return {
-      e: this.e?.build(pretty)
+      select: this.select?.build(pretty)
     }
   }
 
-  static of(e: XExpressionable) {
-    return new XExistsExpression().setExpression(e)
+  static of(select: XSelect) {
+    return new XExistsExpression().setSelect(select)
   }
 }
 
@@ -1297,13 +1297,13 @@ export class XFunctionExpression extends XExpression {
     return this
   }
 
-  setArgs(...args: XExpressionable[]) {
-    this.args = args.map((arg) => toExpression(arg))
+  setArgs(...args: (XExpressionable | undefined)[]) {
+    this.args = args.filter((arg): arg is XExpressionable => arg !== undefined).map((arg) => toExpression(arg))
     return this
   }
 
-  addArgs(...args: XExpressionable[]) {
-    this.args.push(...args.map((arg) => toExpression(arg)))
+  addArgs(...args: (XExpressionable | undefined)[]) {
+    this.args.push(...args.filter((arg): arg is XExpressionable => arg !== undefined).map((arg) => toExpression(arg)))
     return this
   }
 
@@ -1337,7 +1337,7 @@ export class XFunctionExpression extends XExpression {
     }
   }
 
-  static of(func: string, ...args: XExpressionable[]) {
+  static of(func: string, ...args: (XExpressionable | undefined)[]) {
     return new XFunctionExpression().setFunction(func).setArgs(...args)
   }
 }

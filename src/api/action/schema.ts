@@ -1,7 +1,11 @@
-import { XGroupInterfaceExt } from '../..'
+import { XGroupInterfaceExt } from '../../element'
 import { XAction } from './action'
 
-export class XSchemaAction extends XAction<XGroupInterfaceExt[]> {
+export type XSchemaResponse = {
+  groups: XGroupInterfaceExt[]
+}
+
+export class XSchemaAction extends XAction<XSchemaResponse> {
   getAction() {
     return 'schema'
   }

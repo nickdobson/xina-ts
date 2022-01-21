@@ -3,7 +3,7 @@ import { XRecordsSpecifier, buildRecordsSpecifier } from '../../record'
 import { toSpecifier } from '../api'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export abstract class XAction<T> {
+export abstract class XAction<_T> {
   abstract getAction(): string
   abstract buildRest(pretty: boolean): Record<string, unknown>
 

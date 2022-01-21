@@ -38,6 +38,37 @@ abstract class XFetchAction<T> extends XAction<T> {
     return 'fetch'
   }
 
+  setWhere(where?: XExpression) {
+    this.where = where
+    return this
+  }
+
+  setOrderBy(...orderBy: XOrderTerm[]) {
+    this.orderBy = [...orderBy]
+    return this
+  }
+
+  addOrderBy(...orderBy: XOrderTerm[]) {
+    this.orderBy.push(...orderBy)
+    return this
+  }
+
+  setOrderByAsc(...orderBy: XExpressionable[]) {
+    return this.setOrderBy(...orderBy.map((o) => XOrderTerm.ofAsc(o)))
+  }
+
+  setOrderByDesc(...orderBy: XExpressionable[]) {
+    return this.setOrderBy(...orderBy.map((o) => XOrderTerm.ofDesc(o)))
+  }
+
+  addOrderByAsc(...orderBy: XExpressionable[]) {
+    return this.addOrderBy(...orderBy.map((o) => XOrderTerm.ofAsc(o)))
+  }
+
+  addOrderByDesc(...orderBy: XExpressionable[]) {
+    return this.addOrderBy(...orderBy.map((o) => XOrderTerm.ofDesc(o)))
+  }
+
   setLimit(limit?: XExpressionable) {
     this.limit = toOptionalExpression(limit)
     return this
