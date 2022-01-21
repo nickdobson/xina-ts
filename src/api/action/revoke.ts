@@ -3,7 +3,7 @@ import { XDatabasePrivilege, XGroupPrivilege } from '../../privilege'
 import { toSpecifier } from '../api'
 import { XAction } from './action'
 
-abstract class XRevokeAction extends XAction {
+abstract class XRevokeAction extends XAction<void> {
   users: (XUser | string | number)[] = []
 
   getAction() {

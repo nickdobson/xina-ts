@@ -4,7 +4,7 @@ import { toSpecifier } from '../api'
 import { XExpression } from '../expression'
 import { XAction } from './action'
 
-export class XInsertAction extends XAction {
+export class XInsertAction extends XAction<void> {
   database?: XDatabase
 
   records: Record<string, unknown>[] = []

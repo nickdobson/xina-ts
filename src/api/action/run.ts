@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export class XRunAction extends XAction {
+export class XRunAction extends XAction<void> {
   tasks: (Record<string, unknown> | number)[] = []
 
   getAction() {

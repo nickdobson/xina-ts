@@ -8,7 +8,7 @@ export type XSelectResponse = {
   }[]
   rows: unknown[][]
 }
-export class XSelectAction extends XAction {
+export class XSelectAction extends XAction<XSelectResponse> {
   select?: XSelect
 
   useStrings = false

@@ -2,7 +2,7 @@ import { XTaskInterface } from '../../parameter'
 import { isNumber } from '../../util'
 import { XAction } from './action'
 
-export class XCleanAction extends XAction {
+export class XCleanAction extends XAction<void> {
   tasks: number[] = []
 
   ignore = false

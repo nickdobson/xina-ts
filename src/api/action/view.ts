@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-abstract class XViewAction extends XAction {
+abstract class XViewAction extends XAction<void> {
   getAction() {
     return 'view'
   }

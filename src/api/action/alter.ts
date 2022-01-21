@@ -2,7 +2,7 @@ import { XUser } from '../../element'
 import { toSpecifier } from '../api'
 import { XAction } from './action'
 
-abstract class XAlterAction extends XAction {
+abstract class XAlterAction extends XAction<void> {
   getAction() {
     return 'alter'
   }

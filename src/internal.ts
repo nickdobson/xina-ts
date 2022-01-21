@@ -19,6 +19,7 @@ export * from './parameter'
 export * from './attribute'
 export * from './table'
 
+export * from './post'
 export * from './task'
 
 export * from './element'

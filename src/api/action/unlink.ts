@@ -3,7 +3,7 @@ import { XRecordsSpecifier, buildRecordsSpecifier } from '../../record'
 import { toSpecifier } from '../api'
 import { XAction } from './action'
 
-export class XUnlinkAction extends XAction {
+export class XUnlinkAction extends XAction<void> {
   fromDatabase?: XDatabase | string | number
 
   fromRecords: XRecordsSpecifier = []

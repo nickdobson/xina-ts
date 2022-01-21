@@ -2,7 +2,8 @@ import { XDatabase } from '../../element'
 import { XRecordsSpecifier, buildRecordsSpecifier } from '../../record'
 import { toSpecifier } from '../api'
 
-export abstract class XAction {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export abstract class XAction<T> {
   abstract getAction(): string
   abstract buildRest(pretty: boolean): Record<string, unknown>
 
@@ -11,7 +12,7 @@ export abstract class XAction {
   }
 }
 
-export abstract class XRecordsActionBase extends XAction {
+export abstract class XRecordsActionBase extends XAction<void> {
   database?: XDatabase | string | number
 
   records: XRecordsSpecifier = []

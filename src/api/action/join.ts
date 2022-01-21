@@ -2,7 +2,7 @@ import { XDatabase, XGroup, XTeam, XUser } from '../../element'
 import { toSpecifier } from '../api'
 import { XAction } from './action'
 
-abstract class XJoinAction extends XAction {
+abstract class XJoinAction extends XAction<void> {
   teams: (XTeam | string | number)[] = []
 
   getAction() {

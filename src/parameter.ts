@@ -2552,6 +2552,69 @@ export const XUserFileParameterManager = new XParameterManager<XUserFileParamete
   XUserFileParameter.SIZE,
   XUserFileParameter.MD5
 ])
+export type XUserKeyParameterName =
+  | 'user_id'
+  | 'key_id'
+  | 'create_by'
+  | 'create_at'
+  | 'expires_at'
+  | 'allow_http'
+  | 'allow_tunnel'
+
+export interface XUserKeyInterface extends Partial<Record<XUserKeyParameterName, unknown>> {
+  user_id: number
+  key_id: string
+  create_by: number
+  create_at: number
+  expires_at?: number
+  allow_http: boolean
+  allow_tunnel: boolean
+}
+
+export class XUserKeyParameter<T> extends XParameter<T, XUserKeyParameterName> {
+  static readonly USER_ID = new XUserKeyParameter('user_id', 'User ID', XTypes.SELF_ID, 'unique user identifier', [KEY])
+  static readonly KEY_ID = new XUserKeyParameter('key_id', 'Key ID', XTypes.ASCIISTRING16, 'key ID', [KEY])
+  static readonly CREATE_BY = new XUserKeyParameter(
+    'create_by',
+    'Create By',
+    XTypes.USER_ID,
+    'user who created the key',
+    [REQUIRED]
+  )
+  static readonly CREATE_AT = new XUserKeyParameter(
+    'create_at',
+    'Create At',
+    XTypes.INSTANT_MS,
+    'instant when the key was created',
+    [REQUIRED]
+  )
+  static readonly EXPIRES_AT = new XUserKeyParameter(
+    'expires_at',
+    'Expires At',
+    XTypes.INSTANT_MS,
+    'instant when the key expires'
+  )
+  static readonly ALLOW_HTTP = new XUserKeyParameter('allow_http', 'Allow HTTP', XTypes.BOOLEAN, 'allow HTTP access', [
+    REQUIRED
+  ])
+  static readonly ALLOW_TUNNEL = new XUserKeyParameter(
+    'allow_tunnel',
+    'Allow Tunnel',
+    XTypes.BOOLEAN,
+    'allow tunnel access',
+    [REQUIRED]
+  )
+}
+
+export const XUserKeyParameterManager = new XParameterManager<XUserKeyParameter<unknown>>([
+  XUserKeyParameter.USER_ID,
+  XUserKeyParameter.KEY_ID,
+  XUserKeyParameter.CREATE_BY,
+  XUserKeyParameter.CREATE_AT,
+  XUserKeyParameter.EXPIRES_AT,
+  XUserKeyParameter.ALLOW_HTTP,
+  XUserKeyParameter.ALLOW_TUNNEL
+])
 
 export type XUserObjectParameterName = 'user_id' | 'key' | 'value'
 

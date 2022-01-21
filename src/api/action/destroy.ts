@@ -2,7 +2,7 @@ import { XTaskInterface } from '../../parameter'
 import { isNumber } from '../../util'
 import { XAction } from './action'
 
-export class XDestroyAction extends XAction {
+export class XDestroyAction extends XAction<void> {
   tasks: number[] = []
 
   getAction() {

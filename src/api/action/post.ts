@@ -18,12 +18,12 @@ export class XPostAction extends XAction {
     return this
   }
 
-  setThread(thread: number) {
+  setThread(thread?: number) {
     this.thread = thread
     return this
   }
 
-  getAction(): string {
+  getAction() {
     return 'post'
   }
 

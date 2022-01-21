@@ -2,7 +2,7 @@ import { XDatabase, XGroup } from '../..'
 import { toOptionalSpecifier, toSpecifier } from '../api'
 import { XAction } from './action'
 
-abstract class XCreateAction extends XAction {
+abstract class XCreateAction extends XAction<void> {
   getAction() {
     return 'create'
   }

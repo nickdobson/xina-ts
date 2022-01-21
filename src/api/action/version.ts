@@ -7,7 +7,7 @@ export type XVersionResponse = {
   team: number
 }
 
-export class XVersionAction extends XAction {
+export class XVersionAction extends XAction<XVersionResponse> {
   getAction() {
     return 'version'
   }

@@ -20,6 +20,7 @@ export interface XPostFile extends Record<string, unknown> {
   name: string
   type: string
   url: string
+  size: number
 }
 
 export interface XPostInterfaceExt extends XPostInterface {

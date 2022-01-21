@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export class XStoreAction extends XAction {
+export class XStoreAction extends XAction<void> {
   name?: string
 
   key?: string
@@ -11,7 +11,7 @@ export class XStoreAction extends XAction {
 
   desc?: string
 
-  getAction(): string {
+  getAction() {
     return 'store'
   }
 

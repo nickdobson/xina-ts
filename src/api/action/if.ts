@@ -1,20 +1,20 @@
 import { XSelect } from '../select'
 import { XAction } from './action'
 
-export class XIfAction extends XAction {
-  cases: { condition: XSelect; action: XAction }[] = []
+export class XIfAction extends XAction<void> {
+  cases: { condition: XSelect; action: XAction<unknown> }[] = []
 
-  els?: XAction
+  els?: XAction<unknown>
 
   getAction() {
     return 'if'
   }
 
-  addCase(condition: XSelect, action: XAction) {
+  addCase(condition: XSelect, action: XAction<unknown>) {
     this.cases.push({ condition, action })
   }
 
-  setElse(action?: XAction) {
+  setElse(action?: XAction<unknown>) {
     this.els = action
   }
 

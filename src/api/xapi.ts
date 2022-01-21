@@ -13,7 +13,8 @@ import {
   XFetchSubscriptionsAction,
   XFetchKeysAction,
   XFetchUsersAction,
-  XFetchThreadsAction
+  XFetchThreadsAction,
+  XFetchFollowsAction
 } from './action/fetch'
 import { XGrantSuperAction, XGrantGroupsAction, XGrantDatabasesAction } from './action/grant'
 import { XIfAction } from './action/if'
@@ -64,6 +65,7 @@ export const xapi = {
     destroy: () => new XDestroyAction(),
     edit: () => new XEditAction(),
     fetch: {
+      follows: () => new XFetchFollowsAction(),
       keys: () => new XFetchKeysAction(),
       logs: () => new XFetchLogsAction(),
       notifications: () => new XFetchNotificationsAction(),

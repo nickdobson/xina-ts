@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export class XPauseAction extends XAction {
+export class XPauseAction extends XAction<void> {
   threads: string[] = []
 
   getAction() {

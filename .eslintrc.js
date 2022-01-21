@@ -18,6 +18,8 @@ module.exports = {
     'import/extensions': 'off',
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
-    '@typescript-eslint/naming-convention': 'off'
+    '@typescript-eslint/naming-convention': 'off',
+    'lines-between-class-members': 'off',
+    '@typescript-eslint/lines-between-class-members': 'off'
   }
 }

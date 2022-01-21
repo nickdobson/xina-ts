@@ -1,6 +1,7 @@
+import { XTeamInterfaceExt } from '../../element'
 import { XAction } from './action'
 
-export class XTeamsAction extends XAction {
+export class XTeamsAction extends XAction<XTeamInterfaceExt[]> {
   getAction() {
     return 'teams'
   }

@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export class XEditAction extends XAction {
+export class XEditAction extends XAction<void> {
   post?: number
 
   text?: string

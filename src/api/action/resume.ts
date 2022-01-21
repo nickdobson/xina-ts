@@ -1,6 +1,6 @@
 import { XAction } from './action'
 
-export class XResumeAction extends XAction {
+export class XResumeAction extends XAction<void> {
   threads: string[] = []
 
   cont = false

@@ -1,13 +1,28 @@
 import Sugar from 'sugar'
 
-import { XDatabase, XRecord, isRecord, isNumber, XGroup, XTeam, XUser } from '../..'
+import { XDatabase, XGroup, XTeam, XUser } from '../../element'
+import {
+  XLogInterface,
+  XNotificationInterface,
+  XRequestInterface,
+  XTeamSubInterface,
+  XUserInterface,
+  XUserKeyInterface,
+  XUserSubInterface
+} from '../../parameter'
+import { XPostInterfaceExt } from '../../post'
+
+import { isRecord, XRecord, XRecordInterfaceExt } from '../../record'
+import { XTask } from '../../task'
+import { isNumber } from '../../util'
+
 import { toSpecifier, toOptionalSpecifier } from '../api'
 import { XExpression, XExpressionable, toOptionalExpression } from '../expression'
 import { XOrderTerm } from '../order-term'
 import { XWall, toWall } from '../wall'
 import { XAction } from './action'
 
-abstract class XFetchAction extends XAction {
+abstract class XFetchAction<T> extends XAction<T> {
   where?: XExpression
 
   orderBy: XOrderTerm[] = []
@@ -43,7 +58,7 @@ abstract class XFetchAction extends XAction {
   }
 }
 
-export class XFetchRecordsAction extends XFetchAction {
+export class XFetchRecordsAction extends XFetchAction<XRecordInterfaceExt[]> {
   database?: XDatabase | string | number
 
   records: Array<XRecord | Record<string, unknown> | number> = []
@@ -83,7 +98,7 @@ export class XFetchRecordsAction extends XFetchAction {
   }
 }
 
-export class XFetchLogsAction extends XFetchAction {
+export class XFetchLogsAction extends XFetchAction<XLogInterface[]> {
   database?: XDatabase | string | number
 
   record?: XRecord | number
@@ -110,7 +125,7 @@ export class XFetchLogsAction extends XFetchAction {
   }
 }
 
-export class XFetchPostsAction extends XFetchAction {
+export class XFetchPostsAction extends XFetchAction<XPostInterfaceExt[]> {
   wall?: XWall
 
   following?: boolean
@@ -191,7 +206,7 @@ export class XFetchPostsAction extends XFetchAction {
   }
 }
 
-export class XFetchTasksAction extends XFetchAction {
+export class XFetchTasksAction extends XFetchAction<XTask[]> {
   user?: XUser | string | number
 
   tasks: number[] = []
@@ -247,7 +262,7 @@ export class XFetchTasksAction extends XFetchAction {
   }
 }
 
-export class XFetchUsersAction extends XFetchAction {
+export class XFetchUsersAction extends XFetchAction<XUserInterface> {
   users: (XUser | string | number)[] = []
 
   getFetch() {
@@ -271,7 +286,7 @@ export class XFetchUsersAction extends XFetchAction {
   }
 }
 
-export class XFetchThreadsAction extends XFetchAction {
+export class XFetchThreadsAction extends XFetchAction<string[]> {
   getFetch() {
     return 'threads'
   }
@@ -282,7 +297,7 @@ export class XFetchThreadsAction extends XFetchAction {
   }
 }
 
-export class XFetchNotificationsAction extends XFetchAction {
+export class XFetchNotificationsAction extends XFetchAction<XNotificationInterface> {
   type?: string | number
 
   seen?: boolean
@@ -307,7 +322,7 @@ export class XFetchNotificationsAction extends XFetchAction {
   }
 }
 
-export class XFetchRequestsAction extends XFetchAction {
+export class XFetchRequestsAction extends XFetchAction<XRequestInterface> {
   user?: XUser | string | number
 
   getFetch() {
@@ -326,18 +341,11 @@ export class XFetchRequestsAction extends XFetchAction {
   }
 }
 
-export class XFetchSubscriptionsAction extends XFetchAction {
-  user?: XUser | string | number
-
+export class XFetchTeamSubscriptionsAction extends XFetchAction<XTeamSubInterface> {
   team?: XTeam | string | number
 
   getFetch() {
-    return 'requests'
-  }
-
-  setUser(user: XUser | string | number) {
-    this.user = user
-    return this
+    return 'subscriptions'
   }
 
   setTeam(team: XTeam | string | number) {
@@ -347,26 +355,62 @@ export class XFetchSubscriptionsAction extends XFetchAction {
 
   buildFetch(pretty: boolean) {
     return {
-      user: toOptionalSpecifier(this.user, pretty),
-      team: toOptionalSpecifier(this.team, pretty)
+      team: toSpecifier(this.team, pretty)
     }
   }
 }
-export class XFetchKeysAction extends XFetchAction {
+export class XFetchUserSubscriptionsAction extends XFetchAction<XUserSubInterface> {
   user?: XUser | string | number
 
   getFetch() {
-    return 'keys'
+    return 'subscriptions'
   }
 
-  setUser(user: XUser | string | number) {
+  setUser(user?: XUser | string | number) {
     this.user = user
     return this
   }
 
   buildFetch(pretty: boolean) {
     return {
-      user: toSpecifier(this.user, pretty)
+      user: toOptionalSpecifier(this.user, pretty)
+    }
+  }
+}
+export class XFetchKeysAction extends XFetchAction<XUserKeyInterface> {
+  user?: XUser | string | number
+
+  getFetch() {
+    return 'keys'
+  }
+
+  setUser(user?: XUser | string | number) {
+    this.user = user
+    return this
+  }
+
+  buildFetch(pretty: boolean) {
+    return {
+      user: toOptionalSpecifier(this.user, pretty)
+    }
+  }
+}
+
+export class XFetchFollowsAction extends XFetchAction<string[]> {
+  user?: XUser | string | number
+
+  getFetch() {
+    return 'follows'
+  }
+
+  setUser(user?: XUser | string | number) {
+    this.user = user
+    return this
+  }
+
+  buildFetch(pretty: boolean) {
+    return {
+      user: toOptionalSpecifier(this.user, pretty)
     }
   }
 }
