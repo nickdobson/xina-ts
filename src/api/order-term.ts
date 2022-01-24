@@ -65,7 +65,7 @@ export class XOrderTerm implements XApiComponent<XOrderTerm> {
   build(pretty: boolean): Record<string, unknown> {
     return {
       e: this.e?.build(pretty),
-      order: this.order
+      order: this.order?.name
     }
   }
 

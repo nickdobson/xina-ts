@@ -293,7 +293,7 @@ export class XFetchTasksAction extends XFetchAction<XTask[]> {
   }
 }
 
-export class XFetchUsersAction extends XFetchAction<XUserInterface> {
+export class XFetchUsersAction extends XFetchAction<XUserInterface[]> {
   users: (XUser | string | number)[] = []
 
   getFetch() {
@@ -328,7 +328,7 @@ export class XFetchThreadsAction extends XFetchAction<string[]> {
   }
 }
 
-export class XFetchNotificationsAction extends XFetchAction<XNotificationInterface> {
+export class XFetchNotificationsAction extends XFetchAction<XNotificationInterface[]> {
   type?: string | number
 
   seen?: boolean
@@ -353,7 +353,7 @@ export class XFetchNotificationsAction extends XFetchAction<XNotificationInterfa
   }
 }
 
-export class XFetchRequestsAction extends XFetchAction<XRequestInterface> {
+export class XFetchRequestsAction extends XFetchAction<XRequestInterface[]> {
   user?: XUser | string | number
 
   getFetch() {
@@ -372,7 +372,7 @@ export class XFetchRequestsAction extends XFetchAction<XRequestInterface> {
   }
 }
 
-export class XFetchTeamSubscriptionsAction extends XFetchAction<XTeamSubInterface> {
+export class XFetchTeamSubscriptionsAction extends XFetchAction<XTeamSubInterface[]> {
   team?: XTeam | string | number
 
   getFetch() {
@@ -390,7 +390,7 @@ export class XFetchTeamSubscriptionsAction extends XFetchAction<XTeamSubInterfac
     }
   }
 }
-export class XFetchUserSubscriptionsAction extends XFetchAction<XUserSubInterface> {
+export class XFetchUserSubscriptionsAction extends XFetchAction<XUserSubInterface[]> {
   user?: XUser | string | number
 
   getFetch() {
@@ -408,7 +408,7 @@ export class XFetchUserSubscriptionsAction extends XFetchAction<XUserSubInterfac
     }
   }
 }
-export class XFetchKeysAction extends XFetchAction<XUserKeyInterface> {
+export class XFetchKeysAction extends XFetchAction<XUserKeyInterface[]> {
   user?: XUser | string | number
 
   getFetch() {

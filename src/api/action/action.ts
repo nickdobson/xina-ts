@@ -2,8 +2,10 @@ import { XDatabase } from '../../element'
 import { XRecordsSpecifier, buildRecordsSpecifier } from '../../record'
 import { toSpecifier } from '../api'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export abstract class XAction<_T> {
+export abstract class XAction<T> {
+  // this allows inference of T in subclasses
+  readonly __ref?: T
+
   abstract getAction(): string
   abstract buildRest(pretty: boolean): Record<string, unknown>
 
