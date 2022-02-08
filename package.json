@@ -1,6 +1,6 @@
 {
   "name": "xina-ts",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "description": "Boilerplate for TypeScript projects (Node.js and browser modules)",
   "author": "Nick Dobson",
   "repository": "https://github.com/nickdobson/xina-ts",
@@ -46,7 +46,10 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.178",
+    "lodash": "^4.17.21",
     "sugar": "^2.0.6",
+    "thenby": "^1.3.4",
     "zod": "^3.11.6"
   }
 }
