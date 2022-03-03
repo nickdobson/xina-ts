@@ -1,3 +1,4 @@
+import { isNumber, isString } from 'lodash'
 import {
   XDatabase,
   isDatabase,
@@ -207,7 +208,12 @@ export class XDatabaseTableSource extends XSource {
   load(obj: Record<string, unknown>, context: XApiContext) {
     super.load(obj, context)
 
-    this.database = context.databases.parse(obj.database)
+    if (isNumber(obj.database) || isString(obj.database)) {
+      this.database = context.getDatabase(obj.database)
+    } else {
+      throw Error(`invalid database specifier: ${obj.database}`)
+    }
+
     this.table = XDatabaseTableName.parse(obj.table)
 
     return this

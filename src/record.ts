@@ -1,4 +1,5 @@
-import { isNumber, trustIs, XDatabase, XRecordInterface } from './internal'
+import { isNumber } from 'lodash'
+import { trustIs, XDatabase, XRecordInterface } from './internal'
 
 const RECORD_SYMBOL = Symbol()
 

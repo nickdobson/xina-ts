@@ -1,17 +1,15 @@
+import { isArray, isNumber, isString } from 'lodash'
 import Sugar from 'sugar'
 
 import {
   checkOptionalString,
   checkString,
-  isArray,
   isDatabase,
   isField,
-  isNumber,
   ISO8601_DATE,
   ISO8601_DATETIME,
   ISO8601_LOCALDATETIME,
   isSimpleObject,
-  isString,
   parseOptionalOrderTerms,
   parseSelect,
   toIdentifier,
@@ -887,8 +885,7 @@ export class XCaseExpression extends XExpression {
   load(obj: Record<string, unknown>, context: XApiContext) {
     super.load(obj, context)
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (!isArray<any>(obj.cases)) throw Error(`invalid case expression: ${obj}`)
+    if (!isArray(obj.cases)) throw Error(`invalid case expression: ${obj}`)
 
     const cases = obj.cases.map((c) => ({
       when: parseExpression(c.when, context),
@@ -1076,7 +1073,7 @@ export class XColumnExpression extends XExpression {
 
     if (d != null) {
       if (isNumber(obj.database) || isString(obj.database)) {
-        database = context.databases.get(obj.database)
+        database = context.getDatabase(obj.database)
       }
 
       throw Error(`invalid database specifier: ${d}`)
@@ -1146,22 +1143,13 @@ export class XCompoundExpression extends XExpression {
     return this
   }
 
-  setExpressions(es: XExpressionable[]) {
+  setExpressions(...es: XExpressionable[]) {
     this.expressions = es.map((e) => toExpression(e))
     return this
   }
 
-  addExpressions(es: XExpressionable[] | XExpression) {
-    if (es instanceof Array) {
-      this.expressions.push(...es.map((e) => toExpression(e)))
-    } else {
-      this.expressions.push(toExpression(es))
-    }
-    return this
-  }
-
-  addExpression(e: XExpressionable) {
-    this.expressions.push(toExpression(e))
+  addExpressions(...es: XExpressionable[]) {
+    this.expressions.push(...es.map((e) => toExpression(e)))
     return this
   }
 
@@ -1192,8 +1180,8 @@ export class XCompoundExpression extends XExpression {
     }
   }
 
-  static of(op: XCompoundOperator, expressions: XExpressionable[]) {
-    return new XCompoundExpression().setOp(op).setExpressions(expressions)
+  static of(op: XCompoundOperator, ...es: XExpressionable[]) {
+    return new XCompoundExpression().setOp(op).setExpressions(...es)
   }
 }
 
@@ -1651,7 +1639,7 @@ export class XSearchExpression extends XExpression {
 
   value?: Date | string
 
-  cs?: boolean
+  cs = false
 
   js?: string
 
@@ -1659,17 +1647,37 @@ export class XSearchExpression extends XExpression {
     return 'Search Expression'
   }
 
-  getType(): XExpressionType {
+  getType() {
     return XExpressionType.SEARCH
   }
 
-  setDatabase(database: XDatabase | string | number) {
+  setDatabase(database?: XDatabase | string | number) {
     this.database = database
     return this
   }
 
-  setSearch(search: XField | string) {
+  setSearch(search?: XField | string) {
     this.search = search
+    return this
+  }
+
+  setOp(op?: XSearchOperator) {
+    this.op = op
+    return this
+  }
+
+  setValue(value?: Date | string) {
+    this.value = value
+    return this
+  }
+
+  setCaseSensitive(cs: boolean) {
+    this.cs = cs
+    return this
+  }
+
+  setJson(js?: string) {
+    this.js = js
     return this
   }
 
@@ -1679,11 +1687,19 @@ export class XSearchExpression extends XExpression {
 
   toString() {
     if (!this.search || !this.value) return 'all'
-    return (isString(this.search) ? this.search : '`' + this.search + '`') + `${this.js} ${this.op} "${this.value}"`
+    return (
+      (isString(this.search) ? this.search : '`' + this.search + '`') +
+      (this.js ? `${this.js} ` : '') +
+      ` ${this.op} "${this.value}"`
+    )
   }
 
   load(obj: Record<string, unknown>, context: XApiContext) {
-    this.database = context.databases.parse(obj.database)
+    if (isNumber(obj.database) || isString(obj.database)) {
+      this.database = context.getDatabase(obj.database)
+    } else {
+      throw Error(`invalid database specifier: ${obj.database}`)
+    }
 
     if (isString(obj.search) && obj.search.startsWith('$')) {
       this.search = obj.search.substring(1)
@@ -1693,9 +1709,9 @@ export class XSearchExpression extends XExpression {
 
     this.op = XSearchOperator.parse(obj.op)
 
-    this.value = checkString(obj.value)
+    this.value = checkOptionalString(obj.value)
     this.cs = !!obj.cs
-    this.js = checkString(obj.json)
+    this.js = checkOptionalString(obj.json)
 
     return this
   }
@@ -1718,8 +1734,21 @@ export class XSearchExpression extends XExpression {
     }
   }
 
-  static of(e: XExpressionable) {
-    return new XIsNullExpression().setExpression(e)
+  static of(
+    database: XDatabase | string | number,
+    search: XField | string,
+    op: XSearchOperator,
+    value: Date | string,
+    cs = false,
+    js?: string
+  ) {
+    return new XSearchExpression()
+      .setDatabase(database)
+      .setSearch(search)
+      .setOp(op)
+      .setValue(value)
+      .setCaseSensitive(cs)
+      .setJson(js)
   }
 }
 

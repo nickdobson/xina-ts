@@ -1,3 +1,5 @@
+import { isNumber, isString, round } from 'lodash'
+
 import Sugar from 'sugar'
 
 import type { XSelectResponse } from '.'
@@ -7,14 +9,6 @@ export const ISO8601_LOCALDATETIME = `${ISO8601_DATE}T{HH}:{mm}:{ss}.{SSS}`
 export const ISO8601_DATETIME = `${ISO8601_LOCALDATETIME}{Z}`
 
 export const trustIs = <T>(_v: unknown): _v is T => true
-
-export const isBoolean = (v: unknown): v is boolean => typeof v === 'boolean'
-
-export const isNumber = (v: unknown): v is number => typeof v === 'number'
-
-export const isString = (v: unknown): v is string => typeof v === 'string'
-
-export const isArray = <T>(v: unknown): v is T[] => v instanceof Array
 
 export const isSimpleObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null
 
@@ -122,7 +116,7 @@ export function formatTimezone(date: number | string | Date = new Date()) {
 
 // Format a number by rounding to a certain decimal place, or in scientific notation if it's too small
 export function formatValue(n: number, places: number) {
-  return '' + (Sugar.Number.round(n, places) || (n && n.toExponential(places)))
+  return '' + (round(n, places) || (n && n.toExponential(places)))
 }
 
 export function isCyclic(obj: object) {

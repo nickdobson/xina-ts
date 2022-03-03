@@ -1,4 +1,8 @@
-import { isArray, isNumber, ISO8601_DATE, ISO8601_LOCALDATETIME, isString, normalize, sortKeys } from './util'
+import Sugar from 'sugar'
+
+import { isArray, isNumber, isString } from 'lodash'
+
+import { ISO8601_DATE, ISO8601_LOCALDATETIME, normalize, sortKeys } from './util'
 
 import { XEnum, XNotificationLevel, XNotificationType, XPostLevel, XPostType, XRequestStatus } from './enum'
 
@@ -29,14 +33,14 @@ interface XTypeProps {
   isJsonObject?: boolean
 }
 
-interface XTypeFormatProps {
-  clean?: boolean
-  safe?: boolean
-  html?: boolean
-  format?: string
-}
-
-type XTypeFormat = string | XTypeFormatProps
+export type XTypeFormat =
+  | string
+  | {
+      clean?: boolean
+      safe?: boolean
+      html?: boolean
+      format?: string
+    }
 
 export abstract class XType<T> {
   readonly name: string
@@ -75,17 +79,95 @@ export abstract class XType<T> {
 
   readonly isTemporal = false
 
+  readonly isDateTime = false
+
+  readonly isDate = false
+
   readonly isInstant = false
 
   readonly isLocal = false
 
   readonly isDuration = false
 
+  readonly isJson = false
+
+  readonly isJsonArray = false
+
+  readonly isJsonObject = false
+
   constructor(name: string, props: XTypeProps, safeMode = false) {
     this.name = name
     this.nameSafe = name.replace('(', safeMode ? '' : '_').replace(')', '')
 
     Object.assign(this, props)
+  }
+
+  isBooleanType(): this is XBooleanType {
+    return this.isBoolean
+  }
+
+  isEnumType<E extends XEnum>(): this is XEnumType<E> {
+    return this.isEnum
+  }
+
+  isCollectionType(): this is XCollectionType<T> {
+    return this.isCollection
+  }
+
+  isListType(): this is XListType<T> {
+    return this.isList
+  }
+
+  isSetType(): this is XSetType<T> {
+    return this.isSet
+  }
+
+  isNumericType(): this is XNumericType {
+    return this.isNumeric
+  }
+
+  isIntegerType(): this is XIntegerType {
+    return this.isInteger
+  }
+
+  isFloatType(): this is XFloatType {
+    return this.isFloat
+  }
+
+  isCharacterType(): this is XCharacterType {
+    return this.isCharacter
+  }
+
+  isAsciiType(): this is XAsciiType {
+    return this.isAscii
+  }
+
+  isUtf8Type(): this is XUtf8Type {
+    return this.isUtf8
+  }
+
+  isHtmlType(): this is XHtmlType {
+    return this.isHtml
+  }
+
+  isXmlType(): this is XXmlType {
+    return this.isXml
+  }
+
+  isTemoralType(): this is XTemporalType<T> {
+    return this.isTemporal
+  }
+
+  isDateType(): this is XTemporalType<T> {
+    return this.isDate
+  }
+
+  isInstantType(): this is XInstantType {
+    return this.isInstant
+  }
+
+  isDurationType(): this is XDurationType {
+    return this.isDuration
   }
 
   /**
@@ -191,7 +273,7 @@ export abstract class XType<T> {
   }
 }
 
-class XEnumType<T extends XEnum> extends XType<number> {
+export class XEnumType<T extends XEnum> extends XType<number> {
   values: T[]
 
   valueMap: Record<string | number, T> = {}
@@ -225,7 +307,7 @@ class XEnumType<T extends XEnum> extends XType<number> {
   }
 }
 
-abstract class XNumericType extends XType<number> {
+export abstract class XNumericType extends XType<number> {
   constructor(name: string, props: XTypeProps) {
     super(name, Object.assign(props, { isNumeric: true }), true)
   }
@@ -235,7 +317,7 @@ abstract class XNumericType extends XType<number> {
   }
 }
 
-class XBooleanType extends XType<boolean> {
+export class XBooleanType extends XType<boolean> {
   constructor() {
     super('boolean', { isBoolean: true })
   }
@@ -257,7 +339,7 @@ class XBooleanType extends XType<boolean> {
   }
 }
 
-class XIntegerType extends XNumericType {
+export class XIntegerType extends XNumericType {
   min: number
 
   max: number
@@ -285,7 +367,7 @@ class XIntegerType extends XNumericType {
   }
 }
 
-class XFloatType extends XNumericType {
+export class XFloatType extends XNumericType {
   /**
    * @param size The size in bytes.
    */
@@ -302,7 +384,7 @@ class XFloatType extends XNumericType {
   }
 }
 
-abstract class XCharacterType extends XType<string> {
+export abstract class XCharacterType extends XType<string> {
   constructor(name: string, props: XTypeProps) {
     super(name, Object.assign(props, { isCharacter: true }), true)
   }
@@ -344,13 +426,13 @@ abstract class XCharacterType extends XType<string> {
   }
 }
 
-abstract class XAsciiType extends XCharacterType {
+export abstract class XAsciiType extends XCharacterType {
   constructor(name: string, props: XTypeProps) {
     super(name, Object.assign(props, { isAscii: true }))
   }
 }
 
-class XAsciiStringType extends XAsciiType {
+export class XAsciiStringType extends XAsciiType {
   length: number
 
   constructor(length?: number, v = false) {
@@ -369,19 +451,19 @@ class XAsciiStringType extends XAsciiType {
   }
 }
 
-class XAsciiTextType extends XAsciiType {
+export class XAsciiTextType extends XAsciiType {
   constructor() {
     super('asciitext', { isText: true })
   }
 }
 
-abstract class XUtf8Type extends XCharacterType {
+export abstract class XUtf8Type extends XCharacterType {
   constructor(name: string, props: XTypeProps) {
     super(name, Object.assign(props, { isUtf8: true }))
   }
 }
 
-class XUtf8StringType extends XUtf8Type {
+export class XUtf8StringType extends XUtf8Type {
   length: number
 
   constructor(length?: number, v = false) {
@@ -400,41 +482,47 @@ class XUtf8StringType extends XUtf8Type {
   }
 }
 
-class XUtf8TextType extends XUtf8Type {
+export class XUtf8TextType extends XUtf8Type {
   constructor() {
     super('utf8text', { isText: true })
   }
 }
 
-class XHtmlType extends XUtf8Type {
+export class XHtmlType extends XUtf8Type {
   constructor() {
     super('html', { isHtml: true })
   }
 }
 
-class XXmlType extends XUtf8Type {
+export class XXmlType extends XUtf8Type {
   constructor() {
     super('xml', { isXml: true })
   }
 }
 
-class XInstantType extends XType<number> {
+export abstract class XTemporalType<T> extends XType<T> {
   unit: string
 
   fromMs: (ms: number) => number
 
   toMs: (v: number) => number
 
-  constructor(unit: string, fromMs = (ms: number) => ms, toMs = (ms: number) => ms) {
-    super(`instant(${unit})`, { isTemporal: true, isInstant: true })
+  constructor(name: string, props: XTypeProps, unit: string, fromMs = (ms: number) => ms, toMs = (ms: number) => ms) {
+    super(name, Object.assign(props, { isTemporal: true }))
 
     this.unit = unit
     this.fromMs = fromMs
     this.toMs = toMs
   }
 
-  toDate(v: number) {
-    return Sugar.Date.create(this.toMs(v))
+  toDate(v: number | string | Date) {
+    return Sugar.Date.create(isNumber(v) ? this.toMs(v) : v)
+  }
+}
+
+export class XInstantType extends XTemporalType<number> {
+  constructor(unit: string, fromMs = (ms: number) => ms, toMs = (ms: number) => ms) {
+    super(`instant(${unit})`, { isInstant: true }, unit, fromMs, toMs)
   }
 
   isInstance(v: unknown): v is number {
@@ -478,13 +566,13 @@ class XInstantType extends XType<number> {
   }
 }
 
-class XDurationType extends XType<number> {
+export class XDurationType extends XType<number> {
   unit: string
 
   base: number
 
   constructor(unit: string, base: number) {
-    super(`duration(${unit})`, { isTemporal: true, isDuration: true })
+    super(`duration(${unit})`, { isDuration: true })
 
     this.unit = unit
     this.base = base
@@ -539,19 +627,9 @@ class XDurationType extends XType<number> {
   }
 }
 
-class XDateTimeType extends XType<number> {
-  readonly unit: string = 'ms'
-
-  readonly fromMs = (ms: number) => ms
-
-  readonly toMs = (ms: number) => ms
-
+export class XDateTimeType extends XTemporalType<number> {
   constructor() {
-    super(`datetime`, { isTemporal: true, isDateTime: true, isInstant: true })
-  }
-
-  toDate(v: number) {
-    return Sugar.Date.create(this.toMs(v))
+    super(`datetime`, { isDateTime: true, isInstant: true }, 'ms')
   }
 
   isInstance(v: unknown): v is number {
@@ -595,9 +673,9 @@ class XDateTimeType extends XType<number> {
   }
 }
 
-class XDateType extends XType<number> {
+export class XDateType extends XTemporalType<number> {
   constructor() {
-    super(`date`, { isTemporal: true, isDate: true })
+    super(`date`, { isDate: true }, 'ms')
   }
 
   isInstance(v: unknown): v is number {
@@ -620,9 +698,9 @@ class XDateType extends XType<number> {
   }
 }
 
-class XLocalDateType extends XType<string> {
+export class XLocalDateType extends XTemporalType<string> {
   constructor() {
-    super('localdate', { isTemporal: true, isDate: true, isLocal: true })
+    super('localdate', { isDate: true, isLocal: true }, 'ms')
   }
 
   isInstance(v: unknown): v is string {
@@ -653,13 +731,9 @@ class XLocalDateType extends XType<string> {
   }
 }
 
-class XLocalDateTimeType extends XType<string> {
+export class XLocalDateTimeType extends XTemporalType<string> {
   constructor() {
-    super(`localdatetime`, { isTemporal: true, isDateTime: true, isLocal: true, isInstant: true })
-  }
-
-  toDate(v: number | string | Date) {
-    return Sugar.Date.create(v)
+    super(`localdatetime`, { isDateTime: true, isLocal: true, isInstant: true }, 'ms')
   }
 
   isInstance(v: unknown): v is string {
@@ -724,7 +798,7 @@ const formatJson = function (v: unknown[] | Record<string, unknown>, f?: XTypeFo
   return JSON.stringify(v, null, 2)
 }
 
-class XJsonType extends XType<unknown[] | Record<string, unknown>> {
+export class XJsonType extends XType<unknown[] | Record<string, unknown>> {
   constructor() {
     super('json', { isJson: true })
   }
@@ -747,7 +821,7 @@ class XJsonType extends XType<unknown[] | Record<string, unknown>> {
   }
 }
 
-class XJsonArrayType extends XType<unknown[]> {
+export class XJsonArrayType extends XType<unknown[]> {
   constructor() {
     super('jsonarray', { isJson: true, isJsonArray: true })
   }
@@ -770,7 +844,7 @@ class XJsonArrayType extends XType<unknown[]> {
   }
 }
 
-class XJsonObjectType extends XType<Record<string, unknown>> {
+export class XJsonObjectType extends XType<Record<string, unknown>> {
   constructor() {
     super('jsonobject', { isJson: true, isJsonObject: true })
   }
@@ -793,7 +867,7 @@ class XJsonObjectType extends XType<Record<string, unknown>> {
   }
 }
 
-class XCollectionType<T> extends XType<T[]> {
+export abstract class XCollectionType<T> extends XType<T[]> {
   valueType: XType<T>
 
   constructor(name: string, valueType: XType<T>, props: XTypeProps) {
@@ -837,19 +911,19 @@ class XCollectionType<T> extends XType<T[]> {
   }
 }
 
-class XListType<T> extends XCollectionType<T> {
+export class XListType<T> extends XCollectionType<T> {
   constructor(valueType: XType<T>) {
     super('list', valueType, { isList: true })
   }
 }
 
-class XSetType<T> extends XCollectionType<T> {
+export class XSetType<T> extends XCollectionType<T> {
   constructor(valueType: XType<T>) {
     super('set', valueType, { isSet: true })
   }
 }
 
-class XIDType extends XType<number> {
+export class XIDType extends XType<number> {
   constructor(name: string) {
     super(name + '_id', {})
   }
@@ -867,7 +941,7 @@ class XIDType extends XType<number> {
   }
 }
 
-class XTypeType extends XType<string> {
+export class XTypeType extends XType<string> {
   constructor() {
     super('type', {})
   }

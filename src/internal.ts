@@ -25,6 +25,8 @@ export * from './task'
 export * from './element'
 export * from './record'
 
+export * from './sort'
+
 export * from './api/api'
 export * from './api/constraint'
 export * from './api/expression'

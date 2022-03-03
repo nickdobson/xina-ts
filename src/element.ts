@@ -1,8 +1,7 @@
+import { isNumber, isString } from 'lodash'
 import Sugar from 'sugar'
 
 import {
-  isNumber,
-  isString,
   splitRest,
   XBlobInterface,
   XDatabaseInterface,

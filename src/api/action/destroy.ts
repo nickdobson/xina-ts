@@ -1,5 +1,5 @@
+import { isNumber } from 'lodash'
 import { XTaskInterface } from '../../parameter'
-import { isNumber } from '../../util'
 import { XAction } from './action'
 
 export class XDestroyAction extends XAction<void> {

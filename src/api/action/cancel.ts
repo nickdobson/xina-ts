@@ -1,4 +1,4 @@
-import { isNumber } from '../../util'
+import { isNumber } from 'lodash'
 import { XTaskInterface } from '../../parameter'
 import { XAction } from './action'
 

@@ -1,4 +1,4 @@
-import Sugar from 'sugar'
+import { capitalize } from 'lodash'
 
 export interface XVariantProps<N> {
   label?: string
@@ -23,7 +23,7 @@ export default abstract class XVariant<N extends string> {
       props?.label || name.includes('_')
         ? name
             .split('_')
-            .map((word) => Sugar.String.capitalize(word))
+            .map((word) => capitalize(word))
             .join(' ')
         : name
   }

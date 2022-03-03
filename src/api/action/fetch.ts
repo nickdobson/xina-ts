@@ -1,3 +1,4 @@
+import { isNumber } from 'lodash'
 import Sugar from 'sugar'
 
 import { XDatabase, XGroup, XTeam, XUser } from '../../element'
@@ -14,7 +15,6 @@ import { XPostInterfaceExt } from '../../post'
 
 import { isRecord, XRecord, XRecordInterfaceExt } from '../../record'
 import { XTask } from '../../task'
-import { isNumber } from '../../util'
 
 import { toSpecifier, toOptionalSpecifier } from '../api'
 import { XExpression, XExpressionable, toOptionalExpression } from '../expression'
@@ -38,8 +38,8 @@ abstract class XFetchAction<T> extends XAction<T> {
     return 'fetch'
   }
 
-  setWhere(where?: XExpression) {
-    this.where = where
+  setWhere(where?: XExpressionable) {
+    this.where = toOptionalExpression(where)
     return this
   }
 

@@ -1,9 +1,12 @@
-import { XDatabase, XElement, XElementSet } from '../element'
+import { isNumber, isString } from 'lodash'
+import { XGroup } from '..'
+import { XDatabase, XElement } from '../element'
 import { isRecord, XRecord } from '../record'
-import { assertNonEmptyString, isNumber, isString } from '../util'
+import { assertNonEmptyString } from '../util'
 
 export interface XApiContext {
-  databases: XElementSet<XDatabase>
+  getGroup(s: number | string): XGroup
+  getDatabase(s: number | string): XDatabase
 }
 
 export interface XApiComponent<T> {
