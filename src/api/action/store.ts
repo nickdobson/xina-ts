@@ -15,27 +15,27 @@ export class XStoreAction extends XAction<void> {
     return 'store'
   }
 
-  setName(name: string) {
+  setName(name?: string) {
     this.name = name
     return this
   }
 
-  setKey(key: string) {
+  setKey(key?: string) {
     this.key = key
     return this
   }
 
-  setType(type: string) {
+  setType(type?: string) {
     this.type = type
     return this
   }
 
-  setValue(value: unknown) {
+  setValue(value?: unknown) {
     this.value = value
     return this
   }
 
-  setDesc(desc: string) {
+  setDesc(desc?: string) {
     this.desc = desc
     return this
   }

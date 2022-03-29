@@ -1,9 +1,13 @@
 import {
+  XColumnExpression,
   XCountRowsExpression,
+  XDatabase,
+  XDatabaseTable,
   XExistsExpression,
   XFetchPostsAction,
   XFunctionExpression,
-  XGroupConcatExpression
+  XGroupConcatExpression,
+  XRecordAttribute
 } from '..'
 
 import { XAlterUserObjectsAction } from './action/alter'
@@ -57,6 +61,11 @@ import { toSource } from './source'
 export const xapi = {
   expr: toExpression,
   alias: (alias: string) => XAliasExpression.of(alias),
+  col: (
+    database: XDatabase,
+    attribute: XRecordAttribute<unknown> = XRecordAttribute.RECORD_ID,
+    table = XDatabaseTable.RECORD
+  ) => XColumnExpression.of(attribute, table, database),
   countRows: () => new XCountRowsExpression(),
   exists: (select: XSelect) => XExistsExpression.of(select),
   groupConcat: () => new XGroupConcatExpression(),

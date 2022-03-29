@@ -92,7 +92,7 @@ abstract class XFetchAction<T> extends XAction<T> {
 export class XFetchRecordsAction extends XFetchAction<XRecordInterfaceExt[]> {
   database?: XDatabase | string | number
 
-  records: Array<XRecord | Record<string, unknown> | number> = []
+  records: (XRecord | Record<string, unknown> | number)[] = []
 
   getFetch() {
     return 'records'

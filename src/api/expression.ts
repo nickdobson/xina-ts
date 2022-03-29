@@ -78,50 +78,55 @@ export type XExpressionable =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | XAttribute<any, any>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function toOptionalExpression(v?: XExpressionable, _meta?: string | Record<string, unknown>) {
+export function toOptionalExpression(v?: XExpressionable, meta?: Record<string, unknown>) {
   if (v instanceof XExpression) return v
 
   if (v === undefined) return undefined
 
   if (v === null) return XNullLiteral.SINGLETON
 
-  if (v === false) return new XNumberLiteral().setValue(0)
-  if (v === true) return new XNumberLiteral().setValue(1)
+  if (v === false) return new XNumberLiteral().setValue(0).setMeta(meta)
+  if (v === true) return new XNumberLiteral().setValue(1).setMeta(meta)
 
-  if (isNumber(v)) return new XNumberLiteral().setValue(v)
-  if (isString(v)) return new XStringLiteral().setValue(v)
-  if (v instanceof Date) return new XDateTimeLiteral().setValue(v)
+  if (isNumber(v)) return new XNumberLiteral().setValue(v).setMeta(meta)
+  if (isString(v)) return new XStringLiteral().setValue(v).setMeta(meta)
+  if (v instanceof Date) return new XDateTimeLiteral().setValue(v).setMeta(meta)
 
-  if (v instanceof XSelect) return new XSelectExpression().setSelect(v)
+  if (v instanceof XSelect) return new XSelectExpression().setSelect(v).setMeta(meta)
 
-  if (isField(v)) return XColumnExpression.of(v, XDatabaseTable.RECORD, v.database)
+  if (isField(v)) return XColumnExpression.of(v, XDatabaseTable.RECORD, v.database).setMeta(meta)
 
-  if (v instanceof XParameter) return XAliasExpression.of(v.name)
+  if (v instanceof XParameter) return XAliasExpression.of(v.name).setMeta(meta)
 
-  if (v instanceof XAttribute) return XAliasExpression.of(v.name)
+  if (v instanceof XAttribute) return XAliasExpression.of(v.name).setMeta(meta)
 
   throw Error(`invalid expression: ${v}`)
 }
 
-export function toExpression(v: XExpressionable, meta?: string | Record<string, unknown>) {
+export function toExpression(v: XExpressionable, meta?: Record<string, unknown>) {
   const e = toOptionalExpression(v, meta)
   if (e === undefined) throw Error('expression cannot be undefined')
   return e
 }
 
 export abstract class XExpression implements XApiComponent<XExpression> {
-  meta?: string | Record<string, unknown>
+  meta?: Record<string, unknown>
 
   abstract getName(): string
   abstract getType(): XExpressionType
+
+  setMeta(meta?: Record<string, unknown>) {
+    this.meta = meta
+    return this
+  }
 
   isValid() {
     return true
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  load(_obj: Record<string, unknown>, _ctx: XApiContext) {
+  load(obj: Record<string, unknown>, _ctx: XApiContext) {
+    this.meta = isSimpleObject(obj.meta) ? obj.meta : undefined
     return this
   }
 
@@ -418,8 +423,8 @@ export class XNumberLiteral extends XExpression {
     return this
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  load(obj: Record<string, unknown>, _ctx: XApiContext) {
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
     this.setValue(obj.value)
     return this
   }
@@ -472,8 +477,8 @@ export class XStringLiteral extends XExpression {
     return this
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  load(obj: Record<string, unknown>, _ctx: XApiContext) {
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
     this.setValue(obj.value)
     return this
   }
@@ -529,8 +534,8 @@ export class XDateTimeLiteral extends XExpression {
     return this.value ? Sugar.Date.format(this.value, ISO8601_DATETIME) : ''
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    super.load(obj, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
     this.setValue(obj.value)
     return this
   }
@@ -588,7 +593,8 @@ export class XLocalDateTimeLiteral extends XExpression {
     return this.value ? Sugar.Date.format(this.value, ISO8601_LOCALDATETIME) : ''
   }
 
-  load(obj: Record<string, unknown>) {
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
     return this.setValue(obj.value)
   }
 
@@ -646,8 +652,8 @@ export class XAliasExpression extends XExpression {
     return this
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    super.load(obj, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
     return this.setAlias(obj.alias)
   }
 
@@ -706,12 +712,12 @@ export class XBetweenExpression extends XExpression {
     return this
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    super.load(obj, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
 
-    this.e = parseExpression(obj.e, context)
-    this.min = parseExpression(obj.min, context)
-    this.max = parseExpression(obj.max, context)
+    this.e = parseExpression(obj.e, ctx)
+    this.min = parseExpression(obj.min, ctx)
+    this.max = parseExpression(obj.max, ctx)
 
     return this
   }
@@ -781,12 +787,12 @@ export class XBinaryExpression extends XExpression {
     return `(${this.e1}) ${this.op} (${this.e2})`
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    super.load(obj, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
 
     this.op = XBinaryOperator.parse(obj.op)
-    this.e1 = parseExpression(obj.e1, context)
-    this.e2 = parseExpression(obj.e2, context)
+    this.e1 = parseExpression(obj.e1, ctx)
+    this.e2 = parseExpression(obj.e2, ctx)
 
     return this
   }
@@ -882,21 +888,21 @@ export class XCaseExpression extends XExpression {
     return s
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    super.load(obj, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
 
     if (!isArray(obj.cases)) throw Error(`invalid case expression: ${obj}`)
 
     const cases = obj.cases.map((c) => ({
-      when: parseExpression(c.when, context),
-      then: parseExpression(c.then, context)
+      when: parseExpression(c.when, ctx),
+      then: parseExpression(c.then, ctx)
     }))
 
     let baseExpression = undefined
     let elseExpression = undefined
 
-    if (obj.base) baseExpression = parseExpression(obj.base, context)
-    if (obj.else) elseExpression = parseExpression(obj.else, context)
+    if (obj.base) baseExpression = parseExpression(obj.base, ctx)
+    if (obj.else) elseExpression = parseExpression(obj.else, ctx)
 
     this.cases = cases
     this.baseExpression = baseExpression
@@ -983,6 +989,8 @@ export class XCollateExpression extends XExpression {
   }
 
   load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+
     if (!isString(obj.collation)) throw Error(`invalid collate expression: ${obj}`)
 
     this.e = parseExpression(obj.e, ctx)
@@ -1060,8 +1068,8 @@ export class XColumnExpression extends XExpression {
     return s
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    super.load(obj, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
 
     const d = obj.database
     const t = obj.table
@@ -1073,7 +1081,7 @@ export class XColumnExpression extends XExpression {
 
     if (d != null) {
       if (isNumber(obj.database) || isString(obj.database)) {
-        database = context.getDatabase(obj.database)
+        database = ctx.getDatabase(obj.database)
       }
 
       throw Error(`invalid database specifier: ${d}`)
@@ -1161,9 +1169,12 @@ export class XCompoundExpression extends XExpression {
     return !!(this.op && this.expressions.length && !this.expressions.some((e) => !e.isValid()))
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+
     this.op = XCompoundOperator.parse(obj.op)
-    this.expressions = parseExpressions(obj.expressions, context)
+    this.expressions = parseExpressions(obj.expressions, ctx)
+
     return this
   }
 
@@ -1241,8 +1252,9 @@ export class XExistsExpression extends XExpression {
     return `EXISTS (${this.select})`
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    this.select = parseSelect(obj.e, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+    this.select = parseSelect(obj.e, ctx)
     return this
   }
 
@@ -1303,11 +1315,13 @@ export class XFunctionExpression extends XExpression {
     return !!this.func && !this.args.some((arg) => !arg.isValid())
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+
     if (!isString(obj.function)) throw Error(`invalid function expression: ${obj}`)
 
     this.func = obj.function
-    this.args = parseExpressions(obj.args, context)
+    this.args = parseExpressions(obj.args, ctx)
 
     return this
   }
@@ -1419,11 +1433,13 @@ export class XGroupConcatExpression extends XExpression {
     return !!this.args.length && !this.args.some((arg) => !arg.isValid()) && !this.orderBy.some((arg) => !arg.isValid())
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    this.args = parseExpressions(obj.args, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+
+    this.args = parseExpressions(obj.args, ctx)
     this.distinct = !!obj.distinct
     this.separator = checkOptionalString(obj.separator)
-    this.orderBy = parseOptionalOrderTerms(obj.order, context)
+    this.orderBy = parseOptionalOrderTerms(obj.order, ctx)
 
     return this
   }
@@ -1489,9 +1505,11 @@ export class XInExpression extends XExpression {
     return !!(this.e?.isValid() && !this.es.some((e) => !e.isValid()))
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    this.e = parseExpression(obj.e, context)
-    this.es = parseExpressions(obj.values, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+
+    this.e = parseExpression(obj.e, ctx)
+    this.es = parseExpressions(obj.values, ctx)
     return this
   }
 
@@ -1551,9 +1569,11 @@ export class XInSelectExpression extends XExpression {
     return !!(this.e?.isValid() && this.select?.isValid())
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    this.e = parseExpression(obj.e, context)
-    this.select = parseSelect(obj.select, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+
+    this.e = parseExpression(obj.e, ctx)
+    this.select = parseSelect(obj.select, ctx)
     return this
   }
 
@@ -1604,8 +1624,9 @@ export class XIsNullExpression extends XExpression {
     return `${this.e} IS NULL`
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    this.e = parseExpression(obj.e, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+    this.e = parseExpression(obj.e, ctx)
     return this
   }
 
@@ -1694,9 +1715,11 @@ export class XSearchExpression extends XExpression {
     )
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+
     if (isNumber(obj.database) || isString(obj.database)) {
-      this.database = context.getDatabase(obj.database)
+      this.database = ctx.getDatabase(obj.database)
     } else {
       throw Error(`invalid database specifier: ${obj.database}`)
     }
@@ -1780,8 +1803,9 @@ export class XSelectExpression extends XExpression {
     return `(${this.select})`
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    this.select = parseSelect(obj.select, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+    this.select = parseSelect(obj.select, ctx)
     return this
   }
 
@@ -1837,10 +1861,12 @@ export class XUnaryExpression extends XExpression {
     return `${this.op} (${this.e})`
   }
 
-  load(obj: Record<string, unknown>, context: XApiContext) {
-    super.load(obj, context)
+  load(obj: Record<string, unknown>, ctx: XApiContext) {
+    super.load(obj, ctx)
+
     this.op = XUnaryOperator.parse(obj.op)
-    this.e = parseExpression(obj.e, context)
+    this.e = parseExpression(obj.e, ctx)
+
     return this
   }
 

@@ -41,22 +41,26 @@ export function parseOptionalSource(source: unknown, context: XApiContext) {
 
 export type XSourceable = XSystemTable | XSelect | XSource | XDatabase
 
-export function toOptionalSource(v?: XSourceable) {
-  if (v === undefined) return undefined
-  return toSource(v)
+export function toSource(v: XSourceable, meta?: Record<string, unknown>) {
+  const s = toOptionalSource(v, meta)
+  if (s === undefined) throw Error('source cannot be undefined')
+  return s
 }
 
-export function toSource(v: XSourceable): XSource {
+export function toOptionalSource(v?: XSourceable, meta?: Record<string, unknown>) {
+  if (v === undefined) return undefined
+
   if (v instanceof XSource) return v
-  if (isDatabase(v)) return XDatabaseTableSource.of(v, XDatabaseTable.RECORD)
-  if (v instanceof XSelect) return XSelectSource.of(v)
-  if (v instanceof XSystemTable) return XSystemTableSource.of(v)
+
+  if (isDatabase(v)) return XDatabaseTableSource.of(v, XDatabaseTable.RECORD).setMeta(meta)
+  if (v instanceof XSelect) return XSelectSource.of(v).setMeta(meta)
+  if (v instanceof XSystemTable) return XSystemTableSource.of(v).setMeta(meta)
 
   throw new TypeError('invalid source type: ' + typeof v)
 }
 
 export abstract class XSource implements XApiComponent<XSource> {
-  meta?: string | Record<string, unknown>
+  meta?: Record<string, unknown>
 
   alias?: string
 
@@ -65,7 +69,7 @@ export abstract class XSource implements XApiComponent<XSource> {
   abstract toStringBase(): string
   abstract buildRest(pretty: boolean): Record<string, unknown>
 
-  setMeta(meta?: string | Record<string, unknown>) {
+  setMeta(meta?: Record<string, unknown>) {
     this.meta = meta
     return this
   }
