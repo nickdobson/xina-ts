@@ -1,5 +1,6 @@
 import { isNumber, isString } from 'lodash'
 import Sugar from 'sugar'
+import { forDatabase, XRecordAttribute } from '.'
 
 import {
   splitRest,
@@ -232,6 +233,7 @@ export interface XDatabase extends XDatabaseInterface, XElement {
   [DATABASE_SYMBOL]: true
   parent?: XGroup | XDatabase
   databases: XElementSet<XDatabase>
+  columns: (XRecordAttribute<unknown> | XField)[]
   fields: XElementSet<XField>
   blobs: XElementSet<XBlob>
   objects: Record<string, unknown>
@@ -258,6 +260,7 @@ export const toDatabase = (obj: XDatabaseInterfaceExt): XDatabase => {
     databases,
     fields,
     blobs,
+    columns: [],
     getId(): number {
       return this.database_id
     },
@@ -324,6 +327,8 @@ export const toDatabase = (obj: XDatabaseInterfaceExt): XDatabase => {
       return this.getLabelPath()
     }
   }
+
+  database.columns = [...forDatabase(database), ...database.fields.values]
 
   databases.values.forEach((d) => (d.parent = database))
   fields.values.forEach((f) => (f.database = database))

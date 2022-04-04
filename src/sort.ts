@@ -1,20 +1,38 @@
 import { isArray, isString } from 'lodash'
 import { firstBy } from 'thenby'
 
-import { XAliasExpression, XAttribute, XField, XOrderTerm, XOrderType, XParameter } from '.'
+import {
+  XAliasExpression,
+  XAttribute,
+  XDatabase,
+  XField,
+  XOrderTerm,
+  XOrderType,
+  XParameter,
+  XRecordAttribute
+} from '.'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type XSortKey = string | XField | XAttribute<any, any> | XParameter<any, any>
-export type XSortColumn = { key: XSortKey; order: XOrderType }
+
+export type XSortColumn = {
+  key: XSortKey
+  order: XOrderType
+}
 
 export class XSortOrder {
   columns: XSortColumn[] = []
 
   constructor(...columns: (XSortColumn | [XSortKey, string?])[]) {
-    this.push(...columns)
+    this.addColumns(...columns)
   }
 
-  push(...columns: (XSortColumn | [XSortKey, string?])[]) {
+  setColumns(...columns: (XSortColumn | [XSortKey, string?])[]) {
+    this.columns = []
+    return this.addColumns(...columns)
+  }
+
+  addColumns(...columns: (XSortColumn | [XSortKey, string?])[]) {
     columns.forEach((c) => {
       if (isArray(c)) {
         this.columns.push({
@@ -25,6 +43,8 @@ export class XSortOrder {
         this.columns.push(c)
       }
     })
+
+    return this
   }
 
   clone() {
@@ -60,5 +80,20 @@ export class XSortOrder {
     }
 
     return values.sort(chain as IThenBy<T>)
+  }
+
+  static forDatabase(database: XDatabase, context?: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let order: any[]
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (context && (database.objects?.xo_context as any)?.[context]?.order) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      order = (database.objects?.xo_context as any)?.[context]?.order as any[]
+    } else {
+      order = database.order ?? [XRecordAttribute.RECORD_ID]
+    }
+
+    return new XSortOrder(...order)
   }
 }

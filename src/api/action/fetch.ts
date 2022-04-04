@@ -1,5 +1,6 @@
 import { isNumber } from 'lodash'
 import Sugar from 'sugar'
+import { XTaskThreadInterface } from '../..'
 
 import { XDatabase, XGroup, XTeam, XUser } from '../../element'
 import {
@@ -317,7 +318,7 @@ export class XFetchUsersAction extends XFetchAction<XUserInterface[]> {
   }
 }
 
-export class XFetchThreadsAction extends XFetchAction<string[]> {
+export class XFetchThreadsAction extends XFetchAction<XTaskThreadInterface[]> {
   getFetch() {
     return 'threads'
   }

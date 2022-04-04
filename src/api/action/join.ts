@@ -50,6 +50,11 @@ export class XJoinUsersAction extends XJoinAction {
     return this
   }
 
+  setAdmin(admin?: boolean) {
+    this.admin = admin ?? false
+    return this
+  }
+
   buildRestRest(pretty: boolean) {
     return {
       admin: this.admin,
