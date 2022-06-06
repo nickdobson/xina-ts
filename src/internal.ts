@@ -19,8 +19,10 @@ export * from './parameter'
 export * from './attribute'
 export * from './table'
 
+export * from './log'
 export * from './post'
 export * from './task'
+export * from './notification'
 
 export * from './element'
 export * from './record'

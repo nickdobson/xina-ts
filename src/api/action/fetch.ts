@@ -1,27 +1,29 @@
 import { isNumber } from 'lodash'
 import Sugar from 'sugar'
-import { XTaskThreadInterface } from '../..'
 
 import { XDatabase, XGroup, XTeam, XUser } from '../../element'
-import {
-  XLogInterface,
-  XNotificationInterface,
+
+import type {
   XRequestInterface,
+  XTaskThreadInterface,
   XTeamSubInterface,
   XUserInterface,
   XUserKeyInterface,
   XUserSubInterface
 } from '../../parameter'
-import { XPostInterfaceExt } from '../../post'
+
+import type { XLogInterfaceExt } from '../../log'
+import type { XPostInterfaceExt } from '../../post'
 
 import { isRecord, XRecord, XRecordInterfaceExt } from '../../record'
-import { XTask } from '../../task'
+import type { XTaskInterfaceExt } from '../../task'
 
 import { toSpecifier, toOptionalSpecifier } from '../api'
 import { XExpression, XExpressionable, toOptionalExpression } from '../expression'
 import { XOrderTerm } from '../order-term'
 import { XWall, toWall } from '../wall'
 import { XAction } from './action'
+import { XNotificationInterfaceExt } from '../../notification'
 
 abstract class XFetchAction<T> extends XAction<T> {
   where?: XExpression
@@ -130,7 +132,7 @@ export class XFetchRecordsAction extends XFetchAction<XRecordInterfaceExt[]> {
   }
 }
 
-export class XFetchLogsAction extends XFetchAction<XLogInterface[]> {
+export class XFetchLogsAction extends XFetchAction<XLogInterfaceExt[]> {
   database?: XDatabase | string | number
 
   record?: XRecord | number
@@ -238,7 +240,7 @@ export class XFetchPostsAction extends XFetchAction<XPostInterfaceExt[]> {
   }
 }
 
-export class XFetchTasksAction extends XFetchAction<XTask[]> {
+export class XFetchTasksAction extends XFetchAction<XTaskInterfaceExt[]> {
   user?: XUser | string | number
 
   tasks: number[] = []
@@ -329,7 +331,7 @@ export class XFetchThreadsAction extends XFetchAction<XTaskThreadInterface[]> {
   }
 }
 
-export class XFetchNotificationsAction extends XFetchAction<XNotificationInterface[]> {
+export class XFetchNotificationsAction extends XFetchAction<XNotificationInterfaceExt[]> {
   type?: string | number
 
   seen?: boolean

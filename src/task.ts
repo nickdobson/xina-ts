@@ -1,10 +1,10 @@
 import type { XTaskEventInterface, XTaskFileInterface, XTaskInterface } from './parameter'
 
-export interface XTaskFile extends XTaskFileInterface {
+export interface XTaskFileInterfaceExt extends XTaskFileInterface {
   url: string
 }
 
-export interface XTask extends XTaskInterface {
+export interface XTaskInterfaceExt extends XTaskInterface {
   events?: XTaskEventInterface[]
-  files?: XTaskFile[]
+  files?: XTaskFileInterfaceExt[]
 }

@@ -30,7 +30,7 @@ export interface XPostInterfaceExt extends XPostInterface {
 
 export interface XPost extends XPostInterface {
   files?: XPostFile[]
-  record: XRecord
+  record?: XRecord
   wall: XPostWall
 }
 
